@@ -6,8 +6,8 @@ use Mix.Config
 
 # Configure your database
 config :inkfish, Inkfish.Repo,
-  username: "postgres",
-  password: "postgres",
+  username: "inkfish",
+  password: "oobeiGait3ie",
   database: "inkfish_dev",
   hostname: "localhost",
   pool_size: 10

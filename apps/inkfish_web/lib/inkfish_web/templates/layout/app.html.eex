@@ -4,27 +4,44 @@
     <meta charset="utf-8"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Inkfish · Phoenix Framework</title>
+    <title><%= page_title(@conn) %> · Inkfish  Phoenix Framework</title>
     <link rel="stylesheet" href="<%= Routes.static_path(@conn, "/css/app.css") %>"/>
+    <link rel="icon" type="image/png"
+          href="<%= Routes.static_path(@conn,"/images/inkfish.png") %>"/>
   </head>
   <body>
-    <header>
-      <section class="container">
-        <nav role="navigation">
-          <ul>
-            <li><a href="https://hexdocs.pm/phoenix/overview.html">Get Started</a></li>
-          </ul>
-        </nav>
-        <a href="http://phoenixframework.org/" class="phx-logo">
-          <img src="<%= Routes.static_path(@conn, "/images/phoenix.png") %>" alt="Phoenix Framework Logo"/>
-        </a>
-      </section>
-    </header>
-    <main role="main" class="container">
-      <p class="alert alert-info" role="alert"><%= get_flash(@conn, :info) %></p>
-      <p class="alert alert-danger" role="alert"><%= get_flash(@conn, :error) %></p>
-      <%= render @view_module, @view_template, assigns %>
-    </main>
-    <script type="text/javascript" src="<%= Routes.static_path(@conn, "/js/app.js") %>"></script>
+    <div class="container">
+      <header>
+        <div class="row">
+          <div class="col-2">
+            <%= link(img_tag(Routes.static_path(@conn, "/images/inkfish.png")),
+              to: Routes.page_path(@conn, :index)) %>
+          </div>
+          <div class="col-10">
+            <div class="row my-2">
+              <div class="col-6">
+                <p>Nav</p>
+              </div>
+              <div class="col-6">
+                <p>Session</p>
+              </div>
+            </div>
+            <h1><%= page_title(@conn) %></h1>
+          </div>
+        </div>
+      </header>
+
+      <%= if get_flash(@conn, :info) do %>
+        <p class="alert alert-info" role="alert"><%= get_flash(@conn, :info) %></p>
+      <% end %>
+      <%= if get_flash(@conn, :error) do %>
+        <p class="alert alert-danger" role="alert"><%= get_flash(@conn, :error) %></p>
+      <% end %>
+      <main>
+        <%= render @view_module, @view_template, assigns %>
+      </main>
+    </div>
+    <script type="text/javascript"
+            src="<%= Routes.static_path(@conn, "/js/app.js") %>"></script>
   </body>
 </html>
