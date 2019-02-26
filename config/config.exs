@@ -12,6 +12,9 @@ use Mix.Config
 # apps, should be configured in the umbrella to avoid confusion.
 import_config "../apps/*/config/config.exs"
 
+config :inkfish,
+  email_domains: ["husky.neu.edu", "neu.edu"]
+
 # Configures Elixir's Logger
 config :logger, :console,
   format: "$time $metadata[$level] $message\n",
