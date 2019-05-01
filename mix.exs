@@ -5,7 +5,8 @@ defmodule Inkfish.Umbrella.MixProject do
     [
       apps_path: "apps",
       start_permanent: Mix.env() == :prod,
-      deps: deps()
+      deps: deps(),
+      aliases: aliases(),
     ]
   end
 
@@ -23,5 +24,12 @@ defmodule Inkfish.Umbrella.MixProject do
   # and cannot be accessed from applications inside the apps folder
   defp deps do
     []
+  end
+
+  defp aliases do
+    [
+      "ecto.setup": ["ecto.create", "ecto.migrate", "run apps/inkfish/priv/repo/seeds.exs"],
+      "ecto.reset": ["ecto.drop", "ecto.setup"],
+    ]
   end
 end

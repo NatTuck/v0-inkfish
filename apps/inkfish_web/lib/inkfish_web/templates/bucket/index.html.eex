@@ -1,0 +1,28 @@
+<h1>Listing Buckets</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Weight</th>
+
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+<%= for bucket <- @buckets do %>
+    <tr>
+      <td><%= bucket.name %></td>
+      <td><%= bucket.weight %></td>
+
+      <td>
+        <%= link "Show", to: Routes.bucket_path(@conn, :show, bucket) %>
+        <%= link "Edit", to: Routes.bucket_path(@conn, :edit, bucket) %>
+        <%= link "Delete", to: Routes.bucket_path(@conn, :delete, bucket), method: :delete, data: [confirm: "Are you sure?"] %>
+      </td>
+    </tr>
+<% end %>
+  </tbody>
+</table>
+
+<span><%= link "New Bucket", to: Routes.bucket_path(@conn, :new) %></span>

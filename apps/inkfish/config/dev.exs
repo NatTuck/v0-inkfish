@@ -11,3 +11,10 @@ config :inkfish, Inkfish.Repo,
   database: "inkfish_dev",
   hostname: "localhost",
   pool_size: 10
+
+config :paddle, Paddle,
+  host: "localhost",
+  base: "ou=people,dc=example,dc=com",
+  ssl: false,
+  port: 389
+

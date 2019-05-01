@@ -2,7 +2,6 @@
 <html lang="en">
   <head>
     <meta charset="utf-8"/>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title><%= page_title(@conn) %> · Inkfish  Phoenix Framework</title>
     <link rel="stylesheet" href="<%= Routes.static_path(@conn, "/css/app.css") %>"/>
@@ -13,21 +12,17 @@
     <div class="container">
       <header>
         <div class="row">
-          <div class="col-2">
+          <div class="col-md-2">
             <%= link(img_tag(Routes.static_path(@conn, "/images/inkfish.png")),
-              to: Routes.page_path(@conn, :index)) %>
+                     to: Routes.page_path(@conn, :index)) %>
           </div>
-          <div class="col-10">
-            <div class="row my-2">
-              <div class="col-6">
-                <p>Nav</p>
-              </div>
-              <div class="col-6">
-                <p>Session</p>
-              </div>
-            </div>
-            <h1><%= page_title(@conn) %></h1>
+          <div class="col-md-5">
+            <p>Nav</p>
           </div>
+          <div class="col-md-5">
+            <p>Session</p>
+          </div>
+          <h1><%= page_title(@conn) %></h1>
         </div>
       </header>
 

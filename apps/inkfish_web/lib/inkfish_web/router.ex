@@ -17,6 +17,12 @@ defmodule InkfishWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :index
+    resources "/users", UserController
+    resources "/courses", CourseController
+    resources "/regs", RegController
+    resources "/buckets", BucketController
+
+
   end
 
   # Other scopes may use custom stacks.
