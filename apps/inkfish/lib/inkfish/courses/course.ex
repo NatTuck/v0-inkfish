@@ -4,10 +4,11 @@ defmodule Inkfish.Courses.Course do
 
 
   schema "courses" do
-    field :footer, :string
     field :name, :string
     field :start_date, :date
+    field :footer, :string, default: ""
     has_many :regs, Inkfish.Users.Reg
+    has_many :buckets, Inkfish.Courses.Bucket
 
     timestamps()
   end
@@ -16,6 +17,7 @@ defmodule Inkfish.Courses.Course do
   def changeset(course, attrs) do
     course
     |> cast(attrs, [:name, :start_date, :footer])
-    |> validate_required([:name, :start_date, :footer])
+    |> validate_required([:name, :start_date])
+    |> validate_length(:name, min: 3)
   end
 end

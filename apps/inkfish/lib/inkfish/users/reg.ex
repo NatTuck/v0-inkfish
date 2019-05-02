@@ -17,7 +17,19 @@ defmodule Inkfish.Users.Reg do
   @doc false
   def changeset(reg, attrs) do
     reg
-    |> cast(attrs, [:is_student, :is_prof, :is_staff, :is_grader])
-    |> validate_required([:is_student, :is_prof, :is_staff, :is_grader])
+    |> cast(attrs, [:user_id, :course_id, :is_student, :is_prof, :is_staff, :is_grader])
+    |> validate_required([:user_id, :course_id])
+    |> validate_not_student_and_staff()
+  end
+  
+  def validate_not_student_and_staff(cset) do
+    sp = get_field(cset, :is_student) && get_field(cset, :is_prof)
+    ss = get_field(cset, :is_student) && get_field(cset, :is_staff)
+    
+    if sp || ss do
+      add_error(cset, :is_student, "Students can't be staff")
+    else
+      cset
+    end
   end
 end

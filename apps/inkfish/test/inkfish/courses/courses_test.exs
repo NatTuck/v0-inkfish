@@ -1,128 +1,117 @@
 defmodule Inkfish.CoursesTest do
   use Inkfish.DataCase
+  import Inkfish.Factory
 
   alias Inkfish.Courses
 
   describe "courses" do
     alias Inkfish.Courses.Course
 
-    @valid_attrs %{footer: "some footer", name: "some name", start_date: ~D[2010-04-17]}
-    @update_attrs %{footer: "some updated footer", name: "some updated name", start_date: ~D[2011-05-18]}
-    @invalid_attrs %{footer: nil, name: nil, start_date: nil}
-
-    def course_fixture(attrs \\ %{}) do
-      {:ok, course} =
-        attrs
-        |> Enum.into(@valid_attrs)
-        |> Courses.create_course()
-
-      course
-    end
-
     test "list_courses/0 returns all courses" do
-      course = course_fixture()
+      course = insert(:course)
       assert Courses.list_courses() == [course]
     end
 
     test "get_course!/1 returns the course with given id" do
-      course = course_fixture()
+      course = insert(:course)
       assert Courses.get_course!(course.id) == course
     end
 
     test "create_course/1 with valid data creates a course" do
-      assert {:ok, %Course{} = course} = Courses.create_course(@valid_attrs)
-      assert course.footer == "some footer"
-      assert course.name == "some name"
-      assert course.start_date == ~D[2010-04-17]
+      attrs = params_for(:course)
+      assert {:ok, %Course{} = course} = Courses.create_course(attrs)
+      assert course.footer == ""
+      assert course.name =~ ~r/CS\s+\d+/
     end
 
     test "create_course/1 with invalid data returns error changeset" do
-      assert {:error, %Ecto.Changeset{}} = Courses.create_course(@invalid_attrs)
+      assert {:error, %Ecto.Changeset{}} = Courses.create_course(%{})
     end
 
     test "update_course/2 with valid data updates the course" do
-      course = course_fixture()
-      assert {:ok, %Course{} = course} = Courses.update_course(course, @update_attrs)
-      assert course.footer == "some updated footer"
-      assert course.name == "some updated name"
-      assert course.start_date == ~D[2011-05-18]
+      course = insert(:course)
+      attrs = %{name: "Industrial Design", footer: "plastic noodles"}
+      assert {:ok, %Course{} = course} = Courses.update_course(course, attrs)
+      assert course.name == "Industrial Design"
+      assert course.footer == "plastic noodles"
     end
 
     test "update_course/2 with invalid data returns error changeset" do
-      course = course_fixture()
-      assert {:error, %Ecto.Changeset{}} = Courses.update_course(course, @invalid_attrs)
+      course = insert(:course)
+      attrs = %{name: ""}
+      assert {:error, %Ecto.Changeset{}} = Courses.update_course(course, attrs)
       assert course == Courses.get_course!(course.id)
     end
 
     test "delete_course/1 deletes the course" do
-      course = course_fixture()
+      course = insert(:course)
       assert {:ok, %Course{}} = Courses.delete_course(course)
       assert_raise Ecto.NoResultsError, fn -> Courses.get_course!(course.id) end
     end
 
     test "change_course/1 returns a course changeset" do
-      course = course_fixture()
+      course = insert(:course)
       assert %Ecto.Changeset{} = Courses.change_course(course)
     end
   end
 
   describe "buckets" do
     alias Inkfish.Courses.Bucket
-
-    @valid_attrs %{name: "some name", weight: "120.5"}
-    @update_attrs %{name: "some updated name", weight: "456.7"}
-    @invalid_attrs %{name: nil, weight: nil}
-
-    def bucket_fixture(attrs \\ %{}) do
-      {:ok, bucket} =
-        attrs
-        |> Enum.into(@valid_attrs)
-        |> Courses.create_bucket()
-
-      bucket
+    
+    defp drop_assocs(%Bucket{} = bucket) do
+      Map.drop(bucket, [:course])
+    end
+    
+    defp drop_assocs(buckets) do
+      Enum.map(buckets, &drop_assocs/1)
     end
 
     test "list_buckets/0 returns all buckets" do
-      bucket = bucket_fixture()
-      assert Courses.list_buckets() == [bucket]
+      bucket = insert(:bucket)
+      assert drop_assocs(Courses.list_buckets()) == drop_assocs([bucket])
     end
 
     test "get_bucket!/1 returns the bucket with given id" do
-      bucket = bucket_fixture()
-      assert Courses.get_bucket!(bucket.id) == bucket
+      bucket = insert(:bucket)
+      assert drop_assocs(Courses.get_bucket!(bucket.id)) == drop_assocs(bucket)
     end
 
     test "create_bucket/1 with valid data creates a bucket" do
-      assert {:ok, %Bucket{} = bucket} = Courses.create_bucket(@valid_attrs)
-      assert bucket.name == "some name"
-      assert bucket.weight == Decimal.new("120.5")
+      params = params_for(:bucket)
+      |> Map.put(:course_id, insert(:course).id)
+      
+      assert {:ok, %Bucket{} = bucket} = Courses.create_bucket(params)
+      assert bucket.name == "Homework"
+      assert bucket.weight == Decimal.new("1.0")
     end
 
     test "create_bucket/1 with invalid data returns error changeset" do
-      assert {:error, %Ecto.Changeset{}} = Courses.create_bucket(@invalid_attrs)
+      attrs = %{weight: "-0.1"}
+      assert {:error, %Ecto.Changeset{}} = Courses.create_bucket(attrs)
     end
 
     test "update_bucket/2 with valid data updates the bucket" do
-      bucket = bucket_fixture()
-      assert {:ok, %Bucket{} = bucket} = Courses.update_bucket(bucket, @update_attrs)
-      assert bucket.name == "some updated name"
-      assert bucket.weight == Decimal.new("456.7")
+      bucket = insert(:bucket)
+      attrs = %{weight: "0.5"}
+      assert {:ok, %Bucket{} = bucket} = Courses.update_bucket(bucket, attrs)
+      assert bucket.weight == Decimal.new("0.5")
     end
 
     test "update_bucket/2 with invalid data returns error changeset" do
-      bucket = bucket_fixture()
-      assert {:error, %Ecto.Changeset{}} = Courses.update_bucket(bucket, @invalid_attrs)
-      assert bucket == Courses.get_bucket!(bucket.id)
+      bucket = insert(:bucket)
+      attrs = %{weight: "-0.1"}
+      assert {:error, %Ecto.Changeset{}} = Courses.update_bucket(bucket, attrs)
+      assert drop_assocs(bucket) == drop_assocs(Courses.get_bucket!(bucket.id))
     end
 
     test "delete_bucket/1 deletes the bucket" do
-      bucket = bucket_fixture()
+      bucket = insert(:bucket)
       assert {:ok, %Bucket{}} = Courses.delete_bucket(bucket)
       assert_raise Ecto.NoResultsError, fn -> Courses.get_bucket!(bucket.id) end
     end
 
     test "change_bucket/1 returns a bucket changeset" do
-      bucket = bucket_fixture()
+      bucket = insert(:bucket)
       assert %Ecto.Changeset{} = Courses.change_bucket(bucket)
     end
   end

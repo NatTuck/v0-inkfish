@@ -21,5 +21,9 @@ defmodule Inkfish.Users.User do
     |> validate_required([:login, :email, :given_name, :surname])
     |> unique_constraint(:login)
     |> unique_constraint(:email)
+    |> validate_length(:login, min: 2)
+    |> validate_format(:email, ~r/@.*\./)
+    |> validate_length(:given_name, min: 1)
+    |> validate_length(:surname, min: 1)
   end
 end
