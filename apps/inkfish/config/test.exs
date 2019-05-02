@@ -6,8 +6,16 @@ use Mix.Config
 
 # Configure your database
 config :inkfish, Inkfish.Repo,
-  username: "postgres",
-  password: "postgres",
+  username: "inkfish",
+  password: "oobeiGait3ie",
   database: "inkfish_test",
   hostname: "localhost",
   pool: Ecto.Adapters.SQL.Sandbox
+
+config :paddle, Paddle,
+  host: "localhost",
+  base: "dc=example,dc=com",
+  account_subdn: "ou=people",
+  ssl: false,
+  port: 3389
+
