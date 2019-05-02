@@ -1,0 +1,40 @@
+dn: ou=people,dc=example,dc=com
+objectClass: top
+objectClass: organizationalUnit
+ou: people
+
+dn: uid=alice,ou=people,dc=test,dc=com
+uid: alice
+cn: alice
+objectClass: account
+objectClass: posixAccount
+objectClass: top
+loginShell: /bin/bash
+uidNumber: 500
+gidNumber: 120
+homeDirectory: /home/alice
+gecos: Alice Anderson,,,,
+mail: alice@example.com
+givenName: Alice
+sn: Anderson
+displayName: Alice Anderson
+userPassword: {SSHA}AIzygLSXlArhAMzddUriXQxf7UlkqopP
+# userpassword: {CLEARTEXT}test
+
+dn: uid=bob,ou=people,dc=test,dc=com
+uid: bob
+cn: bob
+objectClass: account
+objectClass: posixAccount
+objectClass: top
+loginShell: /bin/bash
+uidNumber: 501
+gidNumber: 120
+homeDirectory: /home/bob
+gecos: Bob Baker,,,,
+mail: alice@example.com
+givenName: Bob
+sn: Baker
+displayName: Bob Baker
+userPassword: {SSHA}AIzygLSXlArhAMzddUriXQxf7UlkqopP
+# userpassword: {CLEARTEXT}test

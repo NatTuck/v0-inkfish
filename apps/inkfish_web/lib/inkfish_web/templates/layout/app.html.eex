@@ -20,7 +20,13 @@
             <p>Nav</p>
           </div>
           <div class="col-md-5">
-            <p>Session</p>
+            <%= if @current_user do %>
+              User: <%= @current_user.email %> |
+              <%= link("Logout", to: Routes.session_path(@conn, :delete),
+                       method: :delete) %>
+            <% else %>
+              <p>no session</p>
+            <% end %>
           </div>
           <h1><%= page_title(@conn) %></h1>
         </div>

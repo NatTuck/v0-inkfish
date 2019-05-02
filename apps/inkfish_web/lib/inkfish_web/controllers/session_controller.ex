@@ -3,8 +3,8 @@ defmodule InkfishWeb.SessionController do
   
   alias Inkfish.Users
   
-  def create(conn, %{"email" => email, "password" => pass }) do
-    user = Users.get_and_auth_user(email, pass)
+  def create(conn, %{"login" => login, "password" => pass }) do
+    user = Users.auth_and_get_user(login, pass)
     if user do
       conn
       |> put_session(:user_id, user.id)

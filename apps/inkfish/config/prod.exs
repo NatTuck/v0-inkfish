@@ -8,7 +8,8 @@ import_config "../../config/get_secret.exs"
 
 config :paddle, Paddle,
   host: "ldap.ccs.neu.edu",
-  base: "ou=people,dc=ccs,dc=neu,dc=edu",
+  base: "dc=ccs,dc=neu,dc=edu",
+  account_subdn: "ou=people",
   ssl: true,
   port: 636,
   sslopts: [

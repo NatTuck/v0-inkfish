@@ -14,7 +14,7 @@ config :inkfish, Inkfish.Repo,
 
 config :paddle, Paddle,
   host: "localhost",
-  base: "ou=people,dc=example,dc=com",
+  base: "dc=ferrus,dc=net",
+  account_subdn: "ou=people",
   ssl: false,
   port: 389
-

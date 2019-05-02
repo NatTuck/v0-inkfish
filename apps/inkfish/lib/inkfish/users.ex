@@ -51,14 +51,33 @@ defmodule Inkfish.Users do
 
   Returns the User on success, or nil on failure.
   """
-  def get_and_auth_user(email, pass) do
-    user = Repo.get_by(User, email: email)
-    case Argon2.check_pass(user, pass) do
-      {:ok, user} => user
-      _else       => nil
+  def auth_and_get_user(login, pass) do
+    case Paddle.authenticate(login, pass) do
+      :ok ->
+        {:ok, data} = Paddle.get(filter: [uid: login])
+        {:ok, user} = create_or_update_from_ldap_data(login, hd(data))
+        user
+      {:error, _} ->
+        nil
     end
   end
-
+  
+  def create_or_update_from_ldap_data(login, data) do
+    attrs = %{
+      login: login,
+      email: hd(data["mail"]),
+      given_name: hd(data["givenName"]),
+      surname: hd(data["sn"]),
+    }
+   
+    %User{}
+    |> User.changeset(attrs)
+    |> Repo.insert(
+      conflict_target: :login,
+      on_conflict: {:replace, [:email, :given_name, :surname]}
+    )
+  end
+  
   @doc """
   Creates a user.
 
