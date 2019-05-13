@@ -20,11 +20,15 @@ defmodule InkfishWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :index
+    get "/dashboard", PageController, :dashboard
     resources "/session", SessionController, only: [:create, :delete], singleton: true
     resources "/users", UserController
-    resources "/courses", CourseController
-    resources "/regs", RegController
-    resources "/buckets", BucketController
+    resources "/courses", CourseController do
+      resources "/regs", RegController, only: [:index, :new, :create]
+      resources "/buckets", BucketController, only: [:index, :new, :create]
+    end
+    resources "/regs", RegController, except: [:index, :new, :create]
+    resources "/buckets", BucketController, except: [:index, :new, :create]
   end
 
   # Other scopes may use custom stacks.
@@ -32,3 +36,4 @@ defmodule InkfishWeb.Router do
   #   pipe_through :api
   # end
 end
+

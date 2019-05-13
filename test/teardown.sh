@@ -13,3 +13,6 @@ then
     rm -rf /tmp/test-ldap
 fi
 
+export MIX_ENV=test
+mix ecto.drop
+

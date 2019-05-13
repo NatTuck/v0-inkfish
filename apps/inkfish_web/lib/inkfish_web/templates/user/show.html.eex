@@ -1,6 +1,10 @@
 <h1>Show User</h1>
 
 <ul>
+  <li>
+    <strong>Name:</strong>
+    <%= @user.given_name %> <%= @user.surname %>
+  </li>
 
   <li>
     <strong>Email:</strong>

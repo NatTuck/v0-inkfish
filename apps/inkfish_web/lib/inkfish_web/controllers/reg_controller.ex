@@ -3,18 +3,21 @@ defmodule InkfishWeb.RegController do
 
   alias Inkfish.Users
   alias Inkfish.Users.Reg
+  
+  plug InkfishWeb.Plugs.FetchCourse, only: [:index, :new, :create]
 
-  def index(conn, _params) do
-    regs = Users.list_regs()
-    render(conn, "index.html", regs: regs)
+  def index(conn, %{"course_id" => course_id}) do
+    regs = Users.list_regs_for_course(course_id)
+    render(conn, "index.html", course_id: course_id, regs: regs)
   end
 
-  def new(conn, _params) do
-    changeset = Users.change_reg(%Reg{})
+  def new(conn, %{"course_id" => course_id}) do
+    changeset = Users.change_reg(%Reg{course_id: course_id})
     render(conn, "new.html", changeset: changeset)
   end
 
-  def create(conn, %{"reg" => reg_params}) do
+  def create(conn, %{"course_id" => course_id, "reg" => reg_params}) do
+    reg_params = Map.put(reg_params, "course_id", course_id)
     case Users.create_reg(reg_params) do
       {:ok, reg} ->
         conn
@@ -53,10 +56,11 @@ defmodule InkfishWeb.RegController do
 
   def delete(conn, %{"id" => id}) do
     reg = Users.get_reg!(id)
-    {:ok, _reg} = Users.delete_reg(reg)
+    {:ok, _reg} = Users.delete_reg(reg) 
 
     conn
     |> put_flash(:info, "Reg deleted successfully.")
-    |> redirect(to: Routes.reg_path(conn, :index))
+    |> redirect(to: Routes.course_reg_path(conn, :index, reg.course_id))
   end
 end
+

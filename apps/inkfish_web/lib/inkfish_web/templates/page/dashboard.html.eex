@@ -1,0 +1,25 @@
+<div class="row">
+  <div class="col">
+    <h1>Dashboard</h1>
+    <h2>Your Courses</h2>
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <td>Course</td>
+          <td>Next Due</td>
+        </tr>
+      </thead>
+      <tbody>
+        <%= Enum.map @courses, fn course -> %>
+          <tr>
+            <td>
+              <%= link(course.name, 
+                    to: Routes.course_path(@conn, :show, course.id)) %>
+            </td>
+            <td>Next Due</td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>

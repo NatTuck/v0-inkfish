@@ -7,7 +7,7 @@ defmodule Inkfish.Users.User do
     field :email, :string
     field :given_name, :string
     field :surname, :string
-    field :nickname, :string
+    field :nickname, :string, default: ""
     field :is_admin, :boolean, default: false
     has_many :regs, Inkfish.Users.Reg
 

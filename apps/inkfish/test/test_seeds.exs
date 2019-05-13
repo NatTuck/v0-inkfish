@@ -10,12 +10,12 @@
 # We recommend using the bang functions (`insert!`, `update!`
 # and so on) as they will fail if something goes wrong.
 
+alias Inkfish.Repo
+
 alias Inkfish.Users.User
 alias Inkfish.Users.Reg
 alias Inkfish.Courses.Course
 alias Inkfish.Courses.Bucket
-
-alias Inkfish.Repo
 
 defmodule Make do
   def user(name, admin \\ false) do
@@ -24,7 +24,7 @@ defmodule Make do
       login: name,
       given_name: String.capitalize(name),
       surname: "Anderson", 
-      email: "#{name}@ferrus.net",
+      email: "#{name}@example.com",
       is_admin: admin,
     } 
     
@@ -53,6 +53,10 @@ u2 = Make.user("carol")
 u3 = Make.user("dave")
 
 c0 = Make.course("Data Science of Art History")
+_c1 = Make.course("Machine Learning with Baroque Pottery")
+
 Make.reg(u1, c0, is_prof: true)
 Make.reg(u2, c0, is_staff: true)
 Make.reg(u3, c0, is_student: true)
+
+

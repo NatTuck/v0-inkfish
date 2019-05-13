@@ -36,6 +36,7 @@ defmodule Inkfish.Courses do
 
   """
   def get_course!(id), do: Repo.get!(Course, id)
+  def get_course(id), do: Repo.get(Course, id)
 
   @doc """
   Creates a course.

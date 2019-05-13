@@ -3,18 +3,11 @@ defmodule InkfishWeb.BucketControllerTest do
 
   alias Inkfish.Courses
 
-  @create_attrs %{name: "some name", weight: "120.5"}
-  @update_attrs %{name: "some updated name", weight: "456.7"}
-  @invalid_attrs %{name: nil, weight: nil}
-
-  def fixture(:bucket) do
-    {:ok, bucket} = Courses.create_bucket(@create_attrs)
-    bucket
-  end
-
   describe "index" do
     test "lists all buckets", %{conn: conn} do
-      conn = get(conn, Routes.bucket_path(conn, :index))
+      conn
+      |> login("alice")
+      |> get(conn, Routes.bucket_path(conn, :index))
       assert html_response(conn, 200) =~ "Listing Buckets"
     end
   end

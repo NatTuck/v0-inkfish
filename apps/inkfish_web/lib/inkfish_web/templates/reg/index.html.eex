@@ -29,4 +29,4 @@
   </tbody>
 </table>
 
-<span><%= link "New Reg", to: Routes.reg_path(@conn, :new) %></span>
+<span><%= link "New Reg", to: Routes.course_reg_path(@conn, :new, @course_id) %></span>

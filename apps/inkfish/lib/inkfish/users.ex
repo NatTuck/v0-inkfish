@@ -45,7 +45,12 @@ defmodule Inkfish.Users do
   """
   def get_user(nil), do: nil
   def get_user(id), do: Repo.get(User, id)
- 
+
+  
+  def get_user_by_login!(login) do
+    Repo.get_by!(User, login: login)
+  end
+  
   @doc """
   Authenticate a user by email and password.
 
@@ -156,6 +161,18 @@ defmodule Inkfish.Users do
   """
   def list_regs do
     Repo.all(Reg)
+  end
+  
+  alias Inkfish.Courses.Course
+  
+  def list_regs_for_course(%Course{} = course) do
+    list_regs_for_course(course.id)
+  end
+  
+  def list_regs_for_course(course_id) do
+    Repo.all from reg in Reg, 
+      where: reg.course_id == ^course_id,
+      preload: [:user]
   end
 
   @doc """

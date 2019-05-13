@@ -9,7 +9,7 @@ defmodule InkfishWeb.SessionController do
       conn
       |> put_session(:user_id, user.id)
       |> put_flash(:info, "Logged in as #{user.email}")
-      |> redirect(to: Routes.page_path(conn, :index))
+      |> redirect(to: Routes.page_path(conn, :dashboard))
     else
       conn
       |> put_flash(:error, "Login failed.")

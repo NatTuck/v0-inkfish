@@ -19,6 +19,7 @@ defmodule InkfishWeb.ConnCase do
     quote do
       # Import conveniences for testing with connections
       use Phoenix.ConnTest
+      import InkfishWeb.ConnCase
       alias InkfishWeb.Router.Helpers, as: Routes
 
       # The default endpoint for testing
@@ -34,5 +35,16 @@ defmodule InkfishWeb.ConnCase do
     end
 
     {:ok, conn: Phoenix.ConnTest.build_conn()}
+  end
+  
+  import Plug.Conn
+  import Plug.Test
+ 
+  def login(conn, login) do
+    user = Inkfish.Users.get_user_by_login!(login)
+    conn
+    |> init_test_session(%{user_id: user.id})
+    #|> assign(:current_user, user)
+    #|> assign(:current_user_id, user.id)
   end
 end
