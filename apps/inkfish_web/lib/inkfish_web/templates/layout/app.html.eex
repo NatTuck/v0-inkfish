@@ -18,8 +18,7 @@
           </div>
           <div class="col-md-5">
             <%= if @current_user && @current_user.is_admin do %>
-              admin/courses |
-              admin/users
+              <%= render InkfishWeb.LayoutView, "admin_nav.html", assigns %>
             <% else %>
               nav
             <% end %>
@@ -33,7 +32,11 @@
               <p>no session</p>
             <% end %>
           </div>
-          <h1><%= page_title(@conn) %></h1>
+        </div>
+        <div class="row">
+          <div class="col">
+            <%= breadcrumb(@conn) %>
+          </div>
         </div>
       </header>
 

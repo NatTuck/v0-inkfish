@@ -1,6 +1,6 @@
 defmodule InkfishWeb.LayoutView do
   use InkfishWeb, :view
-
+  
   def page_title(conn) do
     if conn.assigns[:page_title] do
       conn.assigns[:page_title]
@@ -18,6 +18,13 @@ defmodule InkfishWeb.LayoutView do
       crumb = link(text, to: path)
       ~s[<li class="breadcrumb-item">#{crumb}</li>]
     end
-    ~s[<ul class="breadcrumb">#{items}</ul>]
+   
+    {label, _} = last
+    raw(~s[
+        <ul class="breadcrumb">
+          #{items}
+          <li class="breadcrumb-item active">#{label}</li>
+        </ul>
+        ])
   end
 end

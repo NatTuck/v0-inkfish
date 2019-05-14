@@ -30,6 +30,14 @@ defmodule InkfishWeb.Router do
     resources "/regs", RegController, except: [:index, :new, :create]
     resources "/buckets", BucketController, except: [:index, :new, :create]
   end
+  
+  scope "/admin", InkfishWeb.Admin, as: :admin do
+    pipe_through :browser
+    
+    resources "/users", UserController
+    resources "/courses", CourseController
+  end
+
 
   # Other scopes may use custom stacks.
   # scope "/api", InkfishWeb do
