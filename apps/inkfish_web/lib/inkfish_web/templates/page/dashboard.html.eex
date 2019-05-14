@@ -2,6 +2,11 @@
   <div class="col">
     <h1>Dashboard</h1>
     <h2>Your Courses</h2>
+    <div class="clearfix">
+      <div class="float-right">
+        <%= link "Join Course", to: Routes.course_path(@conn, :index) %>
+      </div>
+    </div>
     <table class="table table-striped">
       <thead>
         <tr>
