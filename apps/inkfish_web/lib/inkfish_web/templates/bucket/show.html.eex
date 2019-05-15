@@ -15,4 +15,4 @@
 </ul>
 
 <span><%= link "Edit", to: Routes.bucket_path(@conn, :edit, @bucket) %></span>
-<span><%= link "Back", to: Routes.bucket_path(@conn, :index) %></span>
+<span><%= link "Back", to: Routes.course_bucket_path(@conn, :index, @bucket.course_id) %></span>

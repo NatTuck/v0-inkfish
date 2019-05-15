@@ -190,6 +190,7 @@ defmodule Inkfish.Users do
 
   """
   def get_reg!(id), do: Repo.get!(Reg, id)
+  def get_reg(id), do: Repo.get(Reg, id)
 
   @doc """
   Creates a reg.

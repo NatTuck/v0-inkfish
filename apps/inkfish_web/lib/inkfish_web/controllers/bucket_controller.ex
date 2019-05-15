@@ -57,6 +57,6 @@ defmodule InkfishWeb.BucketController do
 
     conn
     |> put_flash(:info, "Bucket deleted successfully.")
-    |> redirect(to: Routes.bucket_path(conn, :index))
+    |> redirect(to: Routes.course_bucket_path(conn, :index, bucket.course_id))
   end
 end

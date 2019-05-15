@@ -1,0 +1,82 @@
+
+* Inkfish Data Design
+** Resources
+*** Users
+  * Users (HTML)
+   - email; registration w/ pattern email
+   - given-name
+   - surname
+   - nickname
+   - auth-key (backup auth; alt accounts)
+   - is-admin?   # site admin
+   - photo : file
+  * Regs
+   - belongs_to user
+   - belongs_to course
+   - join users / courses
+   - is-listed?
+   - is-staff?
+   - is-grader? (assigned grading tasks)
+   - is-prof? (can do arbitrary admin)
+*** Courses
+ * Courses
+  - name
+  - start_date (month / year only; implies term)
+  - footer : markdown
+ * Buckets
+  - belongs_to course
+  - name
+  - weight
+*** Assignments?
+ * Assignments
+  - belongs_to bucket
+  - name
+  - weight
+  - score : double (0 - 1)
+  - starter : file
+  - solution : file
+ * Submissions
+  - belongs_to assignment
+  - has_one file
+*** Grades
+ * Graders
+  - belongs_to assignment
+  - full_score : double (default 100)
+  - kind (Simple, Manual, Script)
+  - has_one file
+ * Grades
+  - belongs_to submission
+  - belongs_to grader
+  - score
+*** Support
+ * Files
+  - belongs_to (user | assignment | submission | grader)
+  - "check" constraint on "user-id not null or grader-id not null or ..."
+   - 1 = cast(column is not null as int) + ...
+  - secret-uuid
+  - file-name
+   
+** Nesting
+*** Users
+**** Regs
+***** Subs
+****** Graders, Grades
+*** Courses
+**** Buckets
+***** Assignments
+****** Subs
+******* Graders
+******** Grades
+ 
+* LDAP Schema
+
+ldapsearch -x -h ldap.ccs.neu.edu -b "ou=people,dc=ccs,dc=neu,dc=edu" mail=ntuck@ccs.neu.edu
+
+dn: uid=ntuck,ou=people,dc=ccs,dc=neu,dc=edu
+displayName: Nat Tuck
+cn: ntuck
+sn: Tuck
+mail: ntuck@ccs.neu.edu
+givenName: Nat
+uid: ntuck
+

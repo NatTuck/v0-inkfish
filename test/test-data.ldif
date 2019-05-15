@@ -22,8 +22,8 @@ homeDirectory: /home/alice
 gecos: Alice Anderson,,,,
 mail: alice@example.com
 givenName: Alice
-sn: Alice Anderson
-displayName:  Anderson
+sn: Anderson
+displayName: Alice Anderson
 userPassword: {SSHA}AIzygLSXlArhAMzddUriXQxf7UlkqopP
 # userpassword: {CLEARTEXT}test
 
@@ -40,8 +40,8 @@ homeDirectory: /home/bob
 gecos: Bob Anderson,,,,
 mail: bob@example.com
 givenName: Bob
-sn: Bob Anderson
-displayName:  Anderson
+sn: Anderson
+displayName: Bob Anderson
 userPassword: {SSHA}AIzygLSXlArhAMzddUriXQxf7UlkqopP
 # userpassword: {CLEARTEXT}test
 
@@ -58,8 +58,8 @@ homeDirectory: /home/carol
 gecos: Carol Anderson,,,,
 mail: carol@example.com
 givenName: Carol
-sn: Carol Anderson
-displayName:  Anderson
+sn: Anderson
+displayName: Carol Anderson
 userPassword: {SSHA}AIzygLSXlArhAMzddUriXQxf7UlkqopP
 # userpassword: {CLEARTEXT}test
 
@@ -76,8 +76,8 @@ homeDirectory: /home/dave
 gecos: Dave Anderson,,,,
 mail: dave@example.com
 givenName: Dave
-sn: Dave Anderson
-displayName:  Anderson
+sn: Anderson
+displayName: Dave Anderson
 userPassword: {SSHA}AIzygLSXlArhAMzddUriXQxf7UlkqopP
 # userpassword: {CLEARTEXT}test
 
@@ -94,8 +94,8 @@ homeDirectory: /home/erin
 gecos: Erin Anderson,,,,
 mail: erin@example.com
 givenName: Erin
-sn: Erin Anderson
-displayName:  Anderson
+sn: Anderson
+displayName: Erin Anderson
 userPassword: {SSHA}AIzygLSXlArhAMzddUriXQxf7UlkqopP
 # userpassword: {CLEARTEXT}test
 
@@ -112,8 +112,8 @@ homeDirectory: /home/frank
 gecos: Frank Anderson,,,,
 mail: frank@example.com
 givenName: Frank
-sn: Frank Anderson
-displayName:  Anderson
+sn: Anderson
+displayName: Frank Anderson
 userPassword: {SSHA}AIzygLSXlArhAMzddUriXQxf7UlkqopP
 # userpassword: {CLEARTEXT}test
 
@@ -130,8 +130,8 @@ homeDirectory: /home/gail
 gecos: Gail Anderson,,,,
 mail: gail@example.com
 givenName: Gail
-sn: Gail Anderson
-displayName:  Anderson
+sn: Anderson
+displayName: Gail Anderson
 userPassword: {SSHA}AIzygLSXlArhAMzddUriXQxf7UlkqopP
 # userpassword: {CLEARTEXT}test
 
@@ -148,8 +148,8 @@ homeDirectory: /home/hank
 gecos: Hank Anderson,,,,
 mail: hank@example.com
 givenName: Hank
-sn: Hank Anderson
-displayName:  Anderson
+sn: Anderson
+displayName: Hank Anderson
 userPassword: {SSHA}AIzygLSXlArhAMzddUriXQxf7UlkqopP
 # userpassword: {CLEARTEXT}test
 

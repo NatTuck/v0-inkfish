@@ -25,4 +25,4 @@
   </tbody>
 </table>
 
-<span><%= link "New Bucket", to: Routes.bucket_path(@conn, :new) %></span>
+<span><%= link "New Bucket", to: Routes.course_bucket_path(@conn, :new, @course_id) %></span>

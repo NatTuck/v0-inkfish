@@ -40,6 +40,7 @@ defmodule InkfishWeb do
 
       import InkfishWeb.ErrorHelpers
       import InkfishWeb.Gettext
+      import InkfishWeb.ViewHelpers
       alias InkfishWeb.Router.Helpers, as: Routes
     end
   end
