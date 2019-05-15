@@ -1,0 +1,15 @@
+* Log In Screen
+* Resources
+** Courses
+* Roles
+** Student View
+*** Dashboard: List Courses; Join Button
+*** Course / Show
+**** Assignments by Bucket; view link
+**** Grades
+*** Assignment / Show
+**** Description
+**** List of Submissions
+**** Create Submission
+** Staff / Professor View
+** Site Admin View

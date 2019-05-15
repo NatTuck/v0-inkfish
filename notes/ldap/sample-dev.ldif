@@ -1,0 +1,63 @@
+# Better to use the test data in the {inkfish}/test directory
+
+dn: ou=people,dc=ferrus,dc=net
+objectClass: top
+objectClass: organizationalUnit
+ou: people
+
+dn: uid=nat,ou=people,dc=ferrus,dc=net
+uid: nat
+cn: nat
+objectClass: inetOrgPerson
+objectClass: organizationalPerson
+objectClass: posixAccount
+objectClass: top
+loginShell: /bin/bash
+uidNumber: 501
+gidNumber: 120
+homeDirectory: /home/nat
+gecos: Nat Tuck,,,,
+mail: nat@ferrus.net
+givenName: Nat
+sn: Tuck
+displayName: Nat Tuck
+userPassword: {SSHA}AIzygLSXlArhAMzddUriXQxf7UlkqopP
+# userpassword: {CLEARTEXT}test
+
+dn: uid=alice,ou=people,dc=ferrus,dc=net
+uid: alice
+cn: alice
+objectClass: inetOrgPerson
+objectClass: organizationalPerson
+objectClass: posixAccount
+objectClass: top
+loginShell: /bin/bash
+uidNumber: 502
+gidNumber: 120
+homeDirectory: /home/alice
+gecos: Alice Anderson,,,,
+mail: alice@ferrus.net
+givenName: Alice
+sn: Anderson
+displayName: Alice Anderson
+userPassword: {SSHA}AIzygLSXlArhAMzddUriXQxf7UlkqopP
+# userpassword: {CLEARTEXT}test
+
+dn: uid=bob,ou=people,dc=ferrus,dc=net
+uid: bob
+cn: bob
+objectClass: inetOrgPerson
+objectClass: organizationalPerson
+objectClass: posixAccount
+objectClass: top
+loginShell: /bin/bash
+uidNumber: 503
+gidNumber: 120
+homeDirectory: /home/bob
+gecos: Bob Baker,,,,
+mail: bob@ferrus.net
+givenName: Bob
+sn: Baker
+displayName: Bob Baker
+userPassword: {SSHA}AIzygLSXlArhAMzddUriXQxf7UlkqopP
+# userpassword: {CLEARTEXT}test
