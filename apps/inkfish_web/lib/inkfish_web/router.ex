@@ -10,6 +10,11 @@ defmodule InkfishWeb.Router do
     plug :fetch_flash
     plug :protect_from_forgery
     plug :put_secure_browser_headers
+    plug Plugs.Breadcrumb, {"Home", :page, :index}
+  end
+  
+  pipeline :admin do
+    plug Plugs.RequireUser, admin: true
   end
 
   pipeline :api do
@@ -32,7 +37,7 @@ defmodule InkfishWeb.Router do
   end
   
   scope "/admin", InkfishWeb.Admin, as: :admin do
-    pipe_through :browser
+    pipe_through [:browser, :admin]
     
     resources "/users", UserController
     resources "/courses", CourseController

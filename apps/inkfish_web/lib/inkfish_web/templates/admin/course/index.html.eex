@@ -1,30 +1,37 @@
-<h1>Listing Courses</h1>
+<h1>Admin: Listing Courses</h1>
 
-<table>
+<p><span><%= link "New Course", to: Routes.admin_course_path(@conn, :new) %></span></p>
+
+<table class="table table-striped">
   <thead>
     <tr>
       <th>Name</th>
+      <th>Views</th>
       <th>Start date</th>
-      <th>Footer</th>
+      <th>First Prof</th>
 
       <th></th>
     </tr>
   </thead>
   <tbody>
-<%= for course <- @courses do %>
+  <%= for course <- @courses do %>
+    <% prof = @profs[course.id] %>
     <tr>
-      <td><%= course.name %></td>
+      <td><%= link course.name, to: Routes.admin_course_path(@conn, :show, course) %></td>
+      <td>
+        <%= link "Student", to: Routes.course_path(@conn, :show, course) %>
+      </td>
       <td><%= course.start_date %></td>
-      <td><%= course.footer %></td>
+      <td><%= link(user_display_name(prof), to: Routes.admin_user_path(@conn, :show, prof.id)) %></td>
 
       <td>
-        <%= link "Show", to: Routes.admin_course_path(@conn, :show, course) %>
         <%= link "Edit", to: Routes.admin_course_path(@conn, :edit, course) %>
         <%= link "Delete", to: Routes.admin_course_path(@conn, :delete, course), method: :delete, data: [confirm: "Are you sure?"] %>
       </td>
     </tr>
-<% end %>
+  <% end %>
   </tbody>
 </table>
 
-<span><%= link "New Course", to: Routes.admin_course_path(@conn, :new) %></span>
+<p><span><%= link "New Course", to: Routes.admin_course_path(@conn, :new) %></span></p>
+

@@ -3,10 +3,15 @@ defmodule InkfishWeb.Admin.CourseController do
 
   alias Inkfish.Courses
   alias Inkfish.Courses.Course
+  
+  plug InkfishWeb.Plugs.Breadcrumb, {"Admin Courses", :admin_course, :index}
 
   def index(conn, _params) do
     courses = Courses.list_courses()
-    render(conn, "index.html", courses: courses)
+    profs = Enum.map courses, fn course ->
+      {course.id, Courses.get_one_course_prof(course)}
+    end
+    render(conn, "index.html", courses: courses, profs: Enum.into(profs, %{}))
   end
 
   def new(conn, _params) do

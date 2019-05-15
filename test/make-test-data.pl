@@ -22,8 +22,8 @@ sub user {
     gecos: $first Anderson,,,,
     mail: $name\@example.com
     givenName: $first
-    sn: $first Anderson
-    displayName:  Anderson
+    sn: Anderson
+    displayName: $first Anderson
     userPassword: {SSHA}AIzygLSXlArhAMzddUriXQxf7UlkqopP
     # userpassword: {CLEARTEXT}test
 USER

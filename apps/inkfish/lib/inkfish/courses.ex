@@ -7,6 +7,9 @@ defmodule Inkfish.Courses do
   alias Inkfish.Repo
 
   alias Inkfish.Courses.Course
+  alias Inkfish.Courses.Bucket
+  alias Inkfish.Users.User
+  alias Inkfish.Users.Reg
 
   @doc """
   Returns the list of courses.
@@ -103,7 +106,14 @@ defmodule Inkfish.Courses do
     Course.changeset(course, %{})
   end
 
-  alias Inkfish.Courses.Bucket
+
+  
+  def get_one_course_prof(%Course{} = course) do
+    Repo.one from uu in User,
+      join: rr in Reg, on: rr.user_id == uu.id,
+      where: rr.course_id == ^course.id and rr.is_prof,
+      limit: 1
+  end
 
   @doc """
   Returns the list of buckets.
@@ -133,6 +143,7 @@ defmodule Inkfish.Courses do
 
   """
   def get_bucket!(id), do: Repo.get!(Bucket, id)
+  def get_bucket(id), do: Repo.get(Bucket, id)
 
   @doc """
   Creates a bucket.

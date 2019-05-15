@@ -1,10 +1,12 @@
- defmodule InkfishWeb.Plugs.Breadcrumb do
+defmodule InkfishWeb.Plugs.Breadcrumb do
   use InkfishWeb, :controller
+  import Phoenix.HTML
 
   def init(args), do: args
   
-  def call(conn, [{:base, base}]) do
+  def call(conn, item) do
+    crumbs = conn.assigns[:breadcrumb] || []
     conn
-    |> assign(:breadcrumb, base)
+    |> assign(:breadcrumb, [item | crumbs])
   end
 end

@@ -4,6 +4,8 @@ defmodule InkfishWeb.Admin.UserController do
   alias Inkfish.Users
   alias Inkfish.Users.User
 
+  plug InkfishWeb.Plugs.Breadcrumb, {"Admin Users", :admin_user, :index}
+    
   def index(conn, _params) do
     users = Users.list_users()
     render(conn, "index.html", users: users)

@@ -13,14 +13,14 @@
       <header>
         <div class="row">
           <div class="col-md-2">
-            <%= link(img_tag(Routes.static_path(@conn, "/images/inkfish.png")),
-                     to: Routes.page_path(@conn, :index)) %>
+            <%= link(img_tag(Routes.static_path(@conn, "/images/inkfish.png"),
+                  class: "header-logo"), to: Routes.page_path(@conn, :index)) %>
           </div>
           <div class="col-md-5">
             <%= if @current_user && @current_user.is_admin do %>
               <%= render InkfishWeb.LayoutView, "admin_nav.html", assigns %>
             <% else %>
-              nav
+              Not an admin.
             <% end %>
           </div>
           <div class="col-md-5">
