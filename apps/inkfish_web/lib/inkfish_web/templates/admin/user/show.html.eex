@@ -1,5 +1,7 @@
 <h1>Show User</h1>
 
+<span><%= link "Edit User", to: Routes.admin_user_path(@conn, :edit, @user) %></span>
+
 <ul>
 
   <li>
@@ -34,5 +36,3 @@
 
 </ul>
 
-<span><%= link "Edit", to: Routes.admin_user_path(@conn, :edit, @user) %></span>
-<span><%= link "Back", to: Routes.admin_user_path(@conn, :index) %></span>

@@ -7,6 +7,10 @@
     <link rel="stylesheet" href="<%= Routes.static_path(@conn, "/css/app.css") %>"/>
     <link rel="icon" type="image/png"
           href="<%= Routes.static_path(@conn,"/images/inkfish.png") %>"/>
+    <script>
+     window.user_token = "<%= @current_user_token %>";
+     window.current_page = "<%= current_page(@conn) %>";
+    </script>
   </head>
   <body>
     <div class="container">

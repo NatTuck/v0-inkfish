@@ -5,11 +5,26 @@ defmodule InkfishWeb.LayoutView do
     if conn.assigns[:page_title] do
       conn.assigns[:page_title]
     else
-      mod = to_string(conn.private.phoenix_controller)
-      [_, sec] = Regex.run(~r[\.(\w+)Controller$], mod)
-      act = to_string(conn.private.phoenix_action)
-      "#{String.capitalize(sec)} #{String.capitalize(act)}"
+      sec = String.capitalize(current_controller(conn))
+      act = String.capitalize(current_action(conn))
+      "#{sec} #{act}"
     end
+  end
+  
+  def current_controller(conn) do
+    mod = to_string(conn.private.phoenix_controller)
+    [_, sec] = Regex.run(~r{InkfishWeb\.([\w\.]+)Controller$}, mod)
+    sec
+  end
+  
+  def current_action(conn) do
+    to_string(conn.private.phoenix_action)
+  end
+  
+  def current_page(conn) do
+    sec = String.downcase(current_controller(conn))
+    act = String.downcase(current_action(conn))
+    "#{sec}/#{act}"
   end
 
   ## Breadcrumbs

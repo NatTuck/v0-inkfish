@@ -24,7 +24,7 @@ defmodule Make do
       login: name,
       given_name: String.capitalize(name),
       surname: "Anderson", 
-      email: "#{name}@ferrus.net",
+      email: "#{name}@example.com",
       is_admin: admin,
     } 
     

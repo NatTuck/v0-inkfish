@@ -148,6 +148,14 @@ defmodule Inkfish.Users do
     User.changeset(user, %{})
   end
 
+  def search_users(query) do
+    query = query
+    |> String.replace(~r{[%_\\]}, "\\1")
+    qq = "%#{query}%"
+    Repo.all from uu in User,
+      where: ilike(uu.login, ^qq) or ilike(uu.given_name, ^qq) or ilike(uu.surname, ^qq)
+  end
+
   alias Inkfish.Users.Reg
 
   @doc """

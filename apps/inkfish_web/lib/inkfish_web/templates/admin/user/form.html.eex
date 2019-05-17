@@ -5,31 +5,43 @@
     </div>
   <% end %>
 
-  <%= label f, :login %>
-  <%= text_input f, :login %>
-  <%= error_tag f, :login %>
+  <div class="form-group">
+    <%= label f, :login %>
+    <%= text_input f, :login, class: "form-control" %>
+    <%= error_tag f, :login %>
+  </div>
 
-  <%= label f, :email %>
-  <%= text_input f, :email %>
-  <%= error_tag f, :email %>
+  <div class="form-group">
+    <%= label f, :email %>
+    <%= text_input f, :email, class: "form-control" %>
+    <%= error_tag f, :email %>
+  </div>
 
-  <%= label f, :given_name %>
-  <%= text_input f, :given_name %>
-  <%= error_tag f, :given_name %>
+  <div class="form-group">
+    <%= label f, :given_name %>
+    <%= text_input f, :given_name, class: "form-control" %>
+    <%= error_tag f, :given_name %>
+  </div>
 
-  <%= label f, :surname %>
-  <%= text_input f, :surname %>
-  <%= error_tag f, :surname %>
+  <div class="form-group">
+    <%= label f, :surname %>
+    <%= text_input f, :surname, class: "form-control" %>
+    <%= error_tag f, :surname %>
+  </div>
 
-  <%= label f, :nickname %>
-  <%= text_input f, :nickname %>
-  <%= error_tag f, :nickname %>
+  <div class="form-group">
+    <%= label f, :nickname %>
+    <%= text_input f, :nickname, class: "form-control" %>
+    <%= error_tag f, :nickname %>
+  </div>
 
-  <%= label f, :is_admin %>
-  <%= checkbox f, :is_admin %>
-  <%= error_tag f, :is_admin %>
-
+  <div class="form-group">
+    <%= label f, :is_admin %>
+    <%= checkbox f, :is_admin, class: "form-control" %>
+    <%= error_tag f, :is_admin %>
+  </div>
+  
   <div>
-    <%= submit "Save" %>
+    <%= submit "Save", class: "btn btn-primary" %>
   </div>
 <% end %>

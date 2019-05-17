@@ -21,6 +21,19 @@
     <%= label f, :footer %>
     <%= textarea f, :footer, class: "form-control" %>
     <%= error_tag f, :footer %>
+    <div class="text-muted">
+      Accepts markdown.
+    </div>
+  </div>
+  
+  <div class="form-group">
+    <%= label f, :instructor %>
+    <%= text_input(f, :instructor, class: "form-control autosearch",
+                   data: [topic: "users"]) %>
+    <%= error_tag f, :instructor %>
+    <div class="text-muted">
+      Username; start typing to search
+    </div>
   </div>
 
   <div>
