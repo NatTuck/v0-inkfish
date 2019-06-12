@@ -21,7 +21,7 @@ defmodule InkfishWeb.Plugs.FetchUser do
     Phoenix.Token.sign(conn, "user_id", user.id)
   end
   
-  def make_token(conn, nil) do
+  def make_token(_conn, nil) do
     ""
   end
 end

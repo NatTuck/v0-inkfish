@@ -7,9 +7,9 @@ defmodule Inkfish.CoursesTest do
   describe "courses" do
     alias Inkfish.Courses.Course
 
-    test "list_courses/0 returns all courses" do
-      course = insert(:course)
-      assert Courses.list_courses() == [course]
+    test "list_courses/0 returns courses" do
+      _course = insert(:course)
+      assert [%Course{} | _] = Courses.list_courses()
     end
 
     test "get_course!/1 returns the course with given id" do

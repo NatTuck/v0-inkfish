@@ -7,9 +7,11 @@ defmodule Inkfish.UsersTest do
   describe "users" do
     alias Inkfish.Users.User
 
-    test "list_users/0 returns all users" do
+    test "list_users/0 returns users" do
       user = insert(:user)
-      assert Users.list_users() == [user]
+      users = Users.list_users()
+      assert [%User{} |_] = users
+      assert Enum.member?(Enum.map(users, &(&1.id)), user.id)
     end
 
     test "get_user!/1 returns the user with given id" do
@@ -68,9 +70,10 @@ defmodule Inkfish.UsersTest do
       Enum.map(regs, &drop_assocs/1)
     end
 
-    test "list_regs/0 returns all regs" do
+    test "list_regs/0 returns newly inserted reg" do
       reg = insert(:reg)
-      assert drop_assocs(Users.list_regs) == drop_assocs([reg])
+      regs = Users.list_regs
+      assert Enum.member?(Enum.map(regs, &(&1.id)), reg.id)
     end
 
     test "get_reg!/1 returns the reg with given id" do
