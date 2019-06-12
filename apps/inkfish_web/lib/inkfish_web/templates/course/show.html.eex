@@ -1,11 +1,6 @@
 
 <h1>Show Course</h1>
 
-<p>
-  <span><%= link "Edit", to: Routes.course_path(@conn, :edit, @course) %></span> |
-  <span><%= link "Back", to: Routes.course_path(@conn, :index) %></span>
-</p>
-
 <ul>
   <li>
     <strong>Name:</strong>
