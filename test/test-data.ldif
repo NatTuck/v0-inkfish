@@ -1,8 +1,8 @@
-#dn: dc=example,dc=com
-#objectClass: dcObject
-#objectClass: organization
-#dc: Example
-#o: Example
+dn: dc=example,dc=com
+objectClass: dcObject
+objectClass: organization
+dc: Example
+o: Example
 
 dn: ou=people,dc=example,dc=com
 objectClass: top

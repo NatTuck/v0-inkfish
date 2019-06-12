@@ -1,7 +1,7 @@
 # Setup for LDAP in development
 
 To install a local server. Take most of the defaults and
-set an admin password. Domain assumed is "ferrus.net"
+set an admin password. Domain assumed is "example.com"
 
 ```
 # apt install slapd ldap-utils
