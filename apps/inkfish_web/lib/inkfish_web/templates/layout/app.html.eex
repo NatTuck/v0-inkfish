@@ -52,6 +52,10 @@
       <% end %>
       <main>
         <%= render @view_module, @view_template, assigns %>
+
+        <%= if assigns[:course] do %>
+          <%= render InkfishWeb.LayoutView, "course_footer.html", assigns %>
+        <% end %>
       </main>
     </div>
     <script type="text/javascript"
