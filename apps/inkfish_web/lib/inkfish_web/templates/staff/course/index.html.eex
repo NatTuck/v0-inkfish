@@ -1,0 +1,20 @@
+<h1>Listing Courses</h1>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Start date</th>
+
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+<%= for course <- @courses do %>
+    <tr>
+      <td><%= link course.name, to: Routes.staff_course_path(@conn, :show, course) %></td>
+      <td><%= course.start_date %></td>
+    </tr>
+<% end %>
+  </tbody>
+</table>

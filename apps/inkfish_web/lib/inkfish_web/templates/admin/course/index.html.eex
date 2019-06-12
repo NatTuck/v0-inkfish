@@ -19,7 +19,8 @@
     <tr>
       <td><%= link course.name, to: Routes.admin_course_path(@conn, :show, course) %></td>
       <td>
-        <%= link "Student", to: Routes.course_path(@conn, :show, course) %>
+        <%= link "Student", to: Routes.course_path(@conn, :show, course) %> |
+        <%= link "Staff", to: Routes.staff_course_path(@conn, :show, course) %>
       </td>
       <td><%= course.start_date %></td>
       <td><%= link(user_display_name(prof), to: Routes.admin_user_path(@conn, :show, prof.id)) %></td>
