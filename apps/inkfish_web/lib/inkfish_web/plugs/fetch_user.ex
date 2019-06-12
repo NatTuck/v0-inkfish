@@ -6,7 +6,7 @@ defmodule InkfishWeb.Plugs.FetchUser do
   
   def init(args), do: args
   
-  def call(conn, args) do
+  def call(conn, _args) do
     user_id = get_session(conn, :user_id)
     user = Users.get_user(user_id)
     token = make_token(conn, user)

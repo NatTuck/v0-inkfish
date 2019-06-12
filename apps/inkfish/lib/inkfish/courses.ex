@@ -8,6 +8,7 @@ defmodule Inkfish.Courses do
 
   alias Inkfish.Courses.Course
   alias Inkfish.Courses.Bucket
+  alias Inkfish.Users
   alias Inkfish.Users.User
   alias Inkfish.Users.Reg
 
@@ -54,9 +55,28 @@ defmodule Inkfish.Courses do
 
   """
   def create_course(attrs \\ %{}) do
-    %Course{}
-    |> Course.changeset(attrs)
-    |> Repo.insert()
+    course = Course.changeset(%Course{}, attrs)
+    instructor = Course.instructor_login(course)
+
+    {:ok, %{course: course}} = Ecto.Multi.new()
+    |> Ecto.Multi.insert(:course, course)
+    |> course_add_instructor(instructor)
+    |> Repo.transaction()
+
+    {:ok, course}
+  end
+
+  def course_add_instructor(tx, nil), do: tx
+
+  def course_add_instructor(tx, instructor) do
+    user = Users.get_user_by_login!(instructor)
+
+    op = fn %{course: course} ->
+      Reg.changeset(%Reg{}, %{user_id: user.id, course_id: course.id, is_prof: true})
+    end
+
+    Ecto.Multi.insert(tx, :reg, op, on_conflict: :replace_all,
+      conflict_target: [:user_id, :course_id])
   end
 
   @doc """
@@ -72,9 +92,15 @@ defmodule Inkfish.Courses do
 
   """
   def update_course(%Course{} = course, attrs) do
-    course
-    |> Course.changeset(attrs)
-    |> Repo.update()
+    course = Course.changeset(course, attrs)
+    instructor = Course.instructor_login(course)
+
+    {:ok, %{course: course}} = Ecto.Multi.new()
+    |> Ecto.Multi.update(:course, course)
+    |> course_add_instructor(instructor)
+    |> Repo.transaction()
+
+    {:ok, course}
   end
 
   @doc """
@@ -105,7 +131,6 @@ defmodule Inkfish.Courses do
   def change_course(%Course{} = course) do
     Course.changeset(course, %{})
   end
-
 
   
   def get_one_course_prof(%Course{} = course) do

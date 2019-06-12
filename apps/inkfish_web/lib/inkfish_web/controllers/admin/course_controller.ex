@@ -11,6 +11,7 @@ defmodule InkfishWeb.Admin.CourseController do
     profs = Enum.map courses, fn course ->
       {course.id, Courses.get_one_course_prof(course)}
     end
+    IO.inspect(profs)
     render(conn, "index.html", courses: courses, profs: Enum.into(profs, %{}))
   end
 
