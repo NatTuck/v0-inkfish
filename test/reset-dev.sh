@@ -5,4 +5,3 @@ ldapdelete -x -r -D cn=admin,dc=example,dc=com -w iukeefei8oFu \
 
 ldapadd -x -D cn=admin,dc=example,dc=com -w iukeefei8oFu -f test/test-data.ldif
 
-

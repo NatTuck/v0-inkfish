@@ -17,4 +17,4 @@ config :paddle, Paddle,
   base: "dc=example,dc=com",
   account_subdn: "ou=people",
   ssl: false,
-  port: 389
+  port: 3389

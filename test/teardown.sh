@@ -1,6 +1,6 @@
 #!/bin/bash
 
-PIDF=/test-ldap/slapd.pid
+PIDF=/tmp/inkfish/test-ldap/slapd.pid
 
 if [[ -e $PIDF ]]
 then
@@ -8,9 +8,9 @@ then
     sleep 2
 fi
 
-if [[ -d /tmp/test-ldap ]]
+if [[ -d /tmp/inkfish/test-ldap ]]
 then
-    rm -rf /tmp/test-ldap
+    rm -rf /tmp/inkfish/test-ldap
 fi
 
 export MIX_ENV=test
