@@ -1,0 +1,5 @@
+<h1>Edit Reg</h1>
+
+<%= render "form.html", Map.put(assigns, :action, Routes.staff_reg_path(@conn, :update, @reg)) %>
+
+<span><%= link "Back", to: Routes.staff_reg_path(@conn, :index) %></span>

@@ -11,12 +11,20 @@ import css from "../css/app.scss";
 //
 import "phoenix_html";
 import jQuery from 'jquery';
-window.jQuery = window.$ = jQuery;
+window.$ = jQuery;
+window.jQuery = jQuery;
 import "bootstrap";
-import _ from "lodash";
+import "bootstrap4-toggle";
+
 
 // Import local files
 //
 // Local files can be imported directly using relative paths, for example:
 import socket from "./socket";
 import "./search";
+import "./uploads";
+
+$(() => {
+  $('.toggle').bootstrapToggle();
+});
+

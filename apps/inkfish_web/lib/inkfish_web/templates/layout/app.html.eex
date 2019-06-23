@@ -3,13 +3,15 @@
   <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title><%= page_title(@conn) %> · Inkfish  Phoenix Framework</title>
+    <title><%= page_title(@conn) %> · Inkfish</title>
     <link rel="stylesheet" href="<%= Routes.static_path(@conn, "/css/app.css") %>"/>
     <link rel="icon" type="image/png"
           href="<%= Routes.static_path(@conn,"/images/inkfish.png") %>"/>
     <script>
      window.user_token = "<%= @current_user_token %>";
      window.current_page = "<%= current_page(@conn) %>";
+     window.csrf_token = "<%= Phoenix.Controller.get_csrf_token() %>";
+     window.upload_path = "<%= Routes.ajax_upload_path(@conn, :create) %>";
     </script>
   </head>
   <body>
@@ -30,6 +32,7 @@
           <div class="col-md-5">
             <%= if @current_user do %>
               User: <%= @current_user.email %> |
+              <%= link("Profile", to: Routes.user_path(@conn, :show, @current_user)) %> |
               <%= link("Logout", to: Routes.session_path(@conn, :delete),
                        method: :delete) %>
             <% else %>

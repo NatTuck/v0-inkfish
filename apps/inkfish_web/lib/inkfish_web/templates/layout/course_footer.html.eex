@@ -1,3 +1,3 @@
-<div>
-  <p>TODO: Course Footer</p>
+<div class="row p-2">
+  <%= trusted_markdown @course.footer %>
 </div>

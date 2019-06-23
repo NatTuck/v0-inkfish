@@ -1,0 +1,18 @@
+<h1>Show Bucket</h1>
+
+<p><%= link "Edit", to: Routes.staff_bucket_path(@conn, :edit, @bucket) %></p>
+
+<ul>
+
+  <li>
+    <strong>Name:</strong>
+    <%= @bucket.name %>
+  </li>
+
+  <li>
+    <strong>Weight:</strong>
+    <%= @bucket.weight %>
+  </li>
+
+</ul>
+

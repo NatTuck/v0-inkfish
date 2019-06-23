@@ -1,4 +1,10 @@
-<h1>Show User</h1>
+<h1>User Profile: <%= user_display_name(@user) %></h1>
+
+<%= if @current_user.is_admin || @current_user.id == @user.id do %>
+  <p>
+    <%= link "Edit Profile", to: Routes.user_path(@conn, :edit, @user) %>
+  </p>
+<% end %>
 
 <ul>
   <li>
@@ -18,5 +24,3 @@
 
 </ul>
 
-<span><%= link "Edit", to: Routes.user_path(@conn, :edit, @user) %></span>
-<span><%= link "Back", to: Routes.user_path(@conn, :index) %></span>

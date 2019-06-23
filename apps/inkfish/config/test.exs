@@ -4,6 +4,8 @@
 # the umbrella root.
 use Mix.Config
 
+config :inkfish, :env, :test
+
 # Configure your database
 config :inkfish, Inkfish.Repo,
   username: "inkfish",

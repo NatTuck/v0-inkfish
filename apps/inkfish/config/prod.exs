@@ -4,6 +4,8 @@
 # the umbrella root.
 use Mix.Config
 
+config :inkfish, :env, :prod
+
 import_config "../../config/get_secret.exs"
 
 config :paddle, Paddle,

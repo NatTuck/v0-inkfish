@@ -1,0 +1,83 @@
+<h1>Show Assignment</h1>
+
+<p>
+  <%= link("Edit Assignment",
+    to: Routes.staff_assignment_path(@conn, :edit, @assignment)) %>
+</p>
+
+<ul>
+  <li>
+    <strong>Name:</strong>
+    <%= @assignment.name %>
+  </li>
+
+  <li>
+    <strong>Bucket:</strong>
+    <%= @bucket.name %>
+  </li>
+
+  <li>
+    <strong>Teamset:</strong>
+    <%= @assignment.teamset.name %>
+  </li>
+
+  <li>
+    <strong>Due:</strong>
+    <%= @assignment.due %>
+  </li>
+
+  <li>
+    <strong>Weight:</strong>
+    <%= @assignment.weight %>
+  </li>
+
+  <li>
+    <strong>Starter:</strong>
+    <%= if @assignment.starter_upload do %>
+      <%= link(@assignment.starter_upload.name,
+            to: Routes.upload_path(@conn, :show, @assignment.starter_upload)) %>
+    <% else %>
+      ∅
+    <% end %>
+  </li>
+
+  <li>
+    <strong>Solution:</strong>
+    <%= if @assignment.solution_upload do %>
+      <%= link(@assignment.solution_upload.name,
+            to: Routes.upload_path(@conn, :show, @assignment.solution_upload)) %>
+    <% else %>
+      ∅
+    <% end %>
+  </li>
+</ul>
+
+<h2>Description</h2>
+
+<div>
+  <%= trusted_markdown @assignment.desc %>
+</div>
+
+<h2>Graders</h2>
+
+<p>
+  <%= link("New Grader",
+    to: Routes.staff_assignment_grader_path(@conn, :new, @assignment)) %>
+</p>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Weight</th>
+    </tr>
+  </thead>
+  <tbody>
+    <%= for gr <- @assignment.graders do %>
+      <tr>
+        <td><%= link gr.name, to: Routes.staff_grader_path(@conn, :show, gr) %></td>
+        <td><%= gr.weight %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

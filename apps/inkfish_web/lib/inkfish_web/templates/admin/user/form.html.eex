@@ -1,4 +1,4 @@
-<%= form_for @changeset, @action, fn f -> %>
+<%= form_for @changeset, @action, [multipart: true], fn f -> %>
   <%= if @changeset.action do %>
     <div class="alert alert-danger">
       <p>Oops, something went wrong! Please check the errors below.</p>
@@ -7,13 +7,15 @@
 
   <div class="form-group">
     <%= label f, :login %>
-    <%= text_input f, :login, class: "form-control" %>
+    <%= text_input(f, :login, name: "_login",
+      class: "form-control", readonly: "readonly") %>
     <%= error_tag f, :login %>
   </div>
 
   <div class="form-group">
     <%= label f, :email %>
-    <%= text_input f, :email, class: "form-control" %>
+    <%= text_input(f, :email, name: "_email",
+      class: "form-control", readonly: "readonly") %>
     <%= error_tag f, :email %>
   </div>
 
@@ -37,8 +39,29 @@
 
   <div class="form-group">
     <%= label f, :is_admin %>
-    <%= checkbox f, :is_admin, class: "form-control" %>
+    <%= checkbox f, :is_admin, class: "form-control toggle" %>
     <%= error_tag f, :is_admin %>
+  </div>
+
+  <div class="form-group">
+    <%= label f, :photo_upload_id %>
+    <%= text_input f, :photo_upload_id, class: "form-control", readonly: "readonly" %>
+    <%= error_tag f, :photo_upload_id %>
+
+    <div class="row">
+      <div class="col">
+        <%= ajax_upload_field "user_photo", "jpg", "user_photo_upload_id" %>
+      </div>
+      <div class="col">
+        <%= if @user.photo_upload_id do %>
+          <p><img src="<%= Routes.upload_path(@conn, :show, @user.photo_upload) %>"
+                  id="photo-preview"></p>
+        <% else %>
+          <p><img src="<%= Routes.static_path(@conn, "/images/red_squid.jpg") %>"
+                  id="photo-preview"></p>
+        <% end %>
+      </div>
+    </div>
   </div>
   
   <div>

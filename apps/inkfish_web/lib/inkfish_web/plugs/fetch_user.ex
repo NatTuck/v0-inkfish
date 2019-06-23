@@ -1,6 +1,6 @@
 defmodule InkfishWeb.Plugs.FetchUser do
-  import Plug.Conn
-  
+  use InkfishWeb, :controller
+
   alias Inkfish.Users
   alias Inkfish.Users.User
   

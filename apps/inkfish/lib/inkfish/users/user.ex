@@ -9,6 +9,7 @@ defmodule Inkfish.Users.User do
     field :surname, :string
     field :nickname, :string, default: ""
     field :is_admin, :boolean, default: false
+    belongs_to :photo_upload, Inkfish.Uploads.Upload, type: :binary_id
     has_many :regs, Inkfish.Users.Reg
 
     timestamps()
@@ -17,7 +18,8 @@ defmodule Inkfish.Users.User do
   @doc false
   def changeset(user, attrs) do
     user
-    |> cast(attrs, [:login, :email, :given_name, :surname, :nickname, :is_admin])
+    |> cast(attrs, [:login, :email, :given_name, :surname,
+                   :nickname, :is_admin, :photo_upload_id])
     |> validate_required([:login, :email, :given_name, :surname])
     |> unique_constraint(:login)
     |> unique_constraint(:email)

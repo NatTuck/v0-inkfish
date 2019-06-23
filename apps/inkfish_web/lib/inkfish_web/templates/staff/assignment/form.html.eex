@@ -1,0 +1,61 @@
+<%= form_for @changeset, @action, [multipart: true], fn f -> %>
+  <%= if @changeset.action do %>
+    <div class="alert alert-danger">
+      <p>Oops, something went wrong! Please check the errors below.</p>
+    </div>
+  <% end %>
+
+  <div class="form-group">
+    Bucket: <%= @bucket.name %>
+    <%= hidden_input f, :bucket_id %>
+  </div>
+
+  <div class="form-group">
+    <%= label f, :name %>
+    <%= text_input f, :name, class: "form-control" %>
+    <%= error_tag f, :name %>
+  </div>
+
+  <div class="form-group">
+    <%= label f, :desc %>
+    <%= textarea f, :desc, class: "form-control" %>
+    <%= error_tag f, :desc %>
+  </div>
+
+  <div class="form-group">
+    <%= label f, :due %>
+    <%= datetime_select f, :due, class: "form-control" %>
+    <%= error_tag f, :due %>
+  </div>
+
+  <div class="form-group">
+    <%= label f, :weight %>
+    <%= number_input f, :weight, step: "any", class: "form-control" %>
+    <%= error_tag f, :weight %>
+  </div>
+
+  <div class="form-group">
+    <%= label f, :teamset_id %>
+    <%= select(f, :teamset_id, Enum.map(@teamsets, &({&1.name, &1.id})),
+               class: "form-control")%>
+    <%= error_tag f, :teamset_id %>
+  </div>
+
+  <div class="form-group">
+    <%= label f, :starter_upload_id %>
+    <%= text_input f, :starter_upload_id, class: "form-control", readonly: "readonly" %>
+    <%= error_tag f, :starter_upload_id %>
+    <%= ajax_upload_field "assignment_starter", "tgz,gz,txt", "assignment_starter_upload_id" %>
+  </div>
+
+  <div class="form-group">
+    <%= label f, :solution_upload_id %>
+    <%= text_input f, :solution_upload_id, class: "form-control", readonly: "readonly" %>
+    <%= error_tag f, :solution_upload_id %>
+    <%= ajax_upload_field "assignment_solution", "tgz,gz,txt", "assignment_solution_upload_id" %>
+  </div>
+
+  <div>
+    <%= submit "Save", class: "btn btn-primary" %>
+  </div>
+<% end %>

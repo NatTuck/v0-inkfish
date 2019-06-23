@@ -1,0 +1,33 @@
+<h1>Show Reg</h1>
+
+<p>
+  <%= link "Edit", to: Routes.staff_reg_path(@conn, :edit, @reg) %>
+</p>
+
+<ul>
+  <li>
+    <strong>Name:</strong>
+    <%= user_display_name(@reg.user) %>
+
+  <li>
+    <strong>Is grader:</strong>
+    <%= @reg.is_grader %>
+  </li>
+
+  <li>
+    <strong>Is prof:</strong>
+    <%= @reg.is_prof %>
+  </li>
+
+  <li>
+    <strong>Is staff:</strong>
+    <%= @reg.is_staff %>
+  </li>
+
+  <li>
+    <strong>Is student:</strong>
+    <%= @reg.is_student %>
+  </li>
+
+</ul>
+

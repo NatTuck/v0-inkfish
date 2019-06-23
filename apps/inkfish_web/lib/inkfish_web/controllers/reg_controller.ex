@@ -3,8 +3,11 @@ defmodule InkfishWeb.RegController do
 
   alias Inkfish.Users
   alias Inkfish.Users.Reg
-  
-  plug InkfishWeb.Plugs.FetchCourse, only: [:index, :new, :create]
+
+  plug InkfishWeb.Plugs.FetchItem, [course: "course_id"]
+    when action in [:index, :new, :create]
+  plug InkfishWeb.Plugs.FetchItem, [reg: "id"]
+    when action not in [:index, :new, :create]
 
   def index(conn, %{"course_id" => course_id}) do
     regs = Users.list_regs_for_course(course_id)

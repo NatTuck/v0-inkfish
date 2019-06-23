@@ -1,0 +1,32 @@
+<h1>Listing Assignments</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Desc</th>
+      <th>Due</th>
+      <th>Weight</th>
+
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+<%= for assignment <- @assignments do %>
+    <tr>
+      <td><%= assignment.name %></td>
+      <td><%= assignment.desc %></td>
+      <td><%= assignment.due %></td>
+      <td><%= assignment.weight %></td>
+
+      <td>
+        <%= link "Show", to: Routes.assignment_path(@conn, :show, assignment) %>
+        <%= link "Edit", to: Routes.assignment_path(@conn, :edit, assignment) %>
+        <%= link "Delete", to: Routes.assignment_path(@conn, :delete, assignment), method: :delete, data: [confirm: "Are you sure?"] %>
+      </td>
+    </tr>
+<% end %>
+  </tbody>
+</table>
+
+<span><%= link "New Assignment", to: Routes.assignment_path(@conn, :new) %></span>

@@ -1,6 +1,8 @@
 <h1>Show User</h1>
 
-<span><%= link "Edit User", to: Routes.admin_user_path(@conn, :edit, @user) %></span>
+<p>
+  <%= link "Edit User", to: Routes.admin_user_path(@conn, :edit, @user) %>
+</p>
 
 <ul>
 
@@ -34,5 +36,19 @@
     <%= @user.is_admin %>
   </li>
 
+  <li>
+    <strong>Photo Upload ID:</strong>
+    <%= @user.photo_upload_id %>
 </ul>
 
+<h2>Photo</h2>
+
+<p>
+  <%= if @user.photo_upload_id do %>
+    <img src="<%= Routes.upload_path(@conn, :show, @user.photo_upload) %>"
+         class="user-photo-full">
+  <% else %>
+    <img src="<%= Routes.static_path(@conn, "/images/red_squid.jpg") %>"
+         class="user-photo-full">
+  <% end %>
+</p>

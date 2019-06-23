@@ -1,9 +1,57 @@
 defmodule InkfishWeb.ViewHelpers do
   # Helper functions available in all templates.
-  
+
+  use Phoenix.HTML
+
+
   alias Inkfish.Users.User
   
   def user_display_name(%User{} = user) do
     "#{user.given_name} #{user.surname}"
+  end
+
+  def trusted_markdown(code) do
+    case Earmark.as_html(code) do
+      {:ok, html, []} ->
+        raw html
+      {:error, html, msgs} ->
+        raw "error rendering markdown"
+    end
+  end
+
+  def sanitize_markdown(code) do
+    case Earmark.as_html(code) do
+      {:ok, html, []} ->
+        raw HtmlSanitizeEx.basic_html(html)
+      {:error, html, msgs} ->
+        raw "error rendering markdown"
+    end
+  end
+
+
+  def ajax_upload_field(kind, exts, target) do
+    ~s(<div class="upload-drop-area" data-exts="#{exts}" data-kind="#{kind}"
+         data-id-field="#{target}">
+         <p class="text-muted">Drag here to upload.</p>
+         <div class="row">
+           <div class="col-md upload-input">
+             <p><input type="file" name="_#{target}" %></p>
+           </div>
+           <div class="col-md">
+             <button class="upload-clear-button btn btn-danger">Clear Upload</button>
+           </div>
+         </div>
+         <div class="row">
+           <div class="col">
+             <p class="message m-2"></p>
+             <div class="progress m-2" style="">
+               <div class="progress-bar progress-bar-striped progress-bar-animated p-1">
+                 0%
+               </div>
+             </div>
+           </div>
+         </div>
+       </div>)
+    |> raw
   end
 end

@@ -1,0 +1,44 @@
+<h1>Show Grader</h1>
+
+<p>
+  <%= link "Edit", to: Routes.staff_grader_path(@conn, :edit, @grader) %>
+</p>
+
+<ul>
+
+  <li>
+    <strong>Name:</strong>
+    <%= @grader.name %>
+  </li>
+
+  <li>
+    <strong>Kind:</strong>
+    <%= @grader.kind %>
+  </li>
+
+  <li>
+    <strong>Weight:</strong>
+    <%= @grader.weight %>
+  </li>
+
+  <li>
+    <strong>Points:</strong>
+    <%= @grader.points %>
+  </li>
+
+  <li>
+    <strong>Params:</strong>
+    <%= @grader.params %>
+  </li>
+
+  <li>
+    <strong>Upload:</strong>
+    <%= if @grader.upload do %>
+      <%= link(@grader.upload.name,
+            to: Routes.upload_path(@conn, :show, @grader.upload)) %>
+    <% else %>
+      ∅
+    <% end %>
+  </li>
+</ul>
+

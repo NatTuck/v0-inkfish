@@ -1,0 +1,8 @@
+<h1>Show Team</h1>
+
+<ul>
+
+</ul>
+
+<span><%= link "Edit", to: Routes.staff_team_path(@conn, :edit, @team) %></span>
+<span><%= link "Back", to: Routes.staff_team_path(@conn, :index) %></span>

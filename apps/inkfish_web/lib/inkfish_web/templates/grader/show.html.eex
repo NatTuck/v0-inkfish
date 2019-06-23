@@ -1,0 +1,33 @@
+<h1>Show Grader</h1>
+
+<ul>
+
+  <li>
+    <strong>Name:</strong>
+    <%= @grader.name %>
+  </li>
+
+  <li>
+    <strong>Kind:</strong>
+    <%= @grader.kind %>
+  </li>
+
+  <li>
+    <strong>Weight:</strong>
+    <%= @grader.weight %>
+  </li>
+
+  <li>
+    <strong>Points:</strong>
+    <%= @grader.points %>
+  </li>
+
+  <li>
+    <strong>Params:</strong>
+    <%= @grader.params %>
+  </li>
+
+</ul>
+
+<span><%= link "Edit", to: Routes.grader_path(@conn, :edit, @grader) %></span>
+<span><%= link "Back", to: Routes.grader_path(@conn, :index) %></span>

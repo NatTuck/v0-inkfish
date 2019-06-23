@@ -1,0 +1,24 @@
+<h1>Listing Teams</h1>
+
+<table>
+  <thead>
+    <tr>
+
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+<%= for team <- @teams do %>
+    <tr>
+
+      <td>
+        <%= link "Show", to: Routes.team_path(@conn, :show, team) %>
+        <%= link "Edit", to: Routes.team_path(@conn, :edit, team) %>
+        <%= link "Delete", to: Routes.team_path(@conn, :delete, team), method: :delete, data: [confirm: "Are you sure?"] %>
+      </td>
+    </tr>
+<% end %>
+  </tbody>
+</table>
+
+<span><%= link "New Team", to: Routes.team_path(@conn, :new) %></span>

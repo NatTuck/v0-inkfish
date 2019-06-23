@@ -45,6 +45,9 @@ defmodule InkfishWeb.MixProject do
       {:gettext, "~> 0.11"},
       {:inkfish, in_umbrella: true},
       {:jason, "~> 1.0"},
+      {:earmark, "~> 1.3"},
+      {:html_sanitize_ex, "~> 1.3"},
+      {:inflex, "~> 1.10" },
       {:plug_cowboy, "~> 2.0"}
     ]
   end

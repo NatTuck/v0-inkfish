@@ -1,0 +1,4 @@
+<h1>Edit Bucket</h1>
+
+<%= render "form.html", Map.put(assigns, :action,
+  Routes.staff_bucket_path(@conn, :update, @bucket)) %>

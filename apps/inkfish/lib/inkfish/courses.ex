@@ -39,8 +39,31 @@ defmodule Inkfish.Courses do
       ** (Ecto.NoResultsError)
 
   """
-  def get_course!(id), do: Repo.get!(Course, id)
-  def get_course(id), do: Repo.get(Course, id)
+  def get_course!(id) do
+    %Course{} = get_course(id)
+  end
+
+  def get_course(id) do
+    course = Repo.get(Course, id)
+    if course != nil && course.solo_teamset_id == nil do
+      %Course{} = course
+      ts = Inkfish.Teams.create_solo_teamset!(course)
+      %Course{course | solo_teamset_id: ts.id}
+    else
+      course
+    end
+  end
+
+  def get_course_for_staff_view!(id) do
+    Repo.one! from cc in Course,
+      where: cc.id == ^id,
+      left_join: buckets in assoc(cc, :buckets),
+      left_join: bas in assoc(buckets, :assignments),
+      left_join: teamsets in assoc(cc, :teamsets),
+      left_join: tas in assoc(teamsets, :assignments),
+      preload: [buckets: {buckets, assignments: bas},
+                teamsets: {teamsets, assignments: tas}]
+  end
 
   @doc """
   Creates a course.
@@ -58,12 +81,18 @@ defmodule Inkfish.Courses do
     course = Course.changeset(%Course{}, attrs)
     instructor = Course.instructor_login(course)
 
-    {:ok, %{course: course}} = Ecto.Multi.new()
+    result = Ecto.Multi.new()
     |> Ecto.Multi.insert(:course, course)
     |> course_add_instructor(instructor)
     |> Repo.transaction()
 
-    {:ok, course}
+    case result do
+      {:ok, %{course: course}} -> {:ok, course}
+      {:error, :course, cset, _}  -> {:error, cset}
+      {:error, :reg, cset, _} ->
+        cset = Ecto.Changeset.add_error(course, :instructor, "instructor reg failed")
+        {:error, cset}
+    end
   end
 
   def course_add_instructor(tx, nil), do: tx
@@ -95,12 +124,18 @@ defmodule Inkfish.Courses do
     course = Course.changeset(course, attrs)
     instructor = Course.instructor_login(course)
 
-    {:ok, %{course: course}} = Ecto.Multi.new()
+    result = Ecto.Multi.new()
     |> Ecto.Multi.update(:course, course)
     |> course_add_instructor(instructor)
     |> Repo.transaction()
 
-    {:ok, course}
+    case result do
+      {:ok, %{course: course}} -> {:ok, course}
+      {:error, :course, cset, _}  -> {:error, cset}
+      {:error, :reg, cset, _} ->
+        cset = Ecto.Changeset.add_error(course, :instructor, "instructor reg failed")
+        {:error, cset}
+    end
   end
 
   @doc """
@@ -169,6 +204,13 @@ defmodule Inkfish.Courses do
   """
   def get_bucket!(id), do: Repo.get!(Bucket, id)
   def get_bucket(id), do: Repo.get(Bucket, id)
+
+  def get_bucket_path!(id) do
+    Repo.one! from bb in Bucket,
+      where: bb.id == ^id,
+      inner_join: course in assoc(bb, :course),
+      preload: [course: course]
+  end
 
   @doc """
   Creates a bucket.

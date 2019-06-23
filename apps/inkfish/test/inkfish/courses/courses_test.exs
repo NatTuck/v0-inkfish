@@ -13,8 +13,19 @@ defmodule Inkfish.CoursesTest do
     end
 
     test "get_course!/1 returns the course with given id" do
-      course = insert(:course)
-      assert Courses.get_course!(course.id) == course
+      course0 = insert(:course)
+      course1 = Courses.get_course!(course0.id)
+      assert course1.name == course0.name
+      assert course1.solo_teamset_id != nil
+    end
+
+    test "get_course!/1 creates a solo teamset if needed" do
+      course0 = insert(:course)
+      assert course0.solo_teamset_id == nil
+      course1 = Courses.get_course!(course0.id)
+      assert course1.solo_teamset_id != nil
+      course2 = Courses.get_course!(course0.id)
+      assert course1.solo_teamset_id == course2.solo_teamset_id
     end
 
     test "create_course/1 with valid data creates a course" do
@@ -40,13 +51,13 @@ defmodule Inkfish.CoursesTest do
       course = insert(:course)
       attrs = %{name: ""}
       assert {:error, %Ecto.Changeset{}} = Courses.update_course(course, attrs)
-      assert course == Courses.get_course!(course.id)
+      assert course.name == Courses.get_course!(course.id).name
     end
 
     test "delete_course/1 deletes the course" do
       course = insert(:course)
       assert {:ok, %Course{}} = Courses.delete_course(course)
-      assert_raise Ecto.NoResultsError, fn -> Courses.get_course!(course.id) end
+      assert_raise MatchError, fn -> Courses.get_course!(course.id) end
     end
 
     test "change_course/1 returns a course changeset" do

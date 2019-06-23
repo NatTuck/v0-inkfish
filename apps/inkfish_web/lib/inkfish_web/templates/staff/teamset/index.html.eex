@@ -1,0 +1,28 @@
+<h1>Listing Teamsets</h1>
+
+<p>
+  <%= link "New Teamset", to: Routes.staff_course_teamset_path(@conn, :new, @course) %>
+</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+    </tr>
+  </thead>
+  <tbody>
+<%= for teamset <- @teamsets do %>
+    <tr>
+      <td>
+        <%= teamset.name %>
+      </td>
+      <td>
+        <%= link "Show", to: Routes.staff_teamset_path(@conn, :show, teamset) %>
+        <%= link "Edit", to: Routes.staff_teamset_path(@conn, :edit, teamset) %>
+        <%= link "Delete", to: Routes.staff_teamset_path(@conn, :delete, teamset), method: :delete, data: [confirm: "Are you sure?"] %>
+      </td>
+    </tr>
+<% end %>
+  </tbody>
+</table>
+

@@ -1,0 +1,34 @@
+<h1>Listing Graders</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Kind</th>
+      <th>Weight</th>
+      <th>Points</th>
+      <th>Params</th>
+
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+<%= for grader <- @graders do %>
+    <tr>
+      <td><%= grader.name %></td>
+      <td><%= grader.kind %></td>
+      <td><%= grader.weight %></td>
+      <td><%= grader.points %></td>
+      <td><%= grader.params %></td>
+
+      <td>
+        <%= link "Show", to: Routes.staff_grader_path(@conn, :show, grader) %>
+        <%= link "Edit", to: Routes.staff_grader_path(@conn, :edit, grader) %>
+        <%= link "Delete", to: Routes.staff_grader_path(@conn, :delete, grader), method: :delete, data: [confirm: "Are you sure?"] %>
+      </td>
+    </tr>
+<% end %>
+  </tbody>
+</table>
+
+<span><%= link "New Grader", to: Routes.staff_grader_path(@conn, :new) %></span>
