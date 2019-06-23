@@ -44,6 +44,13 @@ defmodule Inkfish.Teams do
   def get_teamset!(id), do: Repo.get!(Teamset, id)
   def get_teamset(id), do: Repo.get(Teamset, id)
 
+  def get_teamset_path!(id) do
+    Repo.one! from ts in Teamset,
+      where: ts.id == ^id,
+      inner_join: course in assoc(ts, :course),
+      preload: [course: course]
+  end
+
   @doc """
   Creates a teamset.
 

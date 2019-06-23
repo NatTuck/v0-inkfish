@@ -27,7 +27,7 @@ defmodule InkfishWeb.CourseController do
   end
 
   def show(conn, %{"id" => id}) do
-    course = Courses.get_course!(id)
+    course = Courses.get_course_for_student_view!(id)
     render(conn, "show.html", course: course)
   end
 

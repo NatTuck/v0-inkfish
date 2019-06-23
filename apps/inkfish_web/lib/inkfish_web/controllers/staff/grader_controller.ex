@@ -6,6 +6,11 @@ defmodule InkfishWeb.Staff.GraderController do
   plug InkfishWeb.Plugs.FetchItem, [grader: "id"]
     when action not in [:index, :new, :create]
 
+    alias InkfishWeb.Plugs.Breadcrumb
+  plug Breadcrumb, {"Courses (Staff)", :staff_course, :index}
+  plug Breadcrumb, {:show, :staff, :course}
+  plug Breadcrumb, {:show, :staff, :assignment}
+
   alias Inkfish.Grades
   alias Inkfish.Grades.Grader
 

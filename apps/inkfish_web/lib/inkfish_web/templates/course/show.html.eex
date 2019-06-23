@@ -10,9 +10,26 @@
     <strong>Start date:</strong>
     <%= @course.start_date %>
   </li>
-  <li>
-    <strong>Footer:</strong>
-    <%= @course.footer %>
-  </li>
 </ul>
 
+<%= for bucket <- @course.buckets do %>
+  <h2><%= bucket.name %></h2>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Due</th>
+        <th>Weight</th>
+      </tr>
+    </thead>
+    <tbody>
+      <%= for as <- bucket.assignments do %>
+        <tr>
+          <td><%= as.name %></td>
+          <td><%= as.due %></td>
+          <td><%= as.weight %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% end %>

@@ -35,7 +35,10 @@ defmodule InkfishWeb.ViewHelpers do
          <p class="text-muted">Drag here to upload.</p>
          <div class="row">
            <div class="col-md upload-input">
-             <p><input type="file" name="_#{target}" %></p>
+             <label class="btn btn-secondary btn-file">
+               Browse...
+               <input type="file" name="_#{target}" style="display: none">
+             </label>
            </div>
            <div class="col-md">
              <button class="upload-clear-button btn btn-danger">Clear Upload</button>

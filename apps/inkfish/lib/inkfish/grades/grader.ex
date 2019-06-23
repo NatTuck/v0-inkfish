@@ -20,4 +20,8 @@ defmodule Inkfish.Grades.Grader do
     |> cast(attrs, [:assignment_id, :name, :kind, :weight, :points, :params, :upload_id])
     |> validate_required([:assignment_id, :name, :kind, :weight, :points])
   end
+
+  def grader_types do
+    ["number", "feedback", "script"]
+  end
 end

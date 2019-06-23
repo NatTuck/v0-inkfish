@@ -65,6 +65,17 @@ defmodule Inkfish.Courses do
                 teamsets: {teamsets, assignments: tas}]
   end
 
+  def get_course_for_student_view!(id) do
+     Repo.one! from cc in Course,
+      where: cc.id == ^id,
+      left_join: buckets in assoc(cc, :buckets),
+      left_join: bas in assoc(buckets, :assignments),
+      left_join: teamsets in assoc(cc, :teamsets),
+      left_join: tas in assoc(teamsets, :assignments),
+      preload: [buckets: {buckets, assignments: bas},
+                teamsets: {teamsets, assignments: tas}]
+  end
+
   @doc """
   Creates a course.
 
