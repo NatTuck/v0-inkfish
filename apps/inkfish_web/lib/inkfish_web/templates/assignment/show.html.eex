@@ -1,0 +1,28 @@
+<h1>Show Assignment</h1>
+
+<ul>
+
+  <li>
+    <strong>Name:</strong>
+    <%= @assignment.name %>
+  </li>
+
+  <li>
+    <strong>Desc:</strong>
+    <%= @assignment.desc %>
+  </li>
+
+  <li>
+    <strong>Due:</strong>
+    <%= @assignment.due %>
+  </li>
+
+  <li>
+    <strong>Weight:</strong>
+    <%= @assignment.weight %>
+  </li>
+
+</ul>
+
+<span><%= link "Edit", to: Routes.assignment_path(@conn, :edit, @assignment) %></span>
+<span><%= link "Back", to: Routes.assignment_path(@conn, :index) %></span>

@@ -1,4 +1,4 @@
-<h1>Edit User</h1>
+<h1>Edit User: <%= user_display_name(@user) %></h1>
 
 <p>
   <%= link "Show User", to: Routes.admin_user_path(@conn, :show, @user.id) %>

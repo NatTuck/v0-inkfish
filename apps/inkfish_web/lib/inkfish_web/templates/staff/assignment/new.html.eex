@@ -1,0 +1,4 @@
+<h1>New Assignment</h1>
+
+<%= render "form.html", Map.put(assigns, :action,
+  Routes.staff_bucket_assignment_path(@conn, :create, @bucket)) %>

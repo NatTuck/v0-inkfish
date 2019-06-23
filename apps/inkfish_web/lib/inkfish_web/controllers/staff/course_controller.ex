@@ -1,10 +1,17 @@
 defmodule InkfishWeb.Staff.CourseController do
   use InkfishWeb, :controller
 
+  plug InkfishWeb.Plugs.FetchItem, [course: "id"]
+    when action not in [:index, :new, :create]
+
+  plug InkfishWeb.Plugs.Breadcrumb, {"Courses (Staff)", :staff_course, :index}
+  plug InkfishWeb.Plugs.Breadcrumb, {:show, :staff, :course}
+    when action not in [:index, :new, :create]
+
   alias Inkfish.Courses
   alias Inkfish.Courses.Course
+  alias Inkfish.Teams
 
-  plug InkfishWeb.Plugs.Breadcrumb, {"Course Staff", :staff_course, :index}
 
   def index(conn, _params) do
     courses = Courses.list_courses()
@@ -29,18 +36,18 @@ defmodule InkfishWeb.Staff.CourseController do
   end
 
   def show(conn, %{"id" => id}) do
-    course = Courses.get_course!(id)
+    course = Courses.get_course_for_staff_view!(id)
     render(conn, "show.html", course: course)
   end
 
   def edit(conn, %{"id" => id}) do
-    course = Courses.get_course!(id)
+    course = conn.assigns[:course]
     changeset = Courses.change_course(course)
     render(conn, "edit.html", course: course, changeset: changeset)
   end
 
   def update(conn, %{"id" => id, "course" => course_params}) do
-    course = Courses.get_course!(id)
+    course = conn.assigns[:course]
 
     case Courses.update_course(course, course_params) do
       {:ok, course} ->
@@ -54,7 +61,7 @@ defmodule InkfishWeb.Staff.CourseController do
   end
 
   def delete(conn, %{"id" => id}) do
-    course = Courses.get_course!(id)
+    course = conn.assigns[:course]
     {:ok, _course} = Courses.delete_course(course)
 
     conn

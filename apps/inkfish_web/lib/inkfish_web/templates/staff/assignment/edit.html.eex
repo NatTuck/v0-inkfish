@@ -1,0 +1,4 @@
+<h1>Edit Assignment</h1>
+
+<%= render "form.html", Map.put(assigns, :action,
+  Routes.staff_assignment_path(@conn, :update, @assignment)) %>

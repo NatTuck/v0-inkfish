@@ -1,0 +1,30 @@
+<h1>Listing Uploads</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Nonce</th>
+      <th>Kind</th>
+
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+<%= for upload <- @uploads do %>
+    <tr>
+      <td><%= upload.name %></td>
+      <td><%= upload.nonce %></td>
+      <td><%= upload.kind %></td>
+
+      <td>
+        <%= link "Show", to: Routes.admin_upload_path(@conn, :show, upload) %>
+        <%= link "Edit", to: Routes.admin_upload_path(@conn, :edit, upload) %>
+        <%= link "Delete", to: Routes.admin_upload_path(@conn, :delete, upload), method: :delete, data: [confirm: "Are you sure?"] %>
+      </td>
+    </tr>
+<% end %>
+  </tbody>
+</table>
+
+<span><%= link "New Upload", to: Routes.admin_upload_path(@conn, :new) %></span>

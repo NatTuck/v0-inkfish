@@ -2,5 +2,3 @@
 
 <%= render("form.html", Map.put(assigns, :action, 
   Routes.course_bucket_path(@conn, :create, @course_id))) %>
-
-<span><%= link "Back", to: Routes.course_bucket_path(@conn, :index, @course_id) %></span>

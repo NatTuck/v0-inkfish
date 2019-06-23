@@ -5,15 +5,18 @@
     </div>
   <% end %>
 
-  <%= label f, :email %>
-  <%= text_input f, :email %>
-  <%= error_tag f, :email %>
+  <ul>
+    <li><strong>Email:</strong> <%= @user.email %></li>
+    <li><strong>Name:</strong> <%= user_display_name(@user) %></li>
+  </ul>
 
-  <%= label f, :is_admin %>
-  <%= checkbox f, :is_admin %>
-  <%= error_tag f, :is_admin %>
+  <div class="form-group">
+    <%= label f, :nickname %>
+    <%= text_input f, :nickname, class: "form-control" %>
+    <%= error_tag f, :nickname %>
+  </div>
 
   <div>
-    <%= submit "Save" %>
+    <%= submit "Save", class: "btn btn-primary" %>
   </div>
 <% end %>

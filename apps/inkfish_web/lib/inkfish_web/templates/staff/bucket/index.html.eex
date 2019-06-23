@@ -1,0 +1,30 @@
+<h1>Listing Buckets for <%= @course.name %></h1>
+
+<p>
+  <%= link "New Bucket", to: Routes.staff_course_bucket_path(@conn, :new, @course) %>
+</p>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Weight</th>
+
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+<%= for bucket <- @buckets do %>
+    <tr>
+      <td><%= bucket.name %></td>
+      <td><%= bucket.weight %></td>
+
+      <td>
+        <%= link "Edit", to: Routes.staff_bucket_path(@conn, :edit, bucket) %>
+        <%= link "Delete", to: Routes.staff_bucket_path(@conn, :delete, bucket), method: :delete, data: [confirm: "Are you sure?"] %>
+      </td>
+    </tr>
+<% end %>
+  </tbody>
+</table>
+

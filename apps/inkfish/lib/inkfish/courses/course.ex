@@ -9,6 +9,8 @@ defmodule Inkfish.Courses.Course do
     field :footer, :string, default: ""
     has_many :regs, Inkfish.Users.Reg
     has_many :buckets, Inkfish.Courses.Bucket
+    has_many :teamsets, Inkfish.Teams.Teamset
+    belongs_to :solo_teamset, Inkfish.Teams.Teamset
 
     field :instructor, :string, virtual: true
 
@@ -18,7 +20,7 @@ defmodule Inkfish.Courses.Course do
   @doc false
   def changeset(course, attrs) do
     course
-    |> cast(attrs, [:name, :start_date, :footer, :instructor])
+    |> cast(attrs, [:name, :start_date, :footer, :instructor, :solo_teamset_id])
     |> validate_required([:name, :start_date])
     |> validate_length(:name, min: 3)
   end

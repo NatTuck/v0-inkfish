@@ -1,0 +1,7 @@
+<h1>Show Teamset</h1>
+
+<p><%= link "Edit", to: Routes.staff_teamset_path(@conn, :edit, @teamset) %></p>
+
+<ul>
+  <li><strong>Name</strong>: <%= @teamset.name %></li>
+</ul>

@@ -1,7 +1,12 @@
-<h1>Show Course</h1>
+
+<h1>Course: <%= @course.name %></h1>
+
+<p>
+  <%= link "Edit Course", to: Routes.staff_course_path(@conn, :edit, @course) %> |
+  <%= link "Edit Buckets", to: Routes.staff_course_bucket_path(@conn, :index, @course) %>
+</p>
 
 <ul>
-
   <li>
     <strong>Name:</strong>
     <%= @course.name %>
@@ -17,7 +22,64 @@
     <%= @course.footer %>
   </li>
 
+  <li>
+    <strong>Solo Teamset ID:</strong>
+    <%= @course.solo_teamset_id %>
+  </li>
 </ul>
 
-<span><%= link "Edit", to: Routes.staff_course_path(@conn, :edit, @course) %></span>
-<span><%= link "Back", to: Routes.staff_course_path(@conn, :index) %></span>
+<h2>Teamsets</h2>
+
+<p>
+  <%= link "New Teamset", to: Routes.staff_course_teamset_path(@conn, :new, @course) %>
+</p>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Assignments</th>
+    </tr>
+  </thead>
+  <tbody>
+    <%= for ts <- @course.teamsets do %>
+    <tr>
+      <td>
+        <%= link ts.name, to: Routes.staff_teamset_path(@conn, :show, ts) %>
+        (<%= ts.id %>)
+      </td>
+      <td>
+        <%= Enum.join(Enum.map(ts.assignments, &(&1.name)), ", ") %>
+      </td>
+    </tr>
+    <% end %>
+  </tbody>
+</table>
+
+
+<%= for bucket <- @course.buckets do %>
+  <h2><%= bucket.name %></h2>
+  <p>weight = <%= bucket.weight %></p>
+
+  <p> <%= link("New Assignment", to:
+            Routes.staff_bucket_assignment_path(@conn, :new, bucket)) %></p>
+
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Due</th>
+        <th>Weight</th>
+      </tr>
+    </thead>
+    <tbody>
+      <%= for aa <- bucket.assignments do %>
+        <tr>
+          <td><%= link aa.name, to: Routes.staff_assignment_path(@conn, :show, aa) %></td>
+          <td>-</td>
+          <td><%= aa.weight %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% end %>

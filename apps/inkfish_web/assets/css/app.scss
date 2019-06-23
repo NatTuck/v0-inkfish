@@ -2,8 +2,29 @@
 
 @import "~bootstrap/scss/bootstrap";
 @import "~bootswatch/dist/spacelab/bootswatch";
+@import "~bootstrap4-toggle/css/bootstrap4-toggle";
 
 .header-logo { 
     width: 64px; 
     height: 64px;
+}
+
+textarea.form-control {
+    min-height: 12em;
+}
+
+.upload-drop-area {
+    border: thin dashed grey;
+    min-height: 3em;
+    height: 100%;
+}
+
+#photo-preview {
+    width: 320px;
+    height: 320px;
+    object-fit: cover;
+}
+
+.user-photo-full {
+    max-width: 960px;
 }

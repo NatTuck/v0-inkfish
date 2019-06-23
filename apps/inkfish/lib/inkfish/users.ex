@@ -35,7 +35,12 @@ defmodule Inkfish.Users do
       ** (Ecto.NoResultsError)
 
   """
-  def get_user!(id), do: Repo.get!(User, id)
+  def get_user!(id) do
+    Repo.one! from uu in User,
+      where: uu.id == ^id,
+      left_join: photo in assoc(uu, :photo_upload),
+      preload: [photo_upload: photo]
+  end
  
   @doc """
   Gets a single user by id
@@ -74,7 +79,8 @@ defmodule Inkfish.Users do
       given_name: hd(data["givenName"]),
       surname: hd(data["sn"]),
     }
-   
+
+    # FIXME: Overwrites changes to name.
     %User{}
     |> User.changeset(attrs)
     |> Repo.insert(
@@ -180,7 +186,8 @@ defmodule Inkfish.Users do
   def list_regs_for_course(course_id) do
     Repo.all from reg in Reg, 
       where: reg.course_id == ^course_id,
-      preload: [:user]
+      inner_join: user in assoc(reg, :user),
+      preload: [user: user]
   end
 
   @doc """
@@ -197,8 +204,22 @@ defmodule Inkfish.Users do
       ** (Ecto.NoResultsError)
 
   """
-  def get_reg!(id), do: Repo.get!(Reg, id)
+  def get_reg!(id) do
+    Repo.one from reg in Reg,
+      where: reg.id == ^id,
+      inner_join: user in assoc(reg, :user),
+      inner_join: course in assoc(reg, :course),
+      preload: [user: user, course: course]
+  end
+
   def get_reg(id), do: Repo.get(Reg, id)
+
+  def get_reg_path!(id) do
+    Repo.one! from reg in Reg,
+      where: reg.id == ^id,
+      inner_join: course in assoc(reg, :course),
+      preload: [course: course]
+  end
 
   @doc """
   Creates a reg.

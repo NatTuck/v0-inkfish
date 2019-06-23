@@ -1,0 +1,37 @@
+<h1>Listing Regs</h1>
+
+<p>
+  <%= link "New Reg", to: Routes.staff_course_reg_path(@conn, :new, @course) %>
+</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Is grader</th>
+      <th>Is prof</th>
+      <th>Is staff</th>
+      <th>Is student</th>
+
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+<%= for reg <- @regs do %>
+  <tr>
+    <td><%= link(user_display_name(reg.user),
+        to: Routes.staff_reg_path(@conn, :show, reg)) %></td>
+    <td><%= reg.is_grader %></td>
+    <td><%= reg.is_prof %></td>
+    <td><%= reg.is_staff %></td>
+    <td><%= reg.is_student %></td>
+
+    <td>
+      <%= link "Edit", to: Routes.staff_reg_path(@conn, :edit, reg) %>
+      <%= link "Delete", to: Routes.staff_reg_path(@conn, :delete, reg), method: :delete, data: [confirm: "Are you sure?"] %>
+    </td>
+  </tr>
+<% end %>
+  </tbody>
+</table>
+

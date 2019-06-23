@@ -6,7 +6,7 @@ defmodule InkfishWeb.Plugs.RequireUser do
   def init(args), do: args
   
   def call(conn, args) do
-    require_user(conn, conn.assigns[:current_user], args[:admin])
+    require_user(conn, conn.assigns[:current_user], args[:is_admin])
   end
   
   defp require_user(conn, nil, _admin) do
