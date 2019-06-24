@@ -1,0 +1,18 @@
+<h1>Show Sub</h1>
+
+<ul>
+
+  <li>
+    <strong>Active:</strong>
+    <%= @sub.active %>
+  </li>
+
+  <li>
+    <strong>Score:</strong>
+    <%= @sub.score %>
+  </li>
+
+</ul>
+
+<span><%= link "Edit", to: Routes.sub_path(@conn, :edit, @sub) %></span>
+<span><%= link "Back", to: Routes.sub_path(@conn, :index) %></span>
