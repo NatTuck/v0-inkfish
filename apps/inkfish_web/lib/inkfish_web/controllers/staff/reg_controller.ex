@@ -1,10 +1,12 @@
 defmodule InkfishWeb.Staff.RegController do
   use InkfishWeb, :controller
 
-  plug InkfishWeb.Plugs.FetchItem, [course: "course_id"]
+  alias InkfishWeb.Plugs
+  plug Plugs.FetchItem, [course: "course_id"]
     when action in [:index, :new, :create]
-  plug InkfishWeb.Plugs.FetchItem, [reg: "id"]
+  plug Plugs.FetchItem, [reg: "id"]
     when action not in [:index, :new, :create]
+  plug Plugs.RequireReg
 
   alias Inkfish.Users
   alias Inkfish.Users.Reg

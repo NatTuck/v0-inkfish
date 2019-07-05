@@ -47,13 +47,8 @@ defmodule InkfishWeb.Router do
     end
     resources "/regs", RegController, except: [:index, :new, :create]
     resources "/teams", TeamController, except: [:index, :new, :create]
-    resources "/buckets", BucketController, except: [:index, :new, :create] do
-      resources "/assignments", AssignmentController, only: [:index]
-    end
-    resources "/assignments", AssignmentController, except: [:index, :new, :create] do
-      resources "/graders", GraderController, only: [:index]
-    end
-    resources "/graders", GraderController, only: [:show]
+    resources "/assignments", AssignmentController, only: [:show]
+    resources "/grades", GradeController, only: [:show]
   end
 
   scope "/staff", InkfishWeb.Staff, as: :staff do

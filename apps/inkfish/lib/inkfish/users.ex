@@ -6,6 +6,7 @@ defmodule Inkfish.Users do
   import Ecto.Query, warn: false
   alias Inkfish.Repo
 
+  alias Inkfish.Courses.Course
   alias Inkfish.Users.User
 
   @doc """
@@ -219,6 +220,18 @@ defmodule Inkfish.Users do
       where: reg.id == ^id,
       inner_join: course in assoc(reg, :course),
       preload: [course: course]
+  end
+
+  def find_reg(%User{} = user, %Course{} = course) do
+    reg = Repo.one from reg in Reg,
+      where: reg.user_id == ^user.id and reg.course_id == ^course.id
+    if user.is_admin && is_nil(reg) do
+      # Admins are always registered for every course as no role.
+      {:ok, reg} = create_reg(%{user_id: user.id, course_id: course.id})
+      reg
+    else
+      reg
+    end
   end
 
   @doc """

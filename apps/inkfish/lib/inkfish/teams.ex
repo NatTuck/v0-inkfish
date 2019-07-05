@@ -51,6 +51,10 @@ defmodule Inkfish.Teams do
       preload: [course: course]
   end
 
+  def get_solo_teamset!(%Course{} = course) do
+    get_teamset!(course.solo_teamset_id)
+  end
+
   @doc """
   Creates a teamset.
 

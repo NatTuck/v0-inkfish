@@ -10,6 +10,7 @@ defmodule Inkfish.Grades.Grader do
     field :weight, :decimal
     belongs_to :assignment, Inkfish.Assignments.Assignment
     belongs_to :upload, Inkfish.Uploads.Upload, type: :binary_id
+    has_many :grades, Inkfish.Grades.Grade
 
     timestamps()
   end

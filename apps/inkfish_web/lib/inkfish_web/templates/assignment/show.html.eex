@@ -1,7 +1,6 @@
 <h1>Show Assignment</h1>
 
 <ul>
-
   <li>
     <strong>Name:</strong>
     <%= @assignment.name %>
@@ -21,8 +20,21 @@
     <strong>Weight:</strong>
     <%= @assignment.weight %>
   </li>
-
 </ul>
 
-<span><%= link "Edit", to: Routes.assignment_path(@conn, :edit, @assignment) %></span>
-<span><%= link "Back", to: Routes.assignment_path(@conn, :index) %></span>
+<h2>Submissions</h2>
+
+<table class="table table-striped">
+  <thead>
+    <td>Date</td>
+    <%= for gr <- @assignment.graders do %>
+      <td><%= gr.name %></td>
+    <% end %>
+    <td>Score</td>
+  </thead>
+  <tbody>
+    <%= for sub <- @assignment.subs do %>
+
+    <% end %>
+  </tbody>
+</table>

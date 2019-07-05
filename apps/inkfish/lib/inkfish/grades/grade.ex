@@ -4,8 +4,8 @@ defmodule Inkfish.Grades.Grade do
 
   schema "grades" do
     field :score, :decimal
-    field :sub_id, :id
-    field :grader_id, :id
+    belongs_to :sub, Inkfish.Subs.Sub
+    belongs_to :grader, Inkfish.Grades.Grader
 
     timestamps()
   end
