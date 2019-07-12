@@ -1,6 +1,16 @@
 defmodule InkfishWeb.Staff.SubController do
   use InkfishWeb, :controller
 
+  plug InkfishWeb.Plugs.FetchItem, [sub: "id"]
+    when action not in [:index, :new, :create]
+  plug InkfishWeb.Plugs.FetchItem, [assignment: "assignment_id"]
+    when action in [:index, :new, :create]
+
+  alias InkfishWeb.Plugs.Breadcrumb
+  plug Breadcrumb, {"Courses (Staff)", :staff_course, :index}
+  plug Breadcrumb, {:show, :staff, :course}
+  plug Breadcrumb, {:show, :staff, :assignment}
+
   alias Inkfish.Subs
   alias Inkfish.Subs.Sub
 

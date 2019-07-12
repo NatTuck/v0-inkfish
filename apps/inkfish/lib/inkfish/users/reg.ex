@@ -11,6 +11,8 @@ defmodule Inkfish.Users.Reg do
     belongs_to :user, Inkfish.Users.User
     belongs_to :course, Inkfish.Courses.Course
 
+    field :user_login, :string, virtual: true
+
     timestamps()
   end
 

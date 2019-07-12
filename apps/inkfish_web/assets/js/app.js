@@ -13,6 +13,7 @@ import "phoenix_html";
 import jQuery from 'jquery';
 window.$ = jQuery;
 window.jQuery = jQuery;
+import "popper.js";
 import "bootstrap";
 import "bootstrap4-toggle";
 
@@ -23,6 +24,7 @@ import "bootstrap4-toggle";
 import socket from "./socket";
 import "./search";
 import "./uploads";
+import "./graders/number-input";
 
 $(() => {
   $('.toggle').bootstrapToggle();

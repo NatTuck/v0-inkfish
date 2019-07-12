@@ -24,17 +24,30 @@
 
 <h2>Submissions</h2>
 
+<p>
+  <%= link "New Submission", to: Routes.assignment_sub_path(@conn, :new, @assignment) %>
+</p>
+
 <table class="table table-striped">
   <thead>
+    <td>View</td>
     <td>Date</td>
-    <%= for gr <- @assignment.graders do %>
-      <td><%= gr.name %></td>
+    <%= for gdr <- @assignment.graders do %>
+      <td><%= gdr.name %></td>
     <% end %>
-    <td>Score</td>
+    <td>Total Score</td>
   </thead>
   <tbody>
     <%= for sub <- @assignment.subs do %>
-
+      <tr>
+        <td><%= link "View", to: Routes.sub_path(@conn, :show, sub) %></td>
+        <td><%= sub.inserted_at %></td>
+        <%= for gdr <- @assignment.graders do %>
+          <% grade = Enum.find(sub.grades, &(&1.grader_id == gdr.id)) %>
+          <td><%= if grade do grade.score else "∅" end %></td>
+        <% end %>
+        <td><%= sub.score || "∅" %></td>
+      </tr>
     <% end %>
   </tbody>
 </table>

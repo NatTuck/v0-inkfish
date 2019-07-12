@@ -7,13 +7,15 @@ defmodule Inkfish.Grades.Grade do
     belongs_to :sub, Inkfish.Subs.Sub
     belongs_to :grader, Inkfish.Grades.Grader
 
+    belongs_to :grading_user, Inkfish.Users.User
+
     timestamps()
   end
 
   @doc false
   def changeset(grade, attrs) do
     grade
-    |> cast(attrs, [:score])
-    |> validate_required([:score])
+    |> cast(attrs, [:grader_id, :sub_id, :score, :grading_user_id])
+    |> validate_required([:grader_id, :sub_id, :score])
   end
 end

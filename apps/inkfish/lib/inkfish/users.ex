@@ -246,9 +246,18 @@ defmodule Inkfish.Users do
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_reg(attrs \\ %{}) do
+  def create_reg(%{"user_login" => user_login} = attrs) do
+    login = User.normalize_login(user_login)
+    attrs
+    |> Map.put("user_id", get_user_by_login!(login).id)
+    |> Map.delete("user_login")
+    |> create_reg()
+  end
+
+  def create_reg(attrs) do
     %Reg{}
     |> Reg.changeset(attrs)
+    |> IO.inspect()
     |> Repo.insert()
   end
 

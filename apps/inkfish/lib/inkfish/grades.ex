@@ -160,9 +160,18 @@ defmodule Inkfish.Grades do
 
   """
   def create_grade(attrs \\ %{}) do
-    %Grade{}
+    result = %Grade{}
     |> Grade.changeset(attrs)
-    |> Repo.insert()
+    |> Repo.insert(
+      on_conflict: :replace_all,
+      conflict_target: [:sub_id, :grader_id])
+
+    case result do
+      {:ok, grade} ->
+        {:ok, Repo.preload(grade, :grading_user)}
+      error ->
+        error
+    end
   end
 
   @doc """

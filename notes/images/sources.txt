@@ -7,3 +7,7 @@ red squid
 Image by OpenClipart-Vectors from Pixabay
 https://pixabay.com/vectors/cartoon-octopus-pink-squid-1294020/
 Pixabay.com license
+
+loading.gif
+http://www.ajaxload.info/
+WTFPL

@@ -60,6 +60,26 @@ defmodule Inkfish.Assignments do
                 starter_upload: starter]
   end
 
+  def get_assignment_for_staff!(id) do
+    Repo.one! from as in Assignment,
+      where: as.id == ^id,
+      inner_join: teamset in assoc(as, :teamset),
+      left_join: graders in assoc(as, :graders),
+      left_join: starter in assoc(as, :starter_upload),
+      left_join: solution in assoc(as, :solution_upload),
+      left_join: subs in assoc(as, :subs),
+      left_join: grades in assoc(subs, :grades),
+      inner_join: reg in assoc(subs, :reg),
+      inner_join: user in assoc(reg, :user),
+      preload: [
+        teamset: teamset,
+        graders: graders,
+        starter_upload: starter,
+        solution_upload: solution,
+        subs: {subs, grades: grades, reg: {reg, user: user}},
+      ]
+  end
+
   def get_assignment_path!(id) do
     Repo.one! from as in Assignment,
       where: as.id == ^id,

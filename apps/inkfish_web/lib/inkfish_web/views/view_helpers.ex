@@ -10,6 +10,16 @@ defmodule InkfishWeb.ViewHelpers do
     "#{user.given_name} #{user.surname}"
   end
 
+  def show_score(item) do
+    if item && item.score do
+      item.score
+    else
+      "∅"
+    end
+  end
+
+  def trusted_markdown(nil), do: "∅"
+
   def trusted_markdown(code) do
     case Earmark.as_html(code) do
       {:ok, html, []} ->
@@ -18,6 +28,8 @@ defmodule InkfishWeb.ViewHelpers do
         raw "error rendering markdown"
     end
   end
+
+  def sanitize_markdown(nil), do: "∅"
 
   def sanitize_markdown(code) do
     case Earmark.as_html(code) do

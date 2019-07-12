@@ -69,6 +69,7 @@
   <thead>
     <tr>
       <th>Name</th>
+      <th>Kind</th>
       <th>Weight</th>
     </tr>
   </thead>
@@ -76,7 +77,53 @@
     <%= for gr <- @assignment.graders do %>
       <tr>
         <td><%= link gr.name, to: Routes.staff_grader_path(@conn, :show, gr) %></td>
+        <td><%= gr.kind %></td>
         <td><%= gr.weight %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<h2>Submissions</h2>
+
+<script>
+ window.save_grade_path = "<%= Routes.ajax_staff_grade_path(@conn, :create) %>";
+</script>
+
+<table class="table table-striped">
+  <thead>
+    <th>Student</th>
+    <%= for gr <- @assignment.graders do %>
+      <th>
+        <%= gr.name %>
+        <%= if gr.kind == "number" do %>
+          (<a href="#" class="toggle-number-inputs">Toggle</a>)
+        <% end %>
+      </th>
+    <% end %>
+    <th>Total Grade</th>
+  </thead>
+  <tbody>
+    <%= for sub <- @assignment.subs do %>
+      <tr>
+        <td><%= user_display_name(sub.reg.user) %></td>
+        <%= for gr <- @assignment.graders do %>
+          <% grade = Enum.find(sub.grades, &(&1.grader_id == gr.id)) %>
+          <td>
+            <%= if gr.kind == "number" do %>
+              <div class="number-grade-cell"
+                   data-value="<%= (grade && grade.score) || 0 %>"
+                   data-sub-id="<%= sub.id %>"
+                   data-grader-id="<%= gr.id %>">
+                <!-- React component: graders/number-input.jsx -->
+                <%= show_score(grade) %>
+              </div>
+            <% else %>
+              <%= show_score(grade) %>
+            <% end %>
+          </td>
+        <% end %>
+        <td><%= show_score(sub) %></td>
       </tr>
     <% end %>
   </tbody>

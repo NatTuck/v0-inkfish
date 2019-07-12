@@ -1,5 +1,35 @@
-<h1>New Sub</h1>
+<h1>New Submission</h1>
 
-<%= render "form.html", Map.put(assigns, :action, Routes.sub_path(@conn, :create)) %>
+<p>Course: <%= @course.name %></p>
+<p>Assignment: <%= @assignment.name %></p>
 
-<span><%= link "Back", to: Routes.sub_path(@conn, :index) %></span>
+<%= form_for @changeset, Routes.assignment_sub_path(@conn, :create, @assignment), fn f -> %>
+  <%= if @changeset.action do %>
+    <div class="alert alert-danger">
+      <p>Oops, something went wrong! Please check the errors below.</p>
+    </div>
+  <% end %>
+
+  <div class="form-group">
+    <%= label f, :hours_spent %>
+    <%= number_input f, :hours_spent, class: "form-control" %>
+    <%= error_tag f, :hours_spent %>
+  </div>
+
+  <div class="form-group">
+    <%= label f, :note %>
+    <%= textarea f, :note, class: "form-control" %>
+    <%= error_tag f, :note %>
+  </div>
+
+  <div class="form-group">
+    <%= label f, :upload_id %>
+    <%= text_input f, :upload_id, class: "form-control", readonly: "readonly" %>
+    <%= error_tag f, :upload_id %>
+    <%= ajax_upload_field "sub", "tgz,gz,txt", "sub_upload_id" %>
+  </div>
+
+  <div>
+    <%= submit "Submit", class: "btn btn-primary" %>
+  </div>
+<% end %>

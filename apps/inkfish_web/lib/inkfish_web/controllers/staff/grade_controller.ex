@@ -15,14 +15,19 @@ defmodule InkfishWeb.Staff.GradeController do
   end
 
   def create(conn, %{"grade" => grade_params}) do
+    # Called only via AJAX
+    grade_params = grade_params
+    |> Map.put("grading_user_id", conn.assigns[:current_user_id])
+
     case Grades.create_grade(grade_params) do
       {:ok, grade} ->
         conn
-        |> put_flash(:info, "Grade created successfully.")
-        |> redirect(to: Routes.staff_grade_path(conn, :show, grade))
+        |> render("grade.json", grade: grade)
 
       {:error, %Ecto.Changeset{} = changeset} ->
-        render(conn, "new.html", changeset: changeset)
+        conn
+        |> put_resp_header("content-type", "application/json; charset=UTF-8")
+        |> send_resp(500, Jason.encode!(%{error: inspect(changeset)}))
     end
   end
 
