@@ -30,23 +30,25 @@
 
 <table class="table table-striped">
   <thead>
-    <td>View</td>
+    <td>Active</td>
     <td>Date</td>
     <%= for gdr <- @assignment.graders do %>
       <td><%= gdr.name %></td>
     <% end %>
     <td>Total Score</td>
+    <td>Actions</td>
   </thead>
   <tbody>
-    <%= for sub <- @assignment.subs do %>
+    <%= for sub <- @subs do %>
       <tr>
-        <td><%= link "View", to: Routes.sub_path(@conn, :show, sub) %></td>
+        <td style="text-align: center"><%= if sub.active, do: "✓" %></td>
         <td><%= sub.inserted_at %></td>
         <%= for gdr <- @assignment.graders do %>
           <% grade = Enum.find(sub.grades, &(&1.grader_id == gdr.id)) %>
-          <td><%= if grade do grade.score else "∅" end %></td>
+          <td><%= if grade do grade.score else "∅" end %> / <%= gdr.points %></td>
         <% end %>
-        <td><%= sub.score || "∅" %></td>
+        <td><%= sub.score || "∅" %> / <%= assignment_total_points(@assignment) %></td>
+        <td><%= link "View", to: Routes.sub_path(@conn, :show, sub) %></td>
       </tr>
     <% end %>
   </tbody>

@@ -1,8 +1,10 @@
 defmodule InkfishWeb.AssignmentController do
   use InkfishWeb, :controller
 
-  plug InkfishWeb.Plugs.FetchItem, [assignment: "id"]
+  alias InkfishWeb.Plugs
+  plug Plugs.FetchItem, [assignment: "id"]
     when action not in [:index, :new, :create]
+  plug Plugs.RequireReg
 
   alias InkfishWeb.Plugs.Breadcrumb
   plug Breadcrumb, {:show, :course}
@@ -10,7 +12,7 @@ defmodule InkfishWeb.AssignmentController do
   alias Inkfish.Assignments
 
   def show(conn, %{"id" => id}) do
-    assignment = Assignments.get_assignment_for_student!(id, conn.assigns[:current_user])
-    render(conn, "show.html", assignment: assignment)
+    subs = Assignments.list_subs_for_reg(id, conn.assigns[:current_reg])
+    render(conn, "show.html", subs: subs)
   end
 end

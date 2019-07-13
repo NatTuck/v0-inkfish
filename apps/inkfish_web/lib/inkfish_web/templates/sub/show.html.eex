@@ -7,11 +7,6 @@
   </li>
 
   <li>
-    <strong>Score:</strong>
-    <%= @sub.score || "∅" %>
-  </li>
-
-  <li>
     <strong>Hours Spent:</strong>
     <%= @sub.hours_spent %>
   </li>
@@ -21,7 +16,7 @@
     <%= link @sub.upload.name, to: Routes.upload_path(@conn, :show, @sub.upload) %>
 </ul>
 
-<p><strong>Note:</strong></p>
+<p><strong>Student Note:</strong></p>
 
 <p><%= sanitize_markdown(@sub.note) %></p>
 
@@ -32,15 +27,26 @@
     <tr>
       <th>Name</th>
       <th>Score</th>
-      <th>Weight</th>
+      <th>Points</th>
     </tr>
   </thead>
   <%= for grader <- @assignment.graders do %>
     <% grade = Enum.find(@sub.grades, &(&1.grader_id == grader.id)) %>
     <tr>
-      <td><%= grader.name %></td>
+      <td>
+        <%= if grade do %>
+          <%= link grader.name, to: Routes.grade_path(@conn, :show, grade.id) %>
+        <% else %>
+          <%= grader.name %>
+        <% end %>
+      </td>
       <td><%= show_score(grade) %></td>
-      <td><%= grader.weight %></td>
+      <td><%= grader.points %></td>
     </tr>
   <% end %>
+  <tr>
+    <td>Total Score</td>
+    <td><%= show_score(@sub) %></td>
+    <td><%= assignment_total_points(@assignment) %></td>
+  </tr>
 </table>
