@@ -3,11 +3,24 @@ defmodule InkfishWeb.ViewHelpers do
 
   use Phoenix.HTML
 
-
   alias Inkfish.Users.User
+  alias Inkfish.Users.Reg
   
   def user_display_name(%User{} = user) do
     "#{user.given_name} #{user.surname}"
+  end
+
+  def show_reg_role(%Reg{} = reg) do
+    cond do
+      reg.is_prof ->
+        "prof"
+      reg.is_staff ->
+        "staff"
+      reg.is_student ->
+        "student"
+      true ->
+        "observer"
+    end
   end
 
   def show_score(item) do
@@ -45,7 +58,6 @@ defmodule InkfishWeb.ViewHelpers do
         raw "error rendering markdown"
     end
   end
-
 
   def ajax_upload_field(kind, exts, target) do
     ~s(<div class="upload-drop-area" data-exts="#{exts}" data-kind="#{kind}"

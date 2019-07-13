@@ -180,15 +180,24 @@ defmodule Inkfish.Users do
   
   alias Inkfish.Courses.Course
   
-  def list_regs_for_course(%Course{} = course) do
-    list_regs_for_course(course.id)
-  end
-  
+  def list_regs_for_course(%Course{} = course),
+    do: list_regs_for_course(course.id)
+
   def list_regs_for_course(course_id) do
     Repo.all from reg in Reg, 
       where: reg.course_id == ^course_id,
       inner_join: user in assoc(reg, :user),
       preload: [user: user]
+  end
+
+  def list_regs_for_user(%User{} = user),
+    do: list_regs_for_user(user.id)
+
+  def list_regs_for_user(user_id) do
+    Repo.all from reg in Reg,
+      where: reg.user_id == ^user_id,
+      inner_join: course in assoc(reg, :course),
+      preload: [course: course]
   end
 
   @doc """

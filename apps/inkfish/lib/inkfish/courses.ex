@@ -26,6 +26,13 @@ defmodule Inkfish.Courses do
     Repo.all(Course)
   end
 
+  def list_courses_for_user(user) do
+    regs = from reg in Reg,
+      where: reg.user_id == ^user.id
+    Repo.all(Course)
+    |> Repo.preload([regs: regs])
+  end
+
   @doc """
   Gets a single course.
 

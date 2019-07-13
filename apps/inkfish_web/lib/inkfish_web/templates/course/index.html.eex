@@ -5,13 +5,22 @@
     <tr>
       <th>Name</th>
       <th>Start date</th>
+      <th>Role</th>
     </tr>
   </thead>
   <tbody>
 <%= for course <- @courses do %>
+  <% reg = Enum.find(@regs, &(&1.course_id == course.id)) %>
     <tr>
       <td><%= link course.name, to: Routes.course_path(@conn, :show, course) %></td>
       <td><%= course.start_date %></td>
+      <td>
+        <%= if reg do %>
+          <%= show_reg_role(reg) %>
+        <% else %>
+          [TODO: Join Link]
+        <% end %>
+      </td>
     </tr>
 <% end %>
   </tbody>

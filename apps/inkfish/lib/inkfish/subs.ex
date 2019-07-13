@@ -138,6 +138,7 @@ defmodule Inkfish.Subs do
     Ecto.Multi.new()
     |> Ecto.Multi.run(:sub0, fn (_,_) ->
       sub = Repo.one from sub in Sub,
+        lock: "FOR UPDATE",
         inner_join: as in assoc(sub, :assignment),
         left_join: graders in assoc(as, :graders),
         left_join: grades in assoc(sub, :grades),

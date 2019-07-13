@@ -13,16 +13,18 @@
       <thead>
         <tr>
           <td>Course</td>
+          <td>Role</td>
           <td>Next Due</td>
         </tr>
       </thead>
       <tbody>
-        <%= Enum.map @courses, fn course -> %>
+        <%= for reg <- @regs do %>
           <tr>
             <td>
-              <%= link(course.name, 
-                    to: Routes.course_path(@conn, :show, course.id)) %>
+              <%= link(reg.course.name,
+                    to: Routes.course_path(@conn, :show, reg.course.id)) %>
             </td>
+            <td><%= show_reg_role(reg) %></td>
             <td>Next Due</td>
           </tr>
         <% end %>

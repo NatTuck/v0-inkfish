@@ -6,7 +6,8 @@ defmodule InkfishWeb.CourseController do
 
   def index(conn, _params) do
     courses = Courses.list_courses()
-    render(conn, "index.html", courses: courses)
+    regs = Inkfish.Users.list_regs_for_user(conn.assigns[:current_user])
+    render(conn, "index.html", courses: courses, regs: regs)
   end
 
   def new(conn, _params) do

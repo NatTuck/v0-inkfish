@@ -9,6 +9,8 @@ TODO:
 
 ## OS Package Dependencies
 
+(Package names for Debian 10)
+
  - graphicsmagick
 
 

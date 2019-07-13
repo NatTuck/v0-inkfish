@@ -10,9 +10,9 @@ defmodule InkfishWeb.PageController do
   end
   
   def dashboard(conn, _params) do
-    if conn.assigns[:current_user] do
-      courses = Inkfish.Courses.list_courses() 
-      render(conn, "dashboard.html", courses: courses)
+    if user = conn.assigns[:current_user] do
+      regs = Inkfish.Users.list_regs_for_user(user)
+      render(conn, "dashboard.html", regs: regs)
     else
       redirect(conn, to: Routes.page_path(conn, :index))
     end
