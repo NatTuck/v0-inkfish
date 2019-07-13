@@ -3,24 +3,30 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import _ from 'lodash';
 
-let inputs = [];
+let inputs = new Map();
 
 class NumberInput extends React.Component {
   constructor(props) {
     super(props);
-    inputs.push(this);
+    if (!inputs.has(props.grader_id)) {
+      inputs.set(props.grader_id, []);
+    }
+    inputs.get(props.grader_id).push(this);
+
     this.state = {
       sub_id: props.sub_id,
       grader_id: props.grader_id,
-      saved_value: -1,
-      value: props.value,
+      saved_score: -1,
+      score: props.score,
+      points: props.points,
       edit: false,
       saving: false,
+      error: null,
     };
   }
 
   change(ev) {
-    this.setState({value: ev.target.value});
+    this.setState({score: ev.target.value});
   }
 
   save() {
@@ -28,7 +34,7 @@ class NumberInput extends React.Component {
       grade: {
         sub_id: this.state.sub_id,
         grader_id: this.state.grader_id,
-        score: this.state.value,
+        score: this.state.score,
       }
     });
 
@@ -46,47 +52,84 @@ class NumberInput extends React.Component {
   }
 
   save_success(resp) {
-    console.log(resp)
-    this.setState({saving: false, saved_value: resp.score});
+    this.setState({saving: false, saved_score: resp.score, error: null});
   }
   
   save_error(resp) {
-    console.log("Error saving grade: ", resp.status, resp.statusText);
+    let msg = `${resp.status} ${resp.statusText}`;
+    console.log("Error saving grade: ", msg);
     console.log(resp);
-    this.setState({saving: false});
+    this.setState({saving: false, error: msg});
   }
 
-  toggle() {
-    this.setState({edit: !this.state.edit});
+  setEdit(edit) {
+    this.setState({edit: edit, error: null});
   }
 
   render() {
-    if (this.state.edit) {
-      let btn = <img src="/images/loading.gif" />;
+    if (!this.state.edit) {
+      return <div>{this.state.score} / {this.state.points}</div>;
+    }
 
-      if (!this.state.saving) {
-        let enabled = this.state.value != this.state.saved_value;
-        btn = (
-          <button className="btn btn-secondary btn-sm"
-                  onClick={this.save.bind(this)}
-                  disabled={!enabled}>
-            Save
-          </button>
-        );
-      }
-
+    if (this.state.error) {
       return (
         <div>
-          <input type="number" className="number-grade-input"
-                 value={this.state.value}
-                 onChange={this.change.bind(this)} />
-          {btn}
+          {this.state.score} / {this.state.points}
+          <div className="badge badge-danger ml-1">{this.state.error}</div>
         </div>
       );
     }
-    else {
-      return <div>{this.state.value}</div>;
+
+    
+    let btn = <img src="/images/loading.gif" />;
+
+    if (!this.state.saving) {
+      let enabled = this.state.score != this.state.saved_score;
+      btn = (
+        <button className="btn btn-secondary btn-sm"
+                onClick={this.save.bind(this)}
+                disabled={!enabled}>
+          Save
+        </button>
+      );
     }
+
+    return (
+      <div>
+        <input type="number" className="number-grade-input"
+               value={this.state.score}
+               onChange={this.change.bind(this)} />
+        {btn}
+      </div>
+    );
+  }
+}
+
+class NumberInputToggle extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      grader_id: props.grader_id,
+      edit: false,
+    };
+  }
+
+  toggle(ev) {
+    ev.preventDefault();
+    let edit = !this.state.edit;
+    _.each(inputs.get(this.state.grader_id), (item) => {
+      item.setEdit(edit);
+    });
+    this.setState({edit: edit});
+  }
+
+  render() {
+    let text = this.state.edit ? "Hide" : "Show";
+    return (
+      <span>
+        (<a href="#" onClick={this.toggle.bind(this)}>{text}</a>)
+      </span>
+    );
   }
 }
 
@@ -94,16 +137,20 @@ function setup() {
   $('div.number-grade-cell').each((_ii, elem) => {
     var ee = $(elem);
     ReactDOM.render(
-      <NumberInput value={ee.data('value')}
+      <NumberInput score={ee.data('score')}
+                   points={ee.data('points')}
                    sub_id={ee.data('sub-id')}
                    grader_id={ee.data('grader-id')} />,
       elem
     );
   });
 
-  $('a.toggle-number-inputs').click((ev) => {
-    ev.preventDefault();
-    _.each(inputs, (item) => item.toggle());
+  $('span.toggle-number-inputs').each((_ii, elem) => {
+    var ee = $(elem);
+    ReactDOM.render(
+      <NumberInputToggle grader_id={ee.data('grader-id')} />,
+      elem
+    );
   });
 }
 

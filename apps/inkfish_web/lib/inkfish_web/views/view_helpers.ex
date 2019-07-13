@@ -18,6 +18,12 @@ defmodule InkfishWeb.ViewHelpers do
     end
   end
 
+  def assignment_total_points(as) do
+    Enum.reduce as.graders, Decimal.new("0"), fn (gdr, sum) ->
+      Decimal.add(gdr.points, sum)
+    end
+  end
+
   def trusted_markdown(nil), do: "∅"
 
   def trusted_markdown(code) do

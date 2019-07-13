@@ -97,7 +97,10 @@
       <th>
         <%= gr.name %>
         <%= if gr.kind == "number" do %>
-          (<a href="#" class="toggle-number-inputs">Toggle</a>)
+          <span class="toggle-number-inputs" data-grader-id="<%= gr.id %>">
+            <!-- react component from graders/number-input.jsx -->
+            [react]
+          </span>
         <% end %>
       </th>
     <% end %>
@@ -112,18 +115,19 @@
           <td>
             <%= if gr.kind == "number" do %>
               <div class="number-grade-cell"
-                   data-value="<%= (grade && grade.score) || 0 %>"
+                   data-score="<%= (grade && grade.score) || 0 %>"
+                   data-points="<%= gr.points %>"
                    data-sub-id="<%= sub.id %>"
                    data-grader-id="<%= gr.id %>">
                 <!-- React component: graders/number-input.jsx -->
                 <%= show_score(grade) %>
               </div>
             <% else %>
-              <%= show_score(grade) %>
+              <%= show_score(grade) %> / <%= gr.points %>
             <% end %>
           </td>
         <% end %>
-        <td><%= show_score(sub) %></td>
+        <td><%= show_score(sub) %> / <%= assignment_total_points(@assignment) %></td>
       </tr>
     <% end %>
   </tbody>
