@@ -2,6 +2,7 @@ defmodule Inkfish.Courses.Course do
   use Ecto.Schema
   import Ecto.Changeset
 
+  alias Inkfish.Users.User
 
   schema "courses" do
     field :name, :string
@@ -27,7 +28,7 @@ defmodule Inkfish.Courses.Course do
 
   def instructor_login(course) do
     if instructor = get_field(course, :instructor) do
-      String.replace(instructor || "", ~r/\s+\(.*\)$/, "")
+      User.normalize_login(instructor)
     else
       nil
     end

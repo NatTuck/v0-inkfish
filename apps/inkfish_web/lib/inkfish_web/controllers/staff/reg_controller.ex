@@ -1,9 +1,17 @@
 defmodule InkfishWeb.Staff.RegController do
   use InkfishWeb, :controller
 
-  plug InkfishWeb.Plugs.FetchItem, [course: "course_id"]
+  alias InkfishWeb.Plugs
+  plug Plugs.FetchItem, [course: "course_id"]
     when action in [:index, :new, :create]
-  plug InkfishWeb.Plugs.FetchItem, [reg: "id"]
+  plug Plugs.FetchItem, [reg: "id"]
+    when action not in [:index, :new, :create]
+  plug Plugs.RequireReg
+
+  alias InkfishWeb.Plugs.Breadcrumb
+  plug Breadcrumb, {"Courses (Staff)", :staff_course, :index}
+  plug Breadcrumb, {:show, :staff, :course}
+  plug Breadcrumb, {"Regs", :staff_course_reg, :index, :course}
     when action not in [:index, :new, :create]
 
   alias Inkfish.Users
@@ -20,6 +28,7 @@ defmodule InkfishWeb.Staff.RegController do
   end
 
   def create(conn, %{"reg" => reg_params}) do
+    reg_params = Map.put(reg_params, "course_id", conn.assigns[:course].id)
     case Users.create_reg(reg_params) do
       {:ok, reg} ->
         conn

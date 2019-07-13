@@ -28,4 +28,8 @@ defmodule Inkfish.Users.User do
     |> validate_length(:given_name, min: 1)
     |> validate_length(:surname, min: 1)
   end
+
+  def normalize_login(text) do
+    String.replace(text || "", ~r/\s+\(.*\)$/, "")
+  end
 end

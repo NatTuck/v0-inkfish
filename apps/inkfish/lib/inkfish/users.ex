@@ -6,6 +6,7 @@ defmodule Inkfish.Users do
   import Ecto.Query, warn: false
   alias Inkfish.Repo
 
+  alias Inkfish.Courses.Course
   alias Inkfish.Users.User
 
   @doc """
@@ -221,6 +222,18 @@ defmodule Inkfish.Users do
       preload: [course: course]
   end
 
+  def find_reg(%User{} = user, %Course{} = course) do
+    reg = Repo.one from reg in Reg,
+      where: reg.user_id == ^user.id and reg.course_id == ^course.id
+    if user.is_admin && is_nil(reg) do
+      # Admins are always registered for every course as no role.
+      {:ok, reg} = create_reg(%{user_id: user.id, course_id: course.id})
+      reg
+    else
+      reg
+    end
+  end
+
   @doc """
   Creates a reg.
 
@@ -233,9 +246,18 @@ defmodule Inkfish.Users do
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_reg(attrs \\ %{}) do
+  def create_reg(%{"user_login" => user_login} = attrs) do
+    login = User.normalize_login(user_login)
+    attrs
+    |> Map.put("user_id", get_user_by_login!(login).id)
+    |> Map.delete("user_login")
+    |> create_reg()
+  end
+
+  def create_reg(attrs) do
     %Reg{}
     |> Reg.changeset(attrs)
+    |> IO.inspect()
     |> Repo.insert()
   end
 

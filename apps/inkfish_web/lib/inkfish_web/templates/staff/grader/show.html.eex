@@ -17,11 +17,6 @@
   </li>
 
   <li>
-    <strong>Weight:</strong>
-    <%= @grader.weight %>
-  </li>
-
-  <li>
     <strong>Points:</strong>
     <%= @grader.points %>
   </li>

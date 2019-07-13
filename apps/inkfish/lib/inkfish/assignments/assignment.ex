@@ -14,6 +14,7 @@ defmodule Inkfish.Assignments.Assignment do
     belongs_to :solution_upload, Inkfish.Uploads.Upload, type: :binary_id
 
     has_many :graders, Inkfish.Grades.Grader
+    has_many :subs, Inkfish.Subs.Sub
 
     timestamps()
   end

@@ -18,12 +18,6 @@
   </div>
 
   <div class="form-group">
-    <%= label f, :weight %>
-    <%= number_input f, :weight, step: "any", class: "form-control" %>
-    <%= error_tag f, :weight %>
-  </div>
-
-  <div class="form-group">
     <%= label f, :points %>
     <%= number_input f, :points, step: "any", class: "form-control" %>
     <%= error_tag f, :points %>

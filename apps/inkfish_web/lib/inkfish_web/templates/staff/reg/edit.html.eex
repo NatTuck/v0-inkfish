@@ -1,5 +1,45 @@
 <h1>Edit Reg</h1>
 
-<%= render "form.html", Map.put(assigns, :action, Routes.staff_reg_path(@conn, :update, @reg)) %>
+<%= form_for @changeset, Routes.staff_reg_path(@conn, :update, @reg), fn f -> %>
+  <%= if @changeset.action do %>
+    <div class="alert alert-danger">
+      <p>Oops, something went wrong! Please check the errors below.</p>
+    </div>
+  <% end %>
 
-<span><%= link "Back", to: Routes.staff_reg_path(@conn, :index) %></span>
+  <div class="form-group">
+    <p>Course: <%= @course.name %></p>
+  </div>
+
+  <div class="form-group">
+    <p>User: <%= user_display_name(@reg.user) %></p>
+  </div>
+
+  <div class="form-group">
+    <%= label f, :is_grader %>
+    <%= checkbox f, :is_grader, class: "form-control toggle" %>
+    <%= error_tag f, :is_grader %>
+  </div>
+
+  <div class="form-group">
+    <%= label f, :is_prof %>
+    <%= checkbox f, :is_prof, class: "form-control toggle" %>
+    <%= error_tag f, :is_prof %>
+  </div>
+
+  <div class="form-group">
+    <%= label f, :is_staff %>
+    <%= checkbox f, :is_staff, class: "form-control toggle" %>
+    <%= error_tag f, :is_staff %>
+  </div>
+
+  <div class="form-group">
+    <%= label f, :is_student %>
+    <%= checkbox f, :is_student, class: "form-control toggle" %>
+    <%= error_tag f, :is_student %>
+  </div>
+
+  <div>
+    <%= submit "Save", class: "btn btn-primary" %>
+  </div>
+<% end %>

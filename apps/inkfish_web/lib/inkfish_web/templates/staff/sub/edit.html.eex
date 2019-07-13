@@ -1,0 +1,5 @@
+<h1>Edit Sub</h1>
+
+<%= render "form.html", Map.put(assigns, :action, Routes.staff_sub_path(@conn, :update, @sub)) %>
+
+<span><%= link "Back", to: Routes.staff_sub_path(@conn, :index) %></span>

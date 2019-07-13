@@ -11,6 +11,7 @@ defmodule Inkfish.Courses do
   alias Inkfish.Users
   alias Inkfish.Users.User
   alias Inkfish.Users.Reg
+  alias Inkfish.Teams.Teamset
 
   @doc """
   Returns the list of courses.
@@ -40,18 +41,19 @@ defmodule Inkfish.Courses do
 
   """
   def get_course!(id) do
-    %Course{} = get_course(id)
+    Repo.get!(Course, id)
+    #%Course{} = get_course(id)
   end
 
   def get_course(id) do
-    course = Repo.get(Course, id)
-    if course != nil && course.solo_teamset_id == nil do
-      %Course{} = course
-      ts = Inkfish.Teams.create_solo_teamset!(course)
-      %Course{course | solo_teamset_id: ts.id}
-    else
-      course
-    end
+    Repo.get(Course, id)
+    #if course != nil && course.solo_teamset_id == nil do
+    #  %Course{} = course
+    #  ts = Inkfish.Teams.create_solo_teamset!(course)
+    #  %Course{course | solo_teamset_id: ts.id}
+    #else
+    #  course
+    #end
   end
 
   def get_course_for_staff_view!(id) do
@@ -68,11 +70,13 @@ defmodule Inkfish.Courses do
   def get_course_for_student_view!(id) do
      Repo.one! from cc in Course,
       where: cc.id == ^id,
-      left_join: buckets in assoc(cc, :buckets),
-      left_join: bas in assoc(buckets, :assignments),
       left_join: teamsets in assoc(cc, :teamsets),
       left_join: tas in assoc(teamsets, :assignments),
-      preload: [buckets: {buckets, assignments: bas},
+      left_join: buckets in assoc(cc, :buckets),
+      left_join: bas in assoc(buckets, :assignments),
+      left_join: subs in assoc(bas, :subs),
+      where: subs.active == true or is_nil(subs.active),
+      preload: [buckets: {buckets, assignments: {bas, subs: subs}},
                 teamsets: {teamsets, assignments: tas}]
   end
 
@@ -95,10 +99,11 @@ defmodule Inkfish.Courses do
     result = Ecto.Multi.new()
     |> Ecto.Multi.insert(:course, course)
     |> course_add_instructor(instructor)
+    |> course_add_solo_teamset()
     |> Repo.transaction()
 
     case result do
-      {:ok, %{course: course}} -> {:ok, course}
+      {:ok, %{course_w_ts: course}} -> {:ok, course}
       {:error, :course, cset, _}  -> {:error, cset}
       {:error, :reg, cset, _} ->
         cset = Ecto.Changeset.add_error(course, :instructor, "instructor reg failed")
@@ -117,6 +122,17 @@ defmodule Inkfish.Courses do
 
     Ecto.Multi.insert(tx, :reg, op, on_conflict: :replace_all,
       conflict_target: [:user_id, :course_id])
+  end
+
+  def course_add_solo_teamset(tx) do
+    tx = Ecto.Multi.insert tx, :tset, fn %{course: course} ->
+      attrs = %{ name: "Solo Work", course_id: course.id }
+      Teamset.changeset(%Teamset{}, attrs)
+    end
+
+    Ecto.Multi.update tx, :course_w_ts, fn %{course: course, tset: tset} ->
+      Course.changeset(course, %{solo_teamset_id: tset.id})
+    end
   end
 
   @doc """

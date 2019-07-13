@@ -14,6 +14,11 @@ alias Inkfish.Users.User
 alias Inkfish.Users.Reg
 alias Inkfish.Courses.Course
 alias Inkfish.Courses.Bucket
+alias Inkfish.Teams.Teamset
+alias Inkfish.Assignments.Assignment
+
+alias Inkfish.Courses
+alias Inkfish.Teams
 
 alias Inkfish.Repo
 
@@ -32,7 +37,8 @@ defmodule Make do
   end
 
   def course(name) do
-    Repo.insert!(%Course{name: name, start_date: Date.utc_today()})
+    {:ok, course} = Courses.create_course(%{name: name, start_date: Date.utc_today()})
+    course
   end
 
   def reg(user, course, attrs) do
@@ -42,7 +48,32 @@ defmodule Make do
   end
 
   def bucket(course, name, weight) do
-    %Bucket{course_id: course.id, name: name, weight: weight}
+    Repo.insert!(%Bucket{course_id: course.id, name: name, weight: weight})
+  end
+
+  def assignment(course, bucket, name) do
+    ts = Teams.get_solo_teamset!(course)
+    as = %Assignment{
+      name: name,
+      desc: name,
+      due: days_from_now(3),
+      weight: Decimal.new("1.0"),
+      bucket_id: bucket.id,
+      teamset_id: ts.id,
+    }
+    Repo.insert!(as)
+  end
+
+  def now do
+    :calendar.local_time()
+    |> NaiveDateTime.from_erl!()
+    |> NaiveDateTime.truncate(:second)
+  end
+
+  def days_from_now(nn) do
+    now()
+    |> NaiveDateTime.add(nn*60*60*24)
+    |> NaiveDateTime.truncate(:second)
   end
 end
 
@@ -56,3 +87,6 @@ c0 = Make.course("Data Science of Art History")
 Make.reg(u1, c0, is_prof: true)
 Make.reg(u2, c0, is_staff: true)
 Make.reg(u3, c0, is_student: true)
+
+b0 = Make.bucket(c0, "Homework", Decimal.new("1.0"))
+a0 = Make.assignment(c0, b0, "Homework 1")

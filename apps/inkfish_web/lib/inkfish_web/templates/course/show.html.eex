@@ -20,14 +20,16 @@
         <th>Name</th>
         <th>Due</th>
         <th>Weight</th>
+        <th>Score</th>
       </tr>
     </thead>
     <tbody>
       <%= for as <- bucket.assignments do %>
         <tr>
-          <td><%= as.name %></td>
+          <td><%= link as.name, to: Routes.assignment_path(@conn, :show, as) %></td>
           <td><%= as.due %></td>
           <td><%= as.weight %></td>
+          <td><%= assignment_score(as) %></td>
         </tr>
       <% end %>
     </tbody>
