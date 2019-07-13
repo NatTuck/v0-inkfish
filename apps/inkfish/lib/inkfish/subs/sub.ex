@@ -12,6 +12,8 @@ defmodule Inkfish.Subs.Sub do
     belongs_to :upload, Inkfish.Uploads.Upload, type: :binary_id
     has_many :grades, Inkfish.Grades.Grade
 
+    field :updated_score, :decimal, virtual: true
+
     timestamps()
   end
 

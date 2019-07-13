@@ -51,6 +51,7 @@ defmodule InkfishWeb.Router do
       resources "/subs", SubController, only: [:new, :create]
     end
     resources "/subs", SubController, only: [:show]
+    resources "/graders", GraderController, only: [:show]
     resources "/grades", GradeController, only: [:show]
   end
 

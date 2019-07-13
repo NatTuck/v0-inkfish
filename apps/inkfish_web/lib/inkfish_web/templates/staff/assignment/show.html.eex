@@ -70,7 +70,7 @@
     <tr>
       <th>Name</th>
       <th>Kind</th>
-      <th>Weight</th>
+      <th>Points</th>
     </tr>
   </thead>
   <tbody>
@@ -78,7 +78,7 @@
       <tr>
         <td><%= link gr.name, to: Routes.staff_grader_path(@conn, :show, gr) %></td>
         <td><%= gr.kind %></td>
-        <td><%= gr.weight %></td>
+        <td><%= gr.points %></td>
       </tr>
     <% end %>
   </tbody>

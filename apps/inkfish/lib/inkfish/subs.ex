@@ -134,6 +134,31 @@ defmodule Inkfish.Subs do
     |> Repo.update()
   end
 
+  def calc_sub_score!(sub_id) do
+    Ecto.Multi.new()
+    |> Ecto.Multi.run(:sub0, fn (_,_) ->
+      sub = Repo.one from sub in Sub,
+        inner_join: as in assoc(sub, :assignment),
+        left_join: graders in assoc(as, :graders),
+        left_join: grades in assoc(sub, :grades),
+        preload: [assignment: {as, graders: graders}, grades: grades]
+      {:ok, sub}
+    end)
+    |> Ecto.Multi.update(:sub, fn %{sub0: sub} ->
+      scores = Enum.map sub.assignment.graders, fn gdr ->
+        grade = Enum.find sub.grades, &(&1.grader_id == gdr.id)
+        grade && grade.score
+      end
+      if Enum.all? scores, &(!is_nil(&1)) do
+        total = Enum.reduce scores, Decimal.new("0"), &Decimal.add/2
+        Ecto.Changeset.change(sub, score: total)
+      else
+        Ecto.Changeset.change(sub, score: nil)
+      end
+    end)
+    |> Repo.transaction()
+  end
+
   @doc """
   Deletes a Sub.
 

@@ -5,7 +5,6 @@ defmodule Inkfish.Repo.Migrations.CreateGraders do
     create table(:graders) do
       add :name, :string, null: false
       add :kind, :string, null: false
-      add :weight, :decimal, null: false
       add :points, :decimal, null: false
       add :params, :string, null: false, default: ""
       add :assignment_id, references(:assignments, on_delete: :delete_all), null: false

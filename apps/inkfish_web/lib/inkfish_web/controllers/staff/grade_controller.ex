@@ -21,8 +21,8 @@ defmodule InkfishWeb.Staff.GradeController do
 
     case Grades.create_grade(grade_params) do
       {:ok, grade} ->
-        conn
-        |> render("grade.json", grade: grade)
+        Inkfish.Subs.calc_sub_score!(grade.sub_id)
+        render(conn, "grade.json", grade: grade)
 
       {:error, %Ecto.Changeset{} = changeset} ->
         conn

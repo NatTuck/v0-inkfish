@@ -101,7 +101,8 @@ function setup() {
     );
   });
 
-  $('a.toggle-number-inputs').click(() => {
+  $('a.toggle-number-inputs').click((ev) => {
+    ev.preventDefault();
     _.each(inputs, (item) => item.toggle());
   });
 }
