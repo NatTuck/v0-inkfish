@@ -42,6 +42,7 @@ defmodule InkfishWeb.Router do
     get "/uploads/:id/thumb", UploadController, :thumb
     resources "/courses", CourseController, only: [:index, :show] do
       resources "/regs", RegController, only: [:index, :new, :create]
+      resources "/join_reqs", JoinReqController, only: [:new, :create]
       resources "/teams", TeamController, only: [:index, :new, :create]
       resources "/buckets", BucketController, only: [:index, :new, :create]
     end
@@ -60,10 +61,13 @@ defmodule InkfishWeb.Router do
 
     resources "/courses", CourseController do
       resources "/regs", RegController, only: [:index, :new, :create]
+      resources "/join_reqs", JoinReqController, only: [:index]
       resources "/teamsets", TeamsetController, only: [:index, :new, :create]
       resources "/buckets", BucketController, only: [:index, :new, :create]
     end
     resources "/regs", RegController, except: [:index, :new, :create]
+    resources "/join_reqs", JoinReqController, only: [:show, :delete]
+    post "/join_reqs/:id/accept", JoinReqController, :accept
     resources "/teamsets", TeamsetController, except: [:index, :new, :create] do
       resources "/teams", TeamController, only: [:index, :new, :create]
     end

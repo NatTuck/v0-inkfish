@@ -12,13 +12,24 @@
 <%= for course <- @courses do %>
   <% reg = Enum.find(@regs, &(&1.course_id == course.id)) %>
     <tr>
-      <td><%= link course.name, to: Routes.course_path(@conn, :show, course) %></td>
+      <td>
+        <%= link course.name, to: Routes.course_path(@conn, :show, course) %>
+        <%= if staff_reg?(reg) do %>
+          (<%= link "Staff View", to: Routes.staff_course_path(@conn, :show, course) %>)
+        <% end %>
+      </td>
       <td><%= course.start_date %></td>
       <td>
         <%= if reg do %>
           <%= show_reg_role(reg) %>
         <% else %>
-          [TODO: Join Link]
+          <% req = Enum.find(@reqs, &(&1.course_id == course.id)) %>
+          <%= if req do %>
+            Waiting for approval
+          <% else %>
+            <%= link("Request to Join",
+              to: Routes.course_join_req_path(@conn, :new, course.id)) %>
+          <% end %>
         <% end %>
       </td>
     </tr>

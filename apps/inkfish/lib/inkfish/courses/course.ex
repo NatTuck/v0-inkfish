@@ -9,6 +9,7 @@ defmodule Inkfish.Courses.Course do
     field :start_date, :date
     field :footer, :string, default: ""
     has_many :regs, Inkfish.Users.Reg
+    has_many :join_reqs, Inkfish.JoinReqs.JoinReq
     has_many :buckets, Inkfish.Courses.Bucket
     has_many :teamsets, Inkfish.Teams.Teamset
     belongs_to :solo_teamset, Inkfish.Teams.Teamset
