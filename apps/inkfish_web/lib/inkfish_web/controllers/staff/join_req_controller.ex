@@ -13,6 +13,7 @@ defmodule InkfishWeb.Staff.JoinReqController do
 
   alias InkfishWeb.Plugs.Breadcrumb
   plug Breadcrumb, {"Courses (Staff)", :staff_course, :index}
+  plug Breadcrumb, {:show, :staff, :course}
   plug Breadcrumb, {"Join Reqs", :staff_course_join_req, :index, :course}
     when action not in [:index]
 
