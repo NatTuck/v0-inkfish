@@ -70,8 +70,10 @@ defmodule Inkfish.Courses do
       left_join: bas in assoc(buckets, :assignments),
       left_join: teamsets in assoc(cc, :teamsets),
       left_join: tas in assoc(teamsets, :assignments),
+      left_join: reqs in assoc(cc, :join_reqs),
       preload: [buckets: {buckets, assignments: bas},
-                teamsets: {teamsets, assignments: tas}]
+                teamsets: {teamsets, assignments: tas},
+                join_reqs: reqs]
   end
 
   def get_course_for_student_view!(id) do

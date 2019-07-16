@@ -4,7 +4,11 @@
 <p>
   <%= link "Edit Course", to: Routes.staff_course_path(@conn, :edit, @course) %> |
   <%= link "Edit Buckets", to: Routes.staff_course_bucket_path(@conn, :index, @course) %> |
-  <%= link "Edit Regs", to: Routes.staff_course_reg_path(@conn, :index, @course) %>
+  <%= link "Edit Regs", to: Routes.staff_course_reg_path(@conn, :index, @course) %> |
+  <%= link "View Reqs", to: Routes.staff_course_join_req_path(@conn, :index, @course) %>
+  <%= if length(@course.join_reqs) > 0 do %>
+    <span class="badge badge-info"><%= length(@course.join_reqs) %></span>
+  <% end %>
 </p>
 
 <ul>

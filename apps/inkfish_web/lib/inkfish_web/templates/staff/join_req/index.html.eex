@@ -1,0 +1,37 @@
+<h1>Listing Join Requests</h1>
+
+<p>Course: <%= @course.name %></p>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>User</th>
+      <th>Note</th>
+      <th>Staff req</th>
+
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+<%= for join_req <- @join_reqs do %>
+    <%= if join_req.staff_req do %>
+      <tr class="table-warning">
+    <% else %>
+      <tr>
+    <% end %>
+      <td><%= user_display_name(join_req.user) %></td>
+      <td><%= join_req.note %></td>
+      <td><%= join_req.staff_req %></td>
+
+      <td>
+        <%= link("Accept", to: Routes.staff_join_req_path(@conn, :accept, join_req),
+          method: :post, class: "btn btn-info btn-sm") %>
+        <%= link("Delete", to: Routes.staff_join_req_path(@conn, :delete, join_req),
+          method: :delete, data: [confirm: "Are you sure?"],
+          class: "btn btn-danger btn-sm") %>
+      </td>
+    </tr>
+<% end %>
+  </tbody>
+</table>
+

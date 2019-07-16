@@ -1,0 +1,23 @@
+<h1>Show Join req</h1>
+
+<ul>
+
+  <li>
+    <strong>Login:</strong>
+    <%= @join_req.login %>
+  </li>
+
+  <li>
+    <strong>Note:</strong>
+    <%= @join_req.note %>
+  </li>
+
+  <li>
+    <strong>Staff req:</strong>
+    <%= @join_req.staff_req %>
+  </li>
+
+</ul>
+
+<span><%= link "Edit", to: Routes.join_req_path(@conn, :edit, @join_req) %></span>
+<span><%= link "Back", to: Routes.join_req_path(@conn, :index) %></span>

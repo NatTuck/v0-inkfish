@@ -31,6 +31,13 @@ defmodule InkfishWeb.Plugs.FetchItem do
     |> assign(:course, reg.course)
   end
 
+  def fetch(conn, :join_req, id) do
+    req = Inkfish.JoinReqs.get_join_req_path!(id)
+    conn
+    |> assign(:join_req, req)
+    |> assign(:course, req.course)
+  end
+
   def fetch(conn, :teamset, id) do
     ts = Inkfish.Teams.get_teamset_path!(id)
     conn
