@@ -12,7 +12,6 @@ defmodule InkfishWeb.Staff.CourseController do
   alias Inkfish.Courses.Course
   alias Inkfish.Teams
 
-
   def index(conn, _params) do
     courses = Courses.list_courses()
     render(conn, "index.html", courses: courses)
