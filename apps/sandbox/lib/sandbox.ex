@@ -4,15 +4,11 @@ defmodule Sandbox do
   """
 
   @doc """
-  Hello world.
+  Extract an archive file to a target location.
 
-  ## Examples
-
-      iex> Sandbox.hello()
-      :world
-
+  Avoids zip bombs and removes unsafe symlinks.
   """
-  def hello do
-    :world
+  def extract_archive(path, target, max_size \\ "10M") do
+    Sandbox.Archive.safe_extract(path, target, max_size)
   end
 end

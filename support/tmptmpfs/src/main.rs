@@ -17,11 +17,17 @@ fn main() {
              (about: "List active mounts"))
             (@subcommand start =>
              (about: "Start a temporary mount")
-             (@arg time: -t "Duration mount will last")
-             (@arg size: -s "Max size of filesystem"))
+             (@arg time: -t +takes_value
+              "Duration mount will last")
+             (@arg size: -s +takes_value
+              "Max size of filesystem"))
             (@subcommand clean =>
              (about: "Clean up old mounts"))
+            (@subcommand who =>
+             (about: "Verify setuid config"))
     ).get_matches();
+
+    setuid_root();
 
     if let Some(_opts) = opts.subcommand_matches("list") {
         make_base().unwrap();
@@ -42,6 +48,14 @@ fn main() {
 
     if let Some(_opts) = opts.subcommand_matches("clean") {
         clean_mounts().unwrap();
+        return;
+    }
+
+    if let Some(_opts) = opts.subcommand_matches("who") {
+        let outp = Command::new("whoami")
+            .output().unwrap().stdout;
+        let text = std::str::from_utf8(&outp).unwrap();
+        println!("whoami = {}", text);
         return;
     }
 }
@@ -107,10 +121,11 @@ fn clean_mounts() -> io::Result<()> {
                 let pstr = path.to_str().unwrap().to_owned();
 
                 if ms.contains(&pstr) {
-                    unmount(path.clone())?;
+                    match unmount(path.clone()) {
+                        Ok(_) => std::fs::remove_dir(path)?,
+                        Err(ee) => println!("unmount error: {:?}\n{:?}", &path, ee),
+                    }
                 }
-
-                std::fs::remove_dir(path)?;
             }
         }
     }
@@ -121,6 +136,14 @@ fn clean_mounts() -> io::Result<()> {
 fn is_alive(pid: i32) -> bool {
     unsafe {
         libc::kill(pid, 0) == 0
+    }
+}
+
+fn close_fds() {
+    unsafe {
+        libc::close(0);
+        libc::close(1);
+        libc::close(2);
     }
 }
 
@@ -140,6 +163,8 @@ fn start_mount(duration: u32, size: &str) -> io::Result<String> {
     }
 
     // Child process
+    close_fds();
+
     let pid = process::id() as i32;
     mount(pid, size)?;
 
@@ -154,14 +179,17 @@ fn start_mount(duration: u32, size: &str) -> io::Result<String> {
 fn mount(pid: i32, size: &str) -> io::Result<()> {
     let path = mount_dir(pid);
     fs::create_dir_all(&path)?;
-    let status = Command::new("mount")
-        .arg("-t")
-        .arg("tmpfs")
-        .arg("-o")
-        .arg(format!("size={}", size))
-        .arg("tmpfs")
-        .arg(&path)
-        .status()?;
+    let mut cmd = Command::new("mount");
+    cmd.arg("-t")
+       .arg("tmpfs")
+       .arg("-o")
+       .arg(format!("size={}", size))
+       .arg("tmpfs")
+       .arg(&path);
+
+    //println!("cmd = [{:?}]", &cmd);
+
+    let status = cmd.status()?;
     if status.success() {
         Ok(())
     }
@@ -171,9 +199,10 @@ fn mount(pid: i32, size: &str) -> io::Result<()> {
 }
 
 fn unmount(path: PathBuf) -> io::Result<()> {
-    let status = Command::new("umount")
-        .arg(&path)
-        .status()?;
+    let mut cmd = Command::new("umount");
+    cmd.arg(&path);
+    println!("{:?}", &cmd);
+    let status = cmd.status()?;
     if status.success() {
         std::fs::remove_dir(&path)?;
         Ok(())
@@ -190,4 +219,14 @@ fn sleep_ms(ms: u32) {
 
 fn io_err(text: &str) -> io::Result<()> {
     Err(io::Error::new(io::ErrorKind::Other, text))
+}
+
+fn setuid_root() {
+    unsafe {
+        let euid = libc::geteuid();
+        if euid == 0 {
+            let rv = libc::setuid(0);
+            assert!(rv == 0);
+        }
+    }
 }
