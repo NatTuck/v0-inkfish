@@ -11,4 +11,13 @@ defmodule Sandbox do
   def extract_archive(path, target, max_size \\ "10M") do
     Sandbox.Archive.safe_extract(path, target, max_size)
   end
+
+  @doc """
+  Clones a git repository to a target location.
+
+  Limits total size.
+  """
+  def git_clone(url, dst, max_size \\ "10M") do
+    Sandbox.Git.clone(url, dst, max_size)
+  end
 end

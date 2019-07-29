@@ -2,6 +2,7 @@ defmodule Sandbox.Archive do
 
   alias Sandbox.TempFs
   alias Sandbox.Traverse
+  alias Sandbox.Shell
 
   @doc """
   Safely extract an archive file.
@@ -41,13 +42,9 @@ defmodule Sandbox.Archive do
 
   def untar(archive, target) do
     File.mkdir_p!(target)
-    {:ok, script} = Temp.open "unpack", fn fd ->
-      IO.write fd, """
-      cd "#{target}" && tar xvf "#{archive}"
-      """
-    end
-    {text, code} = System.cmd("bash", [script], stderr_to_stdout: true)
-    File.rm(script)
+    {text, code} = Shell.run_script """
+    cd "#{target}" && tar xvf "#{archive}"
+    """
     if code == 0 do
       :ok
     else
