@@ -7,18 +7,17 @@ defmodule Sandbox.Git do
     dir  = Path.dirname(dst)
     tdir = TempFs.make_tempfs(max_size)
 
-    {text, code} = Shell.run_script """
+    rv = Shell.run_script """
     cd "#{tdir}" && git clone #{url} #{base}
     """
 
-    if code == 0 do
+    if rv == :ok do
       File.mkdir_p!(dir)
       {_, 0} = Shell.run_script """
       cp -r "#{tdir}/#{base}" "#{dst}"
       """
-      :ok
-    else
-      {:error, text}
     end
+
+    rv
   end
 end

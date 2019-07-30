@@ -42,13 +42,17 @@ defmodule Sandbox.Archive do
 
   def untar(archive, target) do
     File.mkdir_p!(target)
-    {text, code} = Shell.run_script """
+    Shell.run_script """
     cd "#{target}" && tar xvf "#{archive}"
     """
-    if code == 0 do
-      :ok
-    else
-      {:error, text}
-    end
+  end
+
+  def tar(src, archive) do
+    dir  = Path.dir(src)
+    base = Path.base(src)
+    File.mkdir_p!(Path.dir(archive))
+    Shell.run_script """
+    cd "#{base}" && tar czvf "#{archive}"
+    """
   end
 end

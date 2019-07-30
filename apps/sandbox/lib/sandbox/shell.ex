@@ -10,6 +10,10 @@ defmodule Sandbox.Shell do
     end
     {text, code} = System.cmd("bash", [script], stderr_to_stdout: true)
     File.rm(script)
-    {text, code}
+    if code == 0 do
+      :ok
+    else
+      {:error, text}
+    end
   end
 end
