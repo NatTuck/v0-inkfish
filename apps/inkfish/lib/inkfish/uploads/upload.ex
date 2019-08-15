@@ -19,6 +19,7 @@ defmodule Inkfish.Uploads.Upload do
       foreign_key: :starter_upload_id
     has_one :solution_assignment, Inkfish.Assignments.Assignment,
       foreign_key: :solution_upload_id
+    has_one :sub, Inkfish.Subs.Sub
 
     field :upload, :any, virtual: true
 

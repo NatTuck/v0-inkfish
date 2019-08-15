@@ -4,6 +4,15 @@ defmodule Sandbox do
   """
 
   @doc """
+  Create a temporary directory with a maximum size.
+
+  returns {:ok, path} or {:error, msg}
+  """
+  def make_tempfs(max_size) do
+    Sandbox.TempFs.make_tempfs(max_size)
+  end
+
+  @doc """
   Extract an archive file to a target location.
 
   Avoids zip bombs and removes unsafe symlinks.

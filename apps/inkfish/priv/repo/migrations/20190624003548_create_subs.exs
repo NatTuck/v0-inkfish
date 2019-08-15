@@ -10,6 +10,7 @@ defmodule Inkfish.Repo.Migrations.CreateSubs do
       add :assignment_id, references(:assignments, on_delete: :nothing), null: false
       add :reg_id, references(:regs, on_delete: :nothing), null: false
       add :upload_id, references(:uploads, on_delete: :nothing, type: :binary_id), null: false
+      add :git_repo, :string, default: nil
 
       timestamps()
     end

@@ -3,6 +3,7 @@
 // its own CSS file.
 import css from "../css/app.scss";
 
+
 // webpack automatically bundles all modules in your
 // entry points. Those entry points can be configured
 // in "webpack.config.js".
@@ -13,15 +14,13 @@ import "phoenix_html";
 import jQuery from 'jquery';
 window.$ = jQuery;
 window.jQuery = jQuery;
-import "popper.js";
-import "bootstrap";
+import "bootstrap/dist/js/bootstrap.bundle";
 import "bootstrap4-toggle";
-
 
 // Import local files
 //
 // Local files can be imported directly using relative paths, for example:
-import socket from "./socket";
+//import socket from "./socket";
 import "./search";
 import "./uploads";
 import "./graders/number-input";

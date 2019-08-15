@@ -1,5 +1,12 @@
 <h1>Show Assignment</h1>
 
+<%= if is_staff?(@current_reg, @current_user) do %>
+  <p>
+    <%= link("Staff View",
+      to: Routes.staff_assignment_path(@conn, :show, @assignment)) %>
+  </p>
+<% end %>
+
 <ul>
   <li>
     <strong>Name:</strong>

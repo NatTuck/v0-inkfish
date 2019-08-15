@@ -1,8 +1,42 @@
 
 import $ from 'jquery';
 import 'dm-file-uploader';
+import uuid from 'uuid/v4';
+
+import socket from "./socket";
 
 function setup() {
+  if (window.current_page != 'sub/new') {
+    return;
+  }
+
+  setup_cloner();
+  setup_uploader();
+}
+
+function join_channel(topic) {
+  let channel = socket.channel("clone:" + topic, {});
+  channel.join()
+         .receive("ok", resp => { console.log("Joined successfully", resp); })
+         .receive("error", resp => { console.log("Unable to join", resp); });
+  return channel;
+}
+
+function setup_cloner() {
+  let ch_id = uuid();
+  let channel = join_channel(ch_id);
+  console.log("joined channel: clone:" + ch_id);
+
+  $('#git-clone-btn').click((ev) => {
+    ev.preventDefault();
+    let url = $('#git-clone-input').val();
+    channel.push("clone", {url: url});
+  });
+
+  console.log("cloner setup done");
+}
+
+function setup_uploader() {
   $('.upload-drop-area').each((_, elem) => {
     let ee = $(elem);
     let exts = null;

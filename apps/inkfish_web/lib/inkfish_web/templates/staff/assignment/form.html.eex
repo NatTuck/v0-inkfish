@@ -42,6 +42,18 @@
   </div>
 
   <div class="form-group">
+    <%= label f, :allow_upload %>
+    <%= checkbox f, :allow_upload, class: "form-control toggle" %>
+    <%= error_tag f, :allow_upload %>
+  </div>
+
+  <div class="form-group">
+    <%= label f, :allow_git %>
+    <%= checkbox f, :allow_git, class: "form-control toggle" %>
+    <%= error_tag f, :allow_git %>
+  </div>
+
+  <div class="form-group">
     <%= label f, :starter_upload_id %>
     <%= text_input f, :starter_upload_id, class: "form-control", readonly: "readonly" %>
     <%= error_tag f, :starter_upload_id %>

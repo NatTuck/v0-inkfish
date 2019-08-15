@@ -2,8 +2,8 @@ defmodule InkfishWeb.UserSocket do
   use Phoenix.Socket
 
   ## Channels
-  # channel "room:*", InkfishWeb.RoomChannel
   channel "search:*", InkfishWeb.SearchChannel
+  channel "clone:*", InkfishWeb.CloneChannel
 
   # Socket params are passed from the client and can
   # be used to verify and authenticate a user. After
@@ -20,7 +20,7 @@ defmodule InkfishWeb.UserSocket do
     case Phoenix.Token.verify(socket, "user_id", token, max_age: 1209600) do
       {:ok, user_id} ->
         {:ok, assign(socket, :user_id, user_id)}
-      {:error, reason} ->
+      {:error, _reason} ->
         :error
     end
   end

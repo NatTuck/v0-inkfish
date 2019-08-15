@@ -24,8 +24,8 @@
       <td><%= user.is_admin %></td>
 
       <td>
-        <%= link "Show", to: Routes.admin_user_path(@conn, :show, user) %>
-        <%= link "Edit", to: Routes.admin_user_path(@conn, :edit, user) %>
+        <%= link "Show", to: Routes.admin_user_path(@conn, :show, user) %>&nbsp;
+        <%= link "Edit", to: Routes.admin_user_path(@conn, :edit, user) %>&nbsp;
         <%= link "Delete", to: Routes.admin_user_path(@conn, :delete, user), method: :delete, data: [confirm: "Are you sure?"] %>
       </td>
     </tr>

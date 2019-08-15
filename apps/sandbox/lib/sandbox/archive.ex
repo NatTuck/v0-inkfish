@@ -10,7 +10,7 @@ defmodule Sandbox.Archive do
   def safe_extract(archive, target, max_size) do
     archive = Path.expand(archive)
     target  = Path.expand(target)
-    tdir = TempFs.make_tempfs(max_size)
+    {:ok, tdir} = TempFs.make_tempfs(max_size)
     case untar(archive, tdir) do
       :ok ->
         sanitize_links!(tdir)

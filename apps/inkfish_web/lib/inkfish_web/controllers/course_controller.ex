@@ -4,6 +4,11 @@ defmodule InkfishWeb.CourseController do
   alias Inkfish.Courses
   alias Inkfish.Courses.Course
 
+  alias InkfishWeb.Plugs
+  plug Plugs.FetchItem, [course: "id"]
+    when action not in [:index, :new, :create]
+  plug Plugs.RequireReg
+
   def index(conn, _params) do
     courses = Courses.list_courses()
     regs = Inkfish.Users.list_regs_for_user(conn.assigns[:current_user])
