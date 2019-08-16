@@ -54,6 +54,7 @@ defmodule Inkfish.Uploads do
     case Repo.insert(cset) do
       {:ok, upload}  ->
         Upload.save_upload_file!(cset, upload)
+        Upload.unpack(upload)
         clean_uploads()
         {:ok, upload}
       error ->

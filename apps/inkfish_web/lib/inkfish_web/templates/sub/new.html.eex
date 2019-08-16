@@ -58,10 +58,8 @@
         </div>
         <div class="row">
           <div class="col">
-            <pre>one
-two
-three
-three</pre>
+            <div class="output-log" id="git-output-log"
+                 data-id-field="sub_upload_id"></div>
           </div>
         </div>
       </div>

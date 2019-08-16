@@ -1,4 +1,5 @@
 
+import _ from 'lodash';
 import $ from 'jquery';
 import 'dm-file-uploader';
 import uuid from 'uuid/v4';
@@ -22,10 +23,36 @@ function join_channel(topic) {
   return channel;
 }
 
+function scroll_down(elem) {
+  if (elem.scrollHeight - elem.clientHeight < elem.scrollTop - 5) {
+    return;
+  }
+  elem.scrollTop = elem.scrollHeight - elem.clientHeight;
+}
+
 function setup_cloner() {
   let ch_id = uuid();
   let channel = join_channel(ch_id);
   console.log("joined channel: clone:" + ch_id);
+
+  channel.on("print", ({msg}) => {
+    msg = msg.replace(/\r$/, "\n");
+    $('#git-output-log').append(msg);
+    let scroll_fn = () => {
+      scroll_down($('#git-output-log')[0]);
+    };
+    _.debounce(scroll_fn, 50)();
+  });
+
+  channel.on("fail", ({msg}) => {
+    $('#git-output-log').append("\nFAIL:\n" + msg);
+  });
+
+  channel.on("done", ({upload_id}) => {
+    let id_field = $('#git-output-log').data('id-field');
+    console.log("done", upload_id);
+    $("#" + id_field).val(upload_id);
+  });
 
   $('#git-clone-btn').click((ev) => {
     ev.preventDefault();

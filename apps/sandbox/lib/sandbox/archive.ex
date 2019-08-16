@@ -14,7 +14,7 @@ defmodule Sandbox.Archive do
     case untar(archive, tdir) do
       :ok ->
         sanitize_links!(tdir)
-        {_, 0} = System.cmd("bash", ["-c", ~s(cp -r "#{tdir}" "#{target}")])
+        {_, 0} = System.cmd("bash", ["-c", ~s(cp -r "#{tdir}"/* "#{target}")])
         :ok
       {:error, text} ->
         {:error, text}

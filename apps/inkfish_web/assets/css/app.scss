@@ -49,3 +49,14 @@ textarea.form-control {
 .sub-upload-group {
     height: 18em;
 }
+
+.output-log {
+    overflow-y: scroll;
+    white-space: pre-wrap;
+    border: thin solid grey;
+    font-family: monospace;
+}
+
+#git-output-log {
+    height: 7em;
+}

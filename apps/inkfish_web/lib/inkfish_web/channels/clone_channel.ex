@@ -11,14 +11,9 @@ defmodule InkfishWeb.CloneChannel do
   end
 
   def handle_in("clone", %{"url" => url}, socket) do
-    IO.inspect({:clone, url})
-    {:noreply, socket}
-  end
-
-  # It is also common to receive messages from the client and
-  # broadcast to everyone in the current topic (clone:lobby).
-  def handle_in("shout", payload, socket) do
-    broadcast socket, "shout", payload
+    channel = "clone:" <> socket.assigns[:id]
+    user_id = socket.assigns[:user_id]
+    {:ok, _} = Inkfish.Uploads.Git.start_clone(url, channel, user_id)
     {:noreply, socket}
   end
 

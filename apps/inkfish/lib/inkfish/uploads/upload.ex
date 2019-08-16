@@ -37,6 +37,18 @@ defmodule Inkfish.Uploads.Upload do
     |> validate_file_size()
   end
 
+  def git_changeset(upload, attrs) do
+    # Uploads are immutable, so all changesets are new inserts.
+    upload
+    |> cast(attrs, [:kind, :user_id, :name])
+    |> validate_required([:kind, :user_id, :name])
+    |> validate_kind()
+  end
+
+  def copy_file!(upload, src) do
+    File.copy!(src, upload_path(upload))
+  end
+
   def normalize_name(%Ecto.Changeset{} = cset) do
     if upload = get_field(cset, :upload) do
       name = String.replace(upload.filename, ~r([^\w\.]+), "_")
@@ -81,8 +93,17 @@ defmodule Inkfish.Uploads.Upload do
   end
 
   def upload_path(id, name) do
-    dir = upload_dir(id)
-    Path.join(dir, name)
+    base = upload_dir(id)
+    udir = Path.join(base, "upload")
+    File.mkdir_p!(udir)
+    Path.join(udir, name)
+  end
+
+  def unpacked_path(upload) do
+    base = upload_dir(upload.id)
+    full = Path.join(base, "unpacked")
+    File.mkdir_p!(full)
+    full
   end
 
   # Would be nicer to pattern match %Upload{...}, but...
@@ -100,5 +121,9 @@ defmodule Inkfish.Uploads.Upload do
   def upload_base() do
     env = Application.get_env(:inkfish, :env)
     Path.expand("~/.local/data/inkfish/uploads/#{env}")
+  end
+
+  def unpack(upload) do
+    Sandbox.extract_archive(upload_path(upload), unpacked_path(upload))
   end
 end

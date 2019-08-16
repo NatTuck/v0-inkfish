@@ -1,13 +1,17 @@
 defmodule Inkfish.Uploads.Git do
   use GenServer
 
-  def start_clone(url, channel) do
-    state0 = %{url: url, channel: channel}
+  def start_clone(url, channel, user_id) do
+    state0 = %{url: url, channel: channel, user_id: user_id}
     GenServer.start_link(__MODULE__, state0)
   end
 
   def message(pid, msg) do
-    Process.send_after(pid, {:print, msg}, 0)
+    GenServer.call(pid, {:print, msg})
+  end
+
+  def upload_done(pid, upload_id) do
+    GenServer.call(pid, {:done, upload_id})
   end
 
   # Implementation
@@ -22,7 +26,7 @@ defmodule Inkfish.Uploads.Git do
   #  - Send success message with Upload ID.
 
   # Task to do the work.
-  def work(%{url: url, channel: channel}, spid) do
+  def work(%{url: url, user_id: user_id}, spid) do
     max_megs = 10
 
     message(spid, "Creating temp dir...")
@@ -33,11 +37,22 @@ defmodule Inkfish.Uploads.Git do
 
     message(spid, "Checking size...")
     {:ok, size} = check_size(Path.join(tdir, gdir), spid, max_megs)
+    message(spid, "Size OK at #{size}k")
 
     message(spid, "Packing tarball...")
-    {:ok, tarp} = pack_tarball(tdir, gdir, spid)
+    {:ok, tarn} = pack_tarball(tdir, gdir, spid)
+    tarp = Path.join(tdir, tarn)
 
-    IO.inspect({:tarball_packed, tarp})
+    message(spid, "Creating upload...")
+    attrs = %{kind: "sub", user_id: user_id, name: tarn}
+    {:ok, upload} = Inkfish.Uploads.create_git_upload(attrs)
+    Inkfish.Uploads.Upload.copy_file!(upload, tarp)
+
+    message(spid, "Unpacking tarball...")
+    :ok = Inkfish.Uploads.Upload.unpack(upload)
+
+    message(spid, "Done. Upload is #{upload.id}")
+    upload_done(spid, upload.id)
   end
 
   def clone_repo(url, tdir, spid) do
@@ -47,9 +62,8 @@ defmodule Inkfish.Uploads.Git do
     {:ok, gdir}
   end
 
-  def check_size(path, spid, max_megs) do
+  def check_size(path, _spid, max_megs) do
     {:ok, [stdout: text]} = Inkfish.Exec.system(~s(du -cks "#{path}" | tail -n 1))
-    IO.inspect({:text, text})
     {size, _} = Integer.parse(Enum.join(text))
     if size <= (max_megs * 1024) do
       {:ok, size}
@@ -62,7 +76,7 @@ defmodule Inkfish.Uploads.Git do
     tarname = "#{gdir}.tar.gz"
     cmd = ~s(cd "#{tdir}" && tar czvf "#{tarname}" "#{gdir}")
     {:ok, _} = Inkfish.Exec.run(cmd, spid)
-    {:ok, Path.join(tdir, tarname)}
+    {:ok, tarname}
   end
 
   # GenServer callbacks
@@ -74,21 +88,46 @@ defmodule Inkfish.Uploads.Git do
     {:ok, state}
   end
 
-  def handle_info({:print, msg}, state) do
-    IO.inspect({:msg, msg})
+  def handle_call({:done, upload_id}, _from, state) do
+    channel = state[:channel]
+    InkfishWeb.Endpoint.broadcast(channel, "done", %{upload_id: upload_id})
+    {:reply, :ok, state}
+  end
+
+  def handle_call({:print, msg}, _from, state) do
+    channel = state[:channel]
+    InkfishWeb.Endpoint.broadcast(channel, "print", %{msg: "#{msg}\n"})
+    {:reply, :ok, state}
+  end
+
+  def handle_info({:stdout, _, data}, state) do
+    channel = state[:channel]
+    msg = " o: #{data}"
+    InkfishWeb.Endpoint.broadcast(channel, "print", %{msg: msg})
+    {:noreply, state}
+  end
+
+  def handle_info({:stderr, _, data}, state) do
+    channel = state[:channel]
+    msg = " E: #{data}"
+    InkfishWeb.Endpoint.broadcast(channel, "print", %{msg: msg})
     {:noreply, state}
   end
 
   def handle_info({:EXIT, pid, reason}, state) do
     wpid = state[:wpid]
+    channel = state[:channel]
     if pid == wpid do
       case reason do
+        :normal ->
+          IO.inspect("Work task exited normally")
         {{:badmatch, error}, _} ->
-          IO.inspect({"got error", error})
+          payload = %{ msg: inspect(error) }
+          InkfishWeb.Endpoint.broadcast(channel, "fail", payload)
         _ ->
           IO.inspect({"unknown reason", reason})
       end
-      {:noreply, state}
+      {:stop, :normal, state}
     else
       {:noreply, state}
     end
