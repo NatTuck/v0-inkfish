@@ -1,8 +1,69 @@
 
+import _ from 'lodash';
 import $ from 'jquery';
 import 'dm-file-uploader';
+import uuid from 'uuid/v4';
+
+import socket from "./socket";
 
 function setup() {
+  if (window.current_page != 'sub/new') {
+    return;
+  }
+
+  setup_cloner();
+  setup_uploader();
+}
+
+function join_channel(topic) {
+  let channel = socket.channel("clone:" + topic, {});
+  channel.join()
+         .receive("ok", resp => { console.log("Joined successfully", resp); })
+         .receive("error", resp => { console.log("Unable to join", resp); });
+  return channel;
+}
+
+function scroll_down(elem) {
+  if (elem.scrollHeight - elem.clientHeight < elem.scrollTop - 5) {
+    return;
+  }
+  elem.scrollTop = elem.scrollHeight - elem.clientHeight;
+}
+
+function setup_cloner() {
+  let ch_id = uuid();
+  let channel = join_channel(ch_id);
+  console.log("joined channel: clone:" + ch_id);
+
+  channel.on("print", ({msg}) => {
+    msg = msg.replace(/\r$/, "\n");
+    $('#git-output-log').append(msg);
+    let scroll_fn = () => {
+      scroll_down($('#git-output-log')[0]);
+    };
+    _.debounce(scroll_fn, 50)();
+  });
+
+  channel.on("fail", ({msg}) => {
+    $('#git-output-log').append("\nFAIL:\n" + msg);
+  });
+
+  channel.on("done", ({upload_id}) => {
+    let id_field = $('#git-output-log').data('id-field');
+    console.log("done", upload_id);
+    $("#" + id_field).val(upload_id);
+  });
+
+  $('#git-clone-btn').click((ev) => {
+    ev.preventDefault();
+    let url = $('#git-clone-input').val();
+    channel.push("clone", {url: url});
+  });
+
+  console.log("cloner setup done");
+}
+
+function setup_uploader() {
   $('.upload-drop-area').each((_, elem) => {
     let ee = $(elem);
     let exts = null;

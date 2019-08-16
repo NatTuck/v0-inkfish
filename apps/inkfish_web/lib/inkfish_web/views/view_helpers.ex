@@ -10,6 +10,10 @@ defmodule InkfishWeb.ViewHelpers do
     "#{user.given_name} #{user.surname}"
   end
 
+  def is_staff?(reg, user) do
+    reg.is_staff || reg.is_prof || user.is_admin
+  end
+
   def show_reg_role(%Reg{} = reg) do
     cond do
       reg.is_prof ->

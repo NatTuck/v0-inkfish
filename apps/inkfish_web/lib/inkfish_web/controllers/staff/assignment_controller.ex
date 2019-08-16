@@ -9,7 +9,8 @@ defmodule InkfishWeb.Staff.AssignmentController do
   alias InkfishWeb.Plugs.Breadcrumb
   plug Breadcrumb, {"Courses (Staff)", :staff_course, :index}
   plug Breadcrumb, {:show, :staff, :course}
-  plug Breadcrumb, {:show, :staff, :bucket}
+  plug Breadcrumb, {:show, :staff, :assignment}
+    when action not in [:index, :new, :create, :show]
 
   alias Inkfish.Assignments
   alias Inkfish.Assignments.Assignment

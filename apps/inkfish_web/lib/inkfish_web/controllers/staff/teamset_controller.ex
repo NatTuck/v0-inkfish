@@ -1,9 +1,10 @@
 defmodule InkfishWeb.Staff.TeamsetController do
   use InkfishWeb, :controller
 
-  plug InkfishWeb.Plugs.FetchItem, [teamset: "id"]
+  alias InkfishWeb.Plugs
+  plug Plugs.FetchItem, [teamset: "id"]
     when action not in [:index, :new, :create]
-  plug InkfishWeb.Plugs.FetchItem, [course: "course_id"]
+  plug Plugs.FetchItem, [course: "course_id"]
     when action in [:index, :new, :create]
 
   alias InkfishWeb.Plugs.Breadcrumb

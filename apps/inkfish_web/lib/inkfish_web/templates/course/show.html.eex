@@ -1,6 +1,13 @@
 
 <h1>Show Course</h1>
 
+<%= if is_staff?(@current_reg, @current_user) do %>
+  <p>
+    <%= link("Staff View",
+      to: Routes.staff_course_path(@conn, :show, @course)) %>
+  </p>
+<% end %>
+
 <ul>
   <li>
     <strong>Name:</strong>

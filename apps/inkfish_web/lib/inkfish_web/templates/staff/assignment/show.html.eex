@@ -1,6 +1,8 @@
 <h1>Show Assignment</h1>
 
 <p>
+  <%= link("Student View",
+    to: Routes.assignment_path(@conn, :show, @assignment)) %> |
   <%= link("Edit Assignment",
     to: Routes.staff_assignment_path(@conn, :edit, @assignment)) %>
 </p>
@@ -49,6 +51,12 @@
     <% else %>
       ∅
     <% end %>
+  </li>
+
+  <li>
+    <strong>Sub Options:</strong>
+    <%= if @assignment.allow_git do %>git<% end %>
+    <%= if @assignment.allow_upload do %>upload<% end %>
   </li>
 </ul>
 

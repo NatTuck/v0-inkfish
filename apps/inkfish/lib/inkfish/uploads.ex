@@ -54,6 +54,18 @@ defmodule Inkfish.Uploads do
     case Repo.insert(cset) do
       {:ok, upload}  ->
         Upload.save_upload_file!(cset, upload)
+        Upload.unpack(upload)
+        clean_uploads()
+        {:ok, upload}
+      error ->
+        error
+    end
+  end
+
+  def create_git_upload(attrs \\ %{}) do
+    cset = Upload.git_changeset(%Upload{}, attrs)
+    case Repo.insert(cset) do
+      {:ok, upload}  ->
         clean_uploads()
         {:ok, upload}
       error ->

@@ -2,7 +2,7 @@
 
 @import "~bootstrap/scss/bootstrap";
 @import "~bootswatch/dist/spacelab/bootswatch";
-@import "~bootstrap4-toggle/css/bootstrap4-toggle";
+@import "~bootstrap4-toggle/css/bootstrap4-toggle.min";
 
 .header-logo { 
     width: 64px; 
@@ -40,4 +40,23 @@ textarea.form-control {
 .number-grade-cell {
     width: 10em;
     min-height: 2em;
+}
+
+.form-group label {
+    padding-right: 1em;
+}
+
+.sub-upload-group {
+    height: 18em;
+}
+
+.output-log {
+    overflow-y: scroll;
+    white-space: pre-wrap;
+    border: thin solid grey;
+    font-family: monospace;
+}
+
+#git-output-log {
+    height: 7em;
 }
