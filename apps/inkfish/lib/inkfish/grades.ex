@@ -163,7 +163,7 @@ defmodule Inkfish.Grades do
     result = %Grade{}
     |> Grade.changeset(attrs)
     |> Repo.insert(
-      on_conflict: :replace_all,
+      on_conflict: {:replace, [:score]},
       conflict_target: [:sub_id, :grader_id])
 
     case result do
@@ -173,6 +173,16 @@ defmodule Inkfish.Grades do
         error
     end
   end
+
+  def create_null_grade(sub_id, grader_id) do
+    attrs = %{
+      sub_id: sub_id,
+      grader_id: grader_id,
+      score: nil,
+    }
+    create_grade(attrs)
+  end
+
 
   @doc """
   Updates a grade.

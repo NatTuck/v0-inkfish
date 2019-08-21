@@ -15,7 +15,17 @@ defmodule InkfishWeb.Staff.GradeController do
   end
 
   def create(conn, %{"grade" => grade_params}) do
-    # Called only via AJAX
+    case Grades.create_grade(grade_params) do
+      {:ok, grade} ->
+        redirect(conn, to: Routes.staff_grade_path(conn, :edit, grade))
+      {:error, %Ecto.Changeset{} = changeset} ->
+        conn
+        |> put_flash(:error, "Failed to create grade.")
+        |> redirect(to: Routes.page_path(@conn, :dashboard))
+    end
+  end
+
+  def ajax_create(conn, %{"grade" => grade_params}) do
     grade_params = grade_params
     |> Map.put("grading_user_id", conn.assigns[:current_user_id])
 
@@ -37,9 +47,12 @@ defmodule InkfishWeb.Staff.GradeController do
   end
 
   def edit(conn, %{"id" => id}) do
+    {id, _} = Integer.parse(id)
     grade = Grades.get_grade!(id)
     changeset = Grades.change_grade(grade)
-    render(conn, "edit.html", grade: grade, changeset: changeset)
+    data = Inkfish.Subs.read_sub_data(grade.sub_id)
+    |> Map.put(:grade_id, id)
+    render(conn, "edit.html", grade: grade, changeset: changeset, data: data)
   end
 
   def update(conn, %{"id" => id, "grade" => grade_params}) do
@@ -47,6 +60,8 @@ defmodule InkfishWeb.Staff.GradeController do
 
     case Grades.update_grade(grade, grade_params) do
       {:ok, grade} ->
+        Inkfish.Subs.calc_sub_score!(grade.sub_id)
+
         conn
         |> put_flash(:info, "Grade updated successfully.")
         |> redirect(to: Routes.staff_grade_path(conn, :show, grade))

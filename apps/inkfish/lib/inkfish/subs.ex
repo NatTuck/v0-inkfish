@@ -8,6 +8,7 @@ defmodule Inkfish.Subs do
 
   alias Inkfish.Subs.Sub
   alias Inkfish.Users.Reg
+  alias Inkfish.Grades
 
   @doc """
   Returns the list of subs.
@@ -64,7 +65,7 @@ defmodule Inkfish.Subs do
   end
 
   def get_sub_path!(id) do
-    sub = Repo.one! from sub in Sub,
+    Repo.one! from sub in Sub,
       where: sub.id == ^id,
       left_join: grades in assoc(sub, :grades),
       inner_join: as in assoc(sub, :assignment),
@@ -138,11 +139,11 @@ defmodule Inkfish.Subs do
     Ecto.Multi.new()
     |> Ecto.Multi.run(:sub0, fn (_,_) ->
       sub = Repo.one from sub in Sub,
-        lock: "FOR UPDATE",
         inner_join: as in assoc(sub, :assignment),
         left_join: graders in assoc(as, :graders),
         left_join: grades in assoc(sub, :grades),
-        preload: [assignment: {as, graders: graders}, grades: grades]
+        preload: [assignment: {as, graders: graders}, grades: grades],
+        where: sub.id == ^sub_id
       {:ok, sub}
     end)
     |> Ecto.Multi.update(:sub, fn %{sub0: sub} ->
@@ -187,5 +188,17 @@ defmodule Inkfish.Subs do
   """
   def change_sub(%Sub{} = sub) do
     Sub.changeset(sub, %{})
+  end
+
+  def read_sub_data(%Sub{} = sub) do
+    files = Inkfish.Uploads.Data.read_data(sub.upload)
+    %{
+      sub_id: sub.id,
+      files: files,
+    }
+  end
+
+  def read_sub_data(sub_id) do
+    read_sub_data(get_sub!(sub_id))
   end
 end

@@ -32,7 +32,7 @@
     <tr>
       <th>Name</th>
       <th>Score</th>
-      <th>Weight</th>
+      <th>Points</th>
       <th>Actions</th>
     </tr>
   </thead>
@@ -41,8 +41,9 @@
     <tr>
       <td><%= grader.name %></td>
       <td><%= show_score(grade) %></td>
-      <td><%= grader.weight %></td>
+      <td><%= grader.points %></td>
       <td>
+        <pre><%= inspect(@sub) %></pre>
         <%= staff_grade_action(@conn, grader, grade) %>
       </td>
     </tr>

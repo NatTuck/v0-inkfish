@@ -16,6 +16,6 @@ defmodule Inkfish.Grades.Grade do
   def changeset(grade, attrs) do
     grade
     |> cast(attrs, [:grader_id, :sub_id, :score, :grading_user_id])
-    |> validate_required([:grader_id, :sub_id, :score])
+    |> validate_required([:grader_id, :sub_id])
   end
 end

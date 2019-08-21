@@ -95,7 +95,7 @@
 <h2>Submissions</h2>
 
 <script>
- window.save_grade_path = "<%= Routes.ajax_staff_grade_path(@conn, :create) %>";
+ window.save_grade_path = "<%= Routes.ajax_staff_grade_path(@conn, :ajax_create) %>";
 </script>
 
 <table class="table table-striped">
@@ -113,29 +113,49 @@
       </th>
     <% end %>
     <th>Total Grade</th>
+    <th>Actions</th>
   </thead>
   <tbody>
     <%= for sub <- @assignment.subs do %>
       <tr>
-        <td><%= user_display_name(sub.reg.user) %></td>
+        <td><%= link(user_display_name(sub.reg.user),
+            to: Routes.staff_reg_path(@conn, :show, sub.reg)) %></td>
         <%= for gr <- @assignment.graders do %>
           <% grade = Enum.find(sub.grades, &(&1.grader_id == gr.id)) %>
           <td>
-            <%= if gr.kind == "number" do %>
-              <div class="number-grade-cell"
-                   data-score="<%= (grade && grade.score) || 0 %>"
-                   data-points="<%= gr.points %>"
-                   data-sub-id="<%= sub.id %>"
-                   data-grader-id="<%= gr.id %>">
-                <!-- React component: graders/number-input.jsx -->
-                <%= show_score(grade) %>
-              </div>
-            <% else %>
+            <%= case gr.kind do %>
+              <% "number" -> %>
+                <div class="number-grade-cell"
+                     data-score="<%= (grade && grade.score) || 0 %>"
+                     data-points="<%= gr.points %>"
+                     data-sub-id="<%= sub.id %>"
+                     data-grader-id="<%= gr.id %>">
+                  <!-- React component: graders/number-input.jsx -->
+                  <%= show_score(grade) %>
+                </div>
+              <% "feedback" -> %>
+                <%= if grade do %>
+                  <%= show_score(grade) %> / <%= gr.points %>
+                  <%= link("Edit", to: Routes.staff_grade_path(@conn, :edit, grade)) %>
+                <% else %>
+                  <% grade = %Inkfish.Grades.Grade{grader_id: gr.id, sub_id: sub.id} %>
+                  <% cset = Inkfish.Grades.change_grade(grade) %>
+                  <% action = Routes.staff_grade_path(@conn, :create) %>
+                  <%= form_for cset, action, fn f -> %>
+                    <%= hidden_input f, :sub_id %>
+                    <%= hidden_input f, :grader_id %>
+                    <%= submit "Create", class: "btn btn-secondary btn-sm" %>
+                  <% end %>
+                <% end %>
+              <% _else -> %>
               <%= show_score(grade) %> / <%= gr.points %>
             <% end %>
           </td>
         <% end %>
         <td><%= show_score(sub) %> / <%= assignment_total_points(@assignment) %></td>
+        <td>
+          <%= link("View", to: Routes.staff_sub_path(@conn, :show, sub)) %>
+        </td>
       </tr>
     <% end %>
   </tbody>

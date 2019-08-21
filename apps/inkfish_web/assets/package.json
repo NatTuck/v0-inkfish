@@ -9,7 +9,11 @@
     "bootstrap": "^4.3.1",
     "bootstrap4-toggle": "^3.5.0",
     "bootswatch": "^4.3.1",
+    "codemirror": "^5.48.2",
+    "codemirror-mode-elixir": "^1.1.2",
+    "deep-freeze": "0.0.1",
     "dm-file-uploader": "^1.0.2",
+    "immutable": "^4.0.0-rc.12",
     "jquery": "^3.4.1",
     "lodash": "^4.17.15",
     "phoenix": "file:../../../deps/phoenix",
@@ -17,6 +21,8 @@
     "popper.js": "^1.15.0",
     "react": "^16.9.0",
     "react-dom": "^16.9.0",
+    "react-simple-tree-menu": "^1.1.4",
+    "reactstrap": "^8.0.1",
     "uuid": "^3.3.2"
   },
   "devDependencies": {

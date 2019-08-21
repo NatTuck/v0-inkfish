@@ -77,17 +77,17 @@ defmodule Make do
   end
 end
 
-u0 = Make.user("alice")
-Inkfish.Users.update_user(u0, %{is_admin: true})
-u1 = Make.user("bob")
-u2 = Make.user("carol")
-u3 = Make.user("dave")
-u4 = Make.user("erin")
+uA = Make.user("alice")
+Inkfish.Users.update_user(uA, %{is_admin: true})
+uB = Make.user("bob")
+uC = Make.user("carol")
+uD = Make.user("dave")
+uE = Make.user("erin")
 
 c0 = Make.course("Data Science of Art History")
-Make.reg(u1, c0, is_prof: true)
-Make.reg(u2, c0, is_staff: true)
-Make.reg(u3, c0, is_student: true)
+Make.reg(uB, c0, is_prof: true)
+Make.reg(uC, c0, is_staff: true)
+Make.reg(uD, c0, is_student: true)
 
 b0 = Make.bucket(c0, "Homework", Decimal.new("1.0"))
 a0 = Make.assignment(c0, b0, "Homework 1")
