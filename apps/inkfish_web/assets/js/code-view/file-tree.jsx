@@ -18,18 +18,24 @@ class FileTree extends React.Component {
   constructor(props) {
     super(props);
 
+    let dirs = list_dirs(props.data.files);
+
     this.state = deepFreeze({
       sub_id: props.data.sub_id,
       grade_id: props.data.grade_id,
       files: props.data.files,
       active: "[root]",
+      dirs: dirs,
     });
   }
 
   pick_file(ev, props) {
     ev.preventDefault();
-    console.log("props:", props);
     viewer_set_file(props);
+    this.setState(deepFreeze({
+      ...this.state,
+      active: props.path,
+    }));
   }
 
   render() {
@@ -38,7 +44,7 @@ class FileTree extends React.Component {
         data={[this.state.files]}
         onClickItem={({...props}) => this.pick_file(props)}
         debounceTime={5}
-        initialOpenNodes={[""]}>
+        initialOpenNodes={this.state.dirs}>
       {({_search, items}) => (
         <ListGroup>
         {items.map((props) => {
@@ -52,32 +58,51 @@ class FileTree extends React.Component {
   }
 }
 
-function ListItem(props) {
-  let toggle = <span className="tree-toggle">&nbsp;</span>;
-  if (props.hasNodes) {
-    toggle = (
-      <span className="tree-toggle">
-        <a href="#"
-           onClick={(ev) => {
-             ev.preventDefault();
-             props.hasNodes && props.toggleNode && props.toggleNode()
-           }}>
-          {props.isOpen ? "-" : "+" }
-        </a>
-      </span>
-    );
+function list_dirs(data) {
+  if (data.type != "directory") {
+    return [];
   }
 
-  let classes = [];
-  if (props.active) {
-    classes.push("active");
+  let ys = [data.key];
+
+  for (let node of data.nodes) {
+    ys = _.concat(ys, list_dirs(node));
   }
+
+  return ys;
+}
+
+function ListItem(props) {
+  if (props.hasNodes) {
+    return <DirListItem {...props} />;
+  }
+
+  return (
+    <ListGroupItem active={props.active}>
+      <span className="tree-toggle">&nbsp;</span>
+      <a href="#" onClick={props.onClickLabel}>
+        {props.label}
+      </a>
+    </ListGroupItem>
+  );
+}
+
+function DirListItem(props) {
+  let toggle = (ev) => {
+    ev.preventDefault();
+    props.hasNodes && props.toggleNode && props.toggleNode()
+  };
 
   return (
     //<ListGroupItem className="d-flex justify-content-between align-items-center">
     <ListGroupItem active={props.active}>
-      {toggle}
-      <a href="#" onClick={props.onClickLabel}>
+      <span className="tree-toggle">
+        <a href="#"
+           onClick={toggle}>
+          {props.isOpen ? "-" : "+" }
+        </a>
+      </span>
+      <a href="#" onClick={toggle}>
         {props.label}
       </a>
     </ListGroupItem>
