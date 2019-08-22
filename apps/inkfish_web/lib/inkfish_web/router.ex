@@ -102,6 +102,7 @@ defmodule InkfishWeb.Router do
     pipe_through :ajax
 
     post "/grades", GradeController, :ajax_create
+    resources "/line_comments", LineCommentController, except: [:new, :edit]
   end
 
   # Other scopes may use custom stacks.

@@ -46,26 +46,32 @@ defmodule Inkfish.Uploads.Data do
     info
   end
 
-  def set_mode(info, _base, rel) do
+  def set_mode(info, base, rel) do
     name = Path.basename(rel)
     cond do
       name =~ ~r/\.ex$/i ->
         Map.put(info, :mode, "elixir")
       name =~ ~r/\.c$/i ->
         Map.put(info, :mode, "clike")
-      name =~ ~r/\.txt$/i || name == "Makefile" ->
+      text_file?(Path.join(base, rel)) ->
         Map.put(info, :mode, "null")
       true ->
-        info
+          info
     end
   end
 
   def read_text(info, base, rel) do
-    if info.mode do
-      text = File.read!(Path.join(base, rel))
+    path = Path.join(base, rel)
+    if info[:mode] do
+      text = File.read!(path)
       Map.put(info, :text, text)
     else
       info
     end
+  end
+
+  def text_file?(path) do
+    {type, 0} = System.cmd("file", [path])
+    type =~ ~r/text/i
   end
 end

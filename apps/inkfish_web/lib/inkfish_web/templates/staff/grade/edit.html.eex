@@ -9,18 +9,14 @@
   </div>
   <div class="col-md-9 h-100">
     <!-- CodeMirror goes here; code-viewer/code-viewer.js -->
-    <div class="card">
-      <div class="card-body">
+    <div class="card h-100">
+      <div class="card-body h-100">
         <h2 class="card-title" id="viewer-file-path">(no file selected)</h2>
         <textarea id="code-viewer"></textarea>
       </div>
     </div>
   </div>
 </div>
-
-<pre>
-  <%= Jason.encode!(@data, pretty: true) %>
-</pre>
 
 <script>
  window.code_view_data = JSON.parse(

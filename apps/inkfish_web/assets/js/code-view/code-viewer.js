@@ -12,6 +12,8 @@ import 'codemirror/mode/css/css';
 import 'codemirror/mode/sass/sass';
 
 let mirror = null;
+let current_path = null;
+let comments = [];
 
 export function init() {
   let elem = document.getElementById('code-viewer');
@@ -21,13 +23,32 @@ export function init() {
   let opts = {
     readOnly: true,
     lineNumbers: true,
+    lineWrapping: true,
   };
 
   mirror = CodeMirror.fromTextArea(elem, opts);
 }
 
 export function viewer_set_file(info) {
-  $('#viewer-file-path').text(info.path);
+  current_path = info.path;
+  $('#viewer-file-path').text(current_path);
   mirror.setValue(info.text || "");
   mirror.setOption("mode", info.mode);
+  mirror.on("gutterClick", gutter_click);
 }
+
+function gutter_click(_cm, line, _class, ev) {
+  ev.preventDefault();
+  _.debounce(() => {
+    create_line_comment(current_path, line)
+  }, 100, {leading: true})();
+}
+
+function create_line_comment(path, line) {
+  console.log("create comment", path, line);
+
+}
+
+// comments:
+//  - addLineWidget
+//  -
