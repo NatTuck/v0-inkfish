@@ -1,0 +1,34 @@
+<h1>Listing Grade_Columns</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Kind</th>
+      <th>Weight</th>
+      <th>Points</th>
+      <th>Params</th>
+
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+<%= for grade_column <- @grade_columns do %>
+    <tr>
+      <td><%= grade_column.name %></td>
+      <td><%= grade_column.kind %></td>
+      <td><%= grade_column.weight %></td>
+      <td><%= grade_column.points %></td>
+      <td><%= grade_column.params %></td>
+
+      <td>
+        <%= link "Show", to: Routes.staff_grade_column_path(@conn, :show, grade_column) %>
+        <%= link "Edit", to: Routes.staff_grade_column_path(@conn, :edit, grade_column) %>
+        <%= link "Delete", to: Routes.staff_grade_column_path(@conn, :delete, grade_column), method: :delete, data: [confirm: "Are you sure?"] %>
+      </td>
+    </tr>
+<% end %>
+  </tbody>
+</table>
+
+<span><%= link "New Grade_Column", to: Routes.staff_grade_column_path(@conn, :new) %></span>

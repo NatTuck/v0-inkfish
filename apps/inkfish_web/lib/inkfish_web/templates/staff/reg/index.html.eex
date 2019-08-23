@@ -8,7 +8,7 @@
   <thead>
     <tr>
       <th>Name</th>
-      <th>Is grader</th>
+      <th>Is grade_column</th>
       <th>Is prof</th>
       <th>Is staff</th>
       <th>Is student</th>
@@ -21,7 +21,7 @@
   <tr>
     <td><%= link(user_display_name(reg.user),
         to: Routes.staff_reg_path(@conn, :show, reg)) %></td>
-    <td><%= reg.is_grader %></td>
+    <td><%= reg.is_grade_column %></td>
     <td><%= reg.is_prof %></td>
     <td><%= reg.is_staff %></td>
     <td><%= reg.is_student %></td>

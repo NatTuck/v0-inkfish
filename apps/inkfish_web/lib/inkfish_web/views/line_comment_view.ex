@@ -15,6 +15,8 @@ defmodule InkfishWeb.LineCommentView do
       path: line_comment.path,
       line: line_comment.line,
       points: line_comment.points,
-      text: line_comment.text}
+      text: line_comment.text,
+      user: line_comment.user,
+      grade_id: line_comment.grade_id}
   end
 end

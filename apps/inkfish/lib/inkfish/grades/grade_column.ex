@@ -1,8 +1,8 @@
-defmodule Inkfish.Grades.Grader do
+defmodule Inkfish.Grades.GradeColumn do
   use Ecto.Schema
   import Ecto.Changeset
 
-  schema "graders" do
+  schema "grade_columns" do
     field :kind, :string
     field :name, :string
     field :params, :string, default: ""
@@ -15,13 +15,13 @@ defmodule Inkfish.Grades.Grader do
   end
 
   @doc false
-  def changeset(grader, attrs) do
-    grader
+  def changeset(grade_column, attrs) do
+    grade_column
     |> cast(attrs, [:assignment_id, :name, :kind, :points, :params, :upload_id])
     |> validate_required([:assignment_id, :name, :kind, :points])
   end
 
-  def grader_types do
+  def grade_column_types do
     ["number", "feedback", "script"]
   end
 end

@@ -69,10 +69,10 @@ defmodule Inkfish.Subs do
       where: sub.id == ^id,
       left_join: grades in assoc(sub, :grades),
       inner_join: as in assoc(sub, :assignment),
-      left_join: graders in assoc(as, :graders),
+      left_join: grade_columns in assoc(as, :grade_columns),
       inner_join: bucket in assoc(as, :bucket),
       inner_join: course in assoc(bucket, :course),
-      preload: [assignment: {as, bucket: {bucket, course: course}, graders: graders}]
+      preload: [assignment: {as, bucket: {bucket, course: course}, grade_columns: grade_columns}]
   end
 
   @doc """
@@ -140,15 +140,15 @@ defmodule Inkfish.Subs do
     |> Ecto.Multi.run(:sub0, fn (_,_) ->
       sub = Repo.one from sub in Sub,
         inner_join: as in assoc(sub, :assignment),
-        left_join: graders in assoc(as, :graders),
+        left_join: grade_columns in assoc(as, :grade_columns),
         left_join: grades in assoc(sub, :grades),
-        preload: [assignment: {as, graders: graders}, grades: grades],
+        preload: [assignment: {as, grade_columns: grade_columns}, grades: grades],
         where: sub.id == ^sub_id
       {:ok, sub}
     end)
     |> Ecto.Multi.update(:sub, fn %{sub0: sub} ->
-      scores = Enum.map sub.assignment.graders, fn gdr ->
-        grade = Enum.find sub.grades, &(&1.grader_id == gdr.id)
+      scores = Enum.map sub.assignment.grade_columns, fn gdr ->
+        grade = Enum.find sub.grades, &(&1.grade_column_id == gdr.id)
         grade && grade.score
       end
       if Enum.all? scores, &(!is_nil(&1)) do

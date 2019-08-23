@@ -46,7 +46,22 @@ function gutter_click(_cm, line, _class, ev) {
 
 function create_line_comment(path, line) {
   console.log("create comment", path, line);
+  let body = {
 
+  };
+  $.ajax(window.line_comment_path, {
+    method: "post",
+    dataType: "json",
+    contentType: "application/json; charset=UTF-8",
+    data: body,
+    headers: { "x-csrf-token": window.csrf_token },
+    success: () => {
+
+    },
+    error: () => {
+
+    }
+  });
 }
 
 // comments:

@@ -27,21 +27,21 @@
     <tr>
       <th>Name</th>
       <th>Score</th>
-      <th>Points</th>
+      <th>Max Points</th>
     </tr>
   </thead>
-  <%= for grader <- @assignment.graders do %>
-    <% grade = Enum.find(@sub.grades, &(&1.grader_id == grader.id)) %>
+  <%= for grade_column <- @assignment.grade_columns do %>
+    <% grade = Enum.find(@sub.grades, &(&1.grade_column_id == grade_column.id)) %>
     <tr>
       <td>
         <%= if grade do %>
-          <%= link grader.name, to: Routes.grade_path(@conn, :show, grade.id) %>
+          <%= link grade_column.name, to: Routes.grade_path(@conn, :show, grade.id) %>
         <% else %>
-          <%= grader.name %>
+          <%= grade_column.name %>
         <% end %>
       </td>
       <td><%= show_score(grade) %></td>
-      <td><%= grader.points %></td>
+      <td><%= grade_column.points %></td>
     </tr>
   <% end %>
   <tr>

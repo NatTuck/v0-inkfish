@@ -40,10 +40,10 @@ defmodule Inkfish.Assignments do
     Repo.one! from as in Assignment,
       where: as.id == ^id,
       left_join: teamset in assoc(as, :teamset),
-      left_join: graders in assoc(as, :graders),
+      left_join: grade_columns in assoc(as, :grade_columns),
       left_join: starter in assoc(as, :starter_upload),
       left_join: solution in assoc(as, :solution_upload),
-      preload: [teamset: teamset, graders: graders,
+      preload: [teamset: teamset, grade_columns: grade_columns,
                 starter_upload: starter, solution_upload: solution]
   end
 
@@ -62,7 +62,7 @@ defmodule Inkfish.Assignments do
     Repo.one! from as in Assignment,
       where: as.id == ^id,
       left_join: teamset in assoc(as, :teamset),
-      left_join: graders in assoc(as, :graders),
+      left_join: grade_columns in assoc(as, :grade_columns),
       left_join: starter in assoc(as, :starter_upload),
       left_join: solution in assoc(as, :solution_upload),
       left_join: subs in assoc(as, :subs),
@@ -71,7 +71,7 @@ defmodule Inkfish.Assignments do
       left_join: user in assoc(reg, :user),
       preload: [
         teamset: teamset,
-        graders: graders,
+        grade_columns: grade_columns,
         starter_upload: starter,
         solution_upload: solution,
         subs: {subs, grades: grades, reg: {reg, user: user}},
@@ -85,8 +85,8 @@ defmodule Inkfish.Assignments do
       inner_join: course in assoc(bucket, :course),
       inner_join: teamset in assoc(as, :teamset),
       left_join: starter in assoc(as, :starter_upload),
-      left_join: graders in assoc(as, :graders),
-      preload: [bucket: {bucket, course: course}, graders: graders,
+      left_join: grade_columns in assoc(as, :grade_columns),
+      preload: [bucket: {bucket, course: course}, grade_columns: grade_columns,
                 teamset: teamset, starter_upload: starter]
   end
 

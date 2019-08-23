@@ -22,9 +22,9 @@
   </div>
 
   <div class="form-group">
-    <%= label f, :is_grader %>
-    <%= checkbox f, :is_grader, class: "form-control toggle" %>
-    <%= error_tag f, :is_grader %>
+    <%= label f, :is_grade_column %>
+    <%= checkbox f, :is_grade_column, class: "form-control toggle" %>
+    <%= error_tag f, :is_grade_column %>
   </div>
 
   <div class="form-group">

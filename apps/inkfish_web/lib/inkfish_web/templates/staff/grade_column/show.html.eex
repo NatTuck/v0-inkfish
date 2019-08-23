@@ -1,0 +1,39 @@
+<h1>Show Grade_Column</h1>
+
+<p>
+  <%= link "Edit", to: Routes.staff_grade_column_path(@conn, :edit, @grade_column) %>
+</p>
+
+<ul>
+
+  <li>
+    <strong>Name:</strong>
+    <%= @grade_column.name %>
+  </li>
+
+  <li>
+    <strong>Kind:</strong>
+    <%= @grade_column.kind %>
+  </li>
+
+  <li>
+    <strong>Points:</strong>
+    <%= @grade_column.points %>
+  </li>
+
+  <li>
+    <strong>Params:</strong>
+    <%= @grade_column.params %>
+  </li>
+
+  <li>
+    <strong>Upload:</strong>
+    <%= if @grade_column.upload do %>
+      <%= link(@grade_column.upload.name,
+            to: Routes.upload_path(@conn, :show, @grade_column.upload)) %>
+    <% else %>
+      ∅
+    <% end %>
+  </li>
+</ul>
+

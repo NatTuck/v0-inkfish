@@ -6,44 +6,44 @@ defmodule Inkfish.Grades do
   import Ecto.Query, warn: false
   alias Inkfish.Repo
 
-  alias Inkfish.Grades.Grader
+  alias Inkfish.Grades.GradeColumn
 
   @doc """
-  Returns the list of graders.
+  Returns the list of grade_columns.
 
   ## Examples
 
-      iex> list_graders()
-      [%Grader{}, ...]
+      iex> list_grade_columns()
+      [%GradeColumn{}, ...]
 
   """
-  def list_graders do
-    Repo.all(Grader)
+  def list_grade_columns do
+    Repo.all(GradeColumn)
   end
 
   @doc """
-  Gets a single grader.
+  Gets a single grade_column.
 
-  Raises `Ecto.NoResultsError` if the Grader does not exist.
+  Raises `Ecto.NoResultsError` if the GradeColumn does not exist.
 
   ## Examples
 
-      iex> get_grader!(123)
-      %Grader{}
+      iex> get_grade_column!(123)
+      %GradeColumn{}
 
-      iex> get_grader!(456)
+      iex> get_grade_column!(456)
       ** (Ecto.NoResultsError)
 
   """
-  def get_grader!(id) do
-    Repo.one! from gr in Grader,
+  def get_grade_column!(id) do
+    Repo.one! from gr in GradeColumn,
       where: gr.id == ^id,
       left_join: upload in assoc(gr, :upload),
       preload: [upload: upload]
   end
 
-  def get_grader_path!(id) do
-    Repo.one! from gr in Grader,
+  def get_grade_column_path!(id) do
+    Repo.one! from gr in GradeColumn,
       where: gr.id == ^id,
       inner_join: as in assoc(gr, :assignment),
       inner_join: bucket in assoc(as, :bucket),
@@ -52,68 +52,68 @@ defmodule Inkfish.Grades do
   end
 
   @doc """
-  Creates a grader.
+  Creates a grade_column.
 
   ## Examples
 
-      iex> create_grader(%{field: value})
-      {:ok, %Grader{}}
+      iex> create_grade_column(%{field: value})
+      {:ok, %GradeColumn{}}
 
-      iex> create_grader(%{field: bad_value})
+      iex> create_grade_column(%{field: bad_value})
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_grader(attrs \\ %{}) do
-    %Grader{}
-    |> Grader.changeset(attrs)
+  def create_grade_column(attrs \\ %{}) do
+    %GradeColumn{}
+    |> GradeColumn.changeset(attrs)
     |> Repo.insert()
   end
 
   @doc """
-  Updates a grader.
+  Updates a grade_column.
 
   ## Examples
 
-      iex> update_grader(grader, %{field: new_value})
-      {:ok, %Grader{}}
+      iex> update_grade_column(grade_column, %{field: new_value})
+      {:ok, %GradeColumn{}}
 
-      iex> update_grader(grader, %{field: bad_value})
+      iex> update_grade_column(grade_column, %{field: bad_value})
       {:error, %Ecto.Changeset{}}
 
   """
-  def update_grader(%Grader{} = grader, attrs) do
-    grader
-    |> Grader.changeset(attrs)
+  def update_grade_column(%GradeColumn{} = grade_column, attrs) do
+    grade_column
+    |> GradeColumn.changeset(attrs)
     |> Repo.update()
   end
 
   @doc """
-  Deletes a Grader.
+  Deletes a GradeColumn.
 
   ## Examples
 
-      iex> delete_grader(grader)
-      {:ok, %Grader{}}
+      iex> delete_grade_column(grade_column)
+      {:ok, %GradeColumn{}}
 
-      iex> delete_grader(grader)
+      iex> delete_grade_column(grade_column)
       {:error, %Ecto.Changeset{}}
 
   """
-  def delete_grader(%Grader{} = grader) do
-    Repo.delete(grader)
+  def delete_grade_column(%GradeColumn{} = grade_column) do
+    Repo.delete(grade_column)
   end
 
   @doc """
-  Returns an `%Ecto.Changeset{}` for tracking grader changes.
+  Returns an `%Ecto.Changeset{}` for tracking grade_column changes.
 
   ## Examples
 
-      iex> change_grader(grader)
-      %Ecto.Changeset{source: %Grader{}}
+      iex> change_grade_column(grade_column)
+      %Ecto.Changeset{source: %Grade_Column{}}
 
   """
-  def change_grader(%Grader{} = grader) do
-    Grader.changeset(grader, %{})
+  def change_grade_column(%GradeColumn{} = grade_column) do
+    GradeColumn.changeset(grade_column, %{})
   end
 
   alias Inkfish.Grades.Grade
@@ -164,20 +164,20 @@ defmodule Inkfish.Grades do
     |> Grade.changeset(attrs)
     |> Repo.insert(
       on_conflict: {:replace, [:score]},
-      conflict_target: [:sub_id, :grader_id])
+      conflict_target: [:sub_id, :grade_column_id])
 
     case result do
       {:ok, grade} ->
-        {:ok, Repo.preload(grade, :grading_user)}
+        {:ok, Repo.preload(grade, :grader)}
       error ->
         error
     end
   end
 
-  def create_null_grade(sub_id, grader_id) do
+  def create_null_grade(sub_id, grade_column_id) do
     attrs = %{
       sub_id: sub_id,
-      grader_id: grader_id,
+      grade_column_id: grade_column_id,
       score: nil,
     }
     create_grade(attrs)

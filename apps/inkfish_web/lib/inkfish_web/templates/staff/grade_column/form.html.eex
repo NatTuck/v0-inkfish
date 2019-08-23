@@ -13,7 +13,7 @@
 
   <div class="form-group">
     <%= label f, :kind %>
-    <%= select f, :kind, Inkfish.Grades.Grader.grader_types(), class: "form-control" %>
+    <%= select f, :kind, Inkfish.Grades.GradeColumn.grade_column_types(), class: "form-control" %>
     <%= error_tag f, :kind %>
   </div>
 
@@ -33,7 +33,7 @@
     <%= label f, :upload_id %>
     <%= text_input f, :upload_id, class: "form-control", readonly: "readonly" %>
     <%= error_tag f, :upload_id %>
-    <%= ajax_upload_field "grader", "", "grader_upload_id" %>
+    <%= ajax_upload_field "grade_column", "", "grade_column_upload_id" %>
   </div>
 
   <div>

@@ -39,7 +39,7 @@
   <thead>
     <td>Active</td>
     <td>Date</td>
-    <%= for gdr <- @assignment.graders do %>
+    <%= for gdr <- @assignment.grade_columns do %>
       <td><%= gdr.name %></td>
     <% end %>
     <td>Total Score</td>
@@ -50,8 +50,8 @@
       <tr>
         <td style="text-align: center"><%= if sub.active, do: "✓" %></td>
         <td><%= sub.inserted_at %></td>
-        <%= for gdr <- @assignment.graders do %>
-          <% grade = Enum.find(sub.grades, &(&1.grader_id == gdr.id)) %>
+        <%= for gdr <- @assignment.grade_columns do %>
+          <% grade = Enum.find(sub.grades, &(&1.grade_column_id == gdr.id)) %>
           <td><%= if grade do grade.score else "∅" end %> / <%= gdr.points %></td>
         <% end %>
         <td><%= sub.score || "∅" %> / <%= assignment_total_points(@assignment) %></td>

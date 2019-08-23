@@ -24,7 +24,7 @@ import "bootstrap4-toggle";
 import socket from "./socket";
 import "./search";
 import "./uploads";
-import "./graders/number-input";
+import "./grades/number-input";
 import "./code-view/init";
 
 $(() => {

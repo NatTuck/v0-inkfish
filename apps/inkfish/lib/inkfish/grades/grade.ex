@@ -5,9 +5,9 @@ defmodule Inkfish.Grades.Grade do
   schema "grades" do
     field :score, :decimal
     belongs_to :sub, Inkfish.Subs.Sub
-    belongs_to :grader, Inkfish.Grades.Grader
+    belongs_to :grade_column, Inkfish.Grades.GradeColumn
 
-    belongs_to :grading_user, Inkfish.Users.User
+    belongs_to :grader, Inkfish.Users.User
 
     timestamps()
   end
@@ -15,7 +15,7 @@ defmodule Inkfish.Grades.Grade do
   @doc false
   def changeset(grade, attrs) do
     grade
-    |> cast(attrs, [:grader_id, :sub_id, :score, :grading_user_id])
-    |> validate_required([:grader_id, :sub_id])
+    |> cast(attrs, [:grade_column_id, :sub_id, :score, :grader_id])
+    |> validate_required([:grade_column_id, :sub_id])
   end
 end

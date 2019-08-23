@@ -22,4 +22,5 @@
  window.code_view_data = JSON.parse(
    "<%= raw(javascript_escape(Jason.encode!(@data))) %>"
  );
+ window.line_comment_path = "<%= Routes.ajax_staff_line_comment_path(@conn, :create) %>";
 </script>

@@ -1,4 +1,0 @@
-<h1>Edit Grader</h1>
-
-<%= render("form.html",
-  Map.put(assigns, :action, Routes.staff_grader_path(@conn, :update, @grader))) %>
