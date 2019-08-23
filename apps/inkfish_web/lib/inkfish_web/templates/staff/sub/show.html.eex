@@ -32,18 +32,18 @@
     <tr>
       <th>Name</th>
       <th>Score</th>
-      <th>Weight</th>
+      <th>Points</th>
       <th>Actions</th>
     </tr>
   </thead>
-  <%= for grader <- @assignment.graders do %>
-    <% grade = Enum.find(@sub.grades, &(&1.grader_id == grader.id)) %>
+  <%= for grade_column <- @assignment.grade_columns do %>
+    <% grade = Enum.find(@sub.grades, &(&1.grade_column_id == grade_column.id)) %>
     <tr>
-      <td><%= grader.name %></td>
+      <td><%= grade_column.name %></td>
       <td><%= show_score(grade) %></td>
-      <td><%= grader.weight %></td>
+      <td><%= grade_column.points %></td>
       <td>
-        <%= staff_grade_action(@conn, grader, grade) %>
+        <%= staff_grade_action(@conn, grade_column, grade) %>
       </td>
     </tr>
   <% end %>

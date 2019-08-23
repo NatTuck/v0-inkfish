@@ -10,8 +10,8 @@
     <%= user_display_name(@reg.user) %>
 
   <li>
-    <strong>Is grader:</strong>
-    <%= @reg.is_grader %>
+    <strong>Is grade_column:</strong>
+    <%= @reg.is_grade_column %>
   </li>
 
   <li>

@@ -8,14 +8,14 @@ let inputs = new Map();
 class NumberInput extends React.Component {
   constructor(props) {
     super(props);
-    if (!inputs.has(props.grader_id)) {
-      inputs.set(props.grader_id, []);
+    if (!inputs.has(props.grade_column_id)) {
+      inputs.set(props.grade_column_id, []);
     }
-    inputs.get(props.grader_id).push(this);
+    inputs.get(props.grade_column_id).push(this);
 
     this.state = {
       sub_id: props.sub_id,
-      grader_id: props.grader_id,
+      grade_column_id: props.grade_column_id,
       saved_score: -1,
       score: props.score,
       points: props.points,
@@ -33,7 +33,7 @@ class NumberInput extends React.Component {
     let body = JSON.stringify({
       grade: {
         sub_id: this.state.sub_id,
-        grader_id: this.state.grader_id,
+        grade_column_id: this.state.grade_column_id,
         score: this.state.score,
       }
     });
@@ -109,7 +109,7 @@ class NumberInputToggle extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      grader_id: props.grader_id,
+      grade_column_id: props.grade_column_id,
       edit: false,
     };
   }
@@ -117,7 +117,7 @@ class NumberInputToggle extends React.Component {
   toggle(ev) {
     ev.preventDefault();
     let edit = !this.state.edit;
-    _.each(inputs.get(this.state.grader_id), (item) => {
+    _.each(inputs.get(this.state.grade_column_id), (item) => {
       item.setEdit(edit);
     });
     this.setState({edit: edit});
@@ -140,7 +140,7 @@ function setup() {
       <NumberInput score={ee.data('score')}
                    points={ee.data('points')}
                    sub_id={ee.data('sub-id')}
-                   grader_id={ee.data('grader-id')} />,
+                   grade_column_id={ee.data('grade-column-id')} />,
       elem
     );
   });
@@ -148,7 +148,7 @@ function setup() {
   $('span.toggle-number-inputs').each((_ii, elem) => {
     var ee = $(elem);
     ReactDOM.render(
-      <NumberInputToggle grader_id={ee.data('grader-id')} />,
+      <NumberInputToggle grade_column_id={ee.data('grade-column-id')} />,
       elem
     );
   });

@@ -60,13 +60,13 @@ defmodule InkfishWeb.Plugs.FetchItem do
     |> assign(:course, as.bucket.course)
   end
 
-  def fetch(conn, :grader, id) do
-    grader = Inkfish.Grades.get_grader_path!(id)
+  def fetch(conn, :grade_column, id) do
+    gcol = Inkfish.Grades.get_grade_column_path!(id)
     conn
-    |> assign(:grader, grader)
-    |> assign(:assignment, grader.assignment)
-    |> assign(:bucket, grader.assignment.bucket)
-    |> assign(:course, grader.assignment.bucket.course)
+    |> assign(:grade_column, gcol)
+    |> assign(:assignment, gcol.assignment)
+    |> assign(:bucket, gcol.assignment.bucket)
+    |> assign(:course, gcol.assignment.bucket.course)
   end
 
   def fetch(conn, :sub, id) do

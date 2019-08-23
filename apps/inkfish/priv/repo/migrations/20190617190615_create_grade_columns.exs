@@ -2,7 +2,7 @@ defmodule Inkfish.Repo.Migrations.CreateGraders do
   use Ecto.Migration
 
   def change do
-    create table(:graders) do
+    create table(:grade_columns) do
       add :name, :string, null: false
       add :kind, :string, null: false
       add :points, :decimal, null: false
@@ -13,7 +13,7 @@ defmodule Inkfish.Repo.Migrations.CreateGraders do
       timestamps()
     end
 
-    create index(:graders, [:assignment_id])
-    create index(:graders, [:upload_id])
+    create index(:grade_columns, [:assignment_id])
+    create index(:grade_columns, [:upload_id])
   end
 end

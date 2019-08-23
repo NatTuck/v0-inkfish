@@ -40,8 +40,8 @@ defmodule InkfishWeb.ViewHelpers do
   end
 
   def assignment_total_points(as) do
-    Enum.reduce as.graders, Decimal.new("0"), fn (gdr, sum) ->
-      Decimal.add(gdr.points, sum)
+    Enum.reduce as.grade_columns, Decimal.new("0"), fn (gcol, sum) ->
+      Decimal.add(gcol.points, sum)
     end
   end
 

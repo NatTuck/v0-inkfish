@@ -66,11 +66,11 @@
   <%= trusted_markdown @assignment.desc %>
 </div>
 
-<h2>Graders</h2>
+<h2>Grade Columns</h2>
 
 <p>
-  <%= link("New Grader",
-    to: Routes.staff_assignment_grader_path(@conn, :new, @assignment)) %>
+  <%= link("New Grade Column",
+    to: Routes.staff_assignment_grade_column_path(@conn, :new, @assignment)) %>
 </p>
 
 <table class="table table-striped">
@@ -82,11 +82,12 @@
     </tr>
   </thead>
   <tbody>
-    <%= for gr <- @assignment.graders do %>
+    <%= for gcol <- @assignment.grade_columns do %>
       <tr>
-        <td><%= link gr.name, to: Routes.staff_grader_path(@conn, :show, gr) %></td>
-        <td><%= gr.kind %></td>
-        <td><%= gr.points %></td>
+        <td><%= link(gcol.name,
+            to: Routes.staff_grade_column_path(@conn, :show, gcol)) %></td>
+        <td><%= gcol.kind %></td>
+        <td><%= gcol.points %></td>
       </tr>
     <% end %>
   </tbody>
@@ -95,47 +96,69 @@
 <h2>Submissions</h2>
 
 <script>
- window.save_grade_path = "<%= Routes.ajax_staff_grade_path(@conn, :create) %>";
+ window.save_grade_path = "<%= Routes.ajax_staff_grade_path(@conn, :ajax_create) %>";
 </script>
 
 <table class="table table-striped">
   <thead>
     <th>Student</th>
-    <%= for gr <- @assignment.graders do %>
+    <%= for gcol <- @assignment.grade_columns do %>
       <th>
-        <%= gr.name %>
-        <%= if gr.kind == "number" do %>
-          <span class="toggle-number-inputs" data-grader-id="<%= gr.id %>">
-            <!-- react component from graders/number-input.jsx -->
+        <%= gcol.name %>
+        <%= if gcol.kind == "number" do %>
+          <span class="toggle-number-inputs" data-grade-column-id="<%= gcol.id %>">
+            <!-- react component from gcolade_columns/number-input.jsx -->
             [react]
           </span>
         <% end %>
       </th>
     <% end %>
     <th>Total Grade</th>
+    <th>Actions</th>
   </thead>
   <tbody>
     <%= for sub <- @assignment.subs do %>
       <tr>
-        <td><%= user_display_name(sub.reg.user) %></td>
-        <%= for gr <- @assignment.graders do %>
-          <% grade = Enum.find(sub.grades, &(&1.grader_id == gr.id)) %>
+        <td><%= link(user_display_name(sub.reg.user),
+            to: Routes.staff_reg_path(@conn, :show, sub.reg)) %></td>
+        <%= for gcol <- @assignment.grade_columns do %>
+          <% grade = Enum.find(sub.grades, &(&1.grade_column_id == gcol.id)) %>
           <td>
-            <%= if gr.kind == "number" do %>
-              <div class="number-grade-cell"
-                   data-score="<%= (grade && grade.score) || 0 %>"
-                   data-points="<%= gr.points %>"
-                   data-sub-id="<%= sub.id %>"
-                   data-grader-id="<%= gr.id %>">
-                <!-- React component: graders/number-input.jsx -->
-                <%= show_score(grade) %>
-              </div>
-            <% else %>
-              <%= show_score(grade) %> / <%= gr.points %>
+            <%= case gcol.kind do %>
+              <% "number" -> %>
+                <div class="number-grade-cell"
+                     data-score="<%= (grade && grade.score) || 0 %>"
+                     data-points="<%= gcol.points %>"
+                     data-sub-id="<%= sub.id %>"
+                     data-grade-column-id="<%= gcol.id %>">
+                  <!-- React component: grade_columns/number-input.jsx -->
+                  <%= show_score(grade) %>
+                </div>
+              <% "feedback" -> %>
+                <%= if grade do %>
+                  <%= show_score(grade) %> / <%= gcol.points %>
+                  <%= link("Edit", to: Routes.staff_grade_path(@conn, :edit, grade)) %>
+                <% else %>
+                  <% grade = %Inkfish.Grades.Grade{
+                    grade_column_id: gcol.id, sub_id: sub.id
+                  } %>
+                  <% cset = Inkfish.Grades.change_grade(grade) %>
+                  <% action = Routes.staff_grade_path(@conn, :create) %>
+                  <%= form_for cset, action, fn f -> %>
+                    <%= hidden_input f, :sub_id %>
+                    <%= hidden_input f, :grade_column_id %>
+                    <%= submit "Create", class: "btn btn-secondary btn-sm" %>
+                  <% end %>
+                <% end %>
+              <% _else -> %>
+                <%= show_score(grade) %> / <%= gcol.points %>
             <% end %>
           </td>
         <% end %>
         <td><%= show_score(sub) %> / <%= assignment_total_points(@assignment) %></td>
+        <td>
+          <%= link("View", to: Routes.staff_sub_path(@conn, :show, sub)) %>
+        </td>
       </tr>
     <% end %>
   </tbody>

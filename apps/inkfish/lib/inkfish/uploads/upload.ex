@@ -6,7 +6,7 @@ defmodule Inkfish.Uploads.Upload do
 
   @primary_key {:id, :binary_id, autogenerate: true}
 
-  @valid_kinds ["user_photo", "grader", "sub",
+  @valid_kinds ["user_photo", "grade_column", "sub",
                 "assignment_starter", "assignment_solution"]
 
   schema "uploads" do
