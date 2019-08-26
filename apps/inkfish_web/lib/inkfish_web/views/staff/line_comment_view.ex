@@ -1,6 +1,6 @@
-defmodule InkfishWeb.LineCommentView do
+defmodule InkfishWeb.Staff.LineCommentView do
   use InkfishWeb, :view
-  alias InkfishWeb.LineCommentView
+  alias InkfishWeb.Staff.LineCommentView
 
   def render("index.json", %{line_comments: line_comments}) do
     %{data: render_many(line_comments, LineCommentView, "line_comment.json")}
@@ -10,13 +10,19 @@ defmodule InkfishWeb.LineCommentView do
     %{data: render_one(line_comment, LineCommentView, "line_comment.json")}
   end
 
+  def render_list(line_comments) do
+    render_many(line_comments, LineCommentView, "line_comment.json")
+  end
+
   def render("line_comment.json", %{line_comment: line_comment}) do
+    user_json = InkfishWeb.UserView.render("user.json", %{user: line_comment.user})
+
     %{id: line_comment.id,
       path: line_comment.path,
       line: line_comment.line,
       points: line_comment.points,
       text: line_comment.text,
-      user: line_comment.user,
+      user: user_json,
       grade_id: line_comment.grade_id}
   end
 end

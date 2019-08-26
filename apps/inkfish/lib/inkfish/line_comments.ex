@@ -37,8 +37,9 @@ defmodule Inkfish.LineComments do
 
   """
   def get_line_comment!(id) do
-    Repo.get!(LineComment, id)
-    |> preload(:user)
+    Repo.one from lc in LineComment,
+      where: lc.id == ^id,
+      preload: [:user]
   end
 
   @doc """
@@ -54,9 +55,16 @@ defmodule Inkfish.LineComments do
 
   """
   def create_line_comment(attrs \\ %{}) do
-    %LineComment{}
+    lc = %LineComment{}
     |> LineComment.changeset(attrs)
     |> Repo.insert()
+
+    case lc do
+      {:ok, lc} ->
+        {:ok, Repo.preload(lc, :user)}
+      error ->
+        error
+    end
   end
 
   @doc """

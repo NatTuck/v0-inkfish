@@ -10,6 +10,7 @@ import 'codemirror/mode/javascript/javascript';
 import 'codemirror/mode/jsx/jsx';
 import 'codemirror/mode/css/css';
 import 'codemirror/mode/sass/sass';
+import feather from 'feather-icons';
 
 let mirror = null;
 let current_path = null;
@@ -27,6 +28,8 @@ export function init() {
   };
 
   mirror = CodeMirror.fromTextArea(elem, opts);
+
+  show_line_comments();
 }
 
 export function viewer_set_file(info) {
@@ -35,6 +38,183 @@ export function viewer_set_file(info) {
   mirror.setValue(info.text || "");
   mirror.setOption("mode", info.mode);
   mirror.on("gutterClick", gutter_click);
+
+  show_line_comments();
+}
+
+function line_comment_color(points) {
+  let colors = "bg-secondary";
+  if (points > 0) {
+    colors = "bg-success text-white";
+  }
+  if (points < 0) {
+    colors = "bg-warning";
+  }
+  return colors;
+}
+
+function show_line_comments() {
+  _.each(comments, (item) => item.node.clear());
+  comments = [];
+
+  let xs = window.code_view_data.comments;
+  _.each(xs, show_line_comment);
+}
+
+function show_line_comment(data) {
+  if (data.path != current_path) {
+    return;
+  }
+
+  let color = line_comment_color(data.points);
+ 
+  let card_id = "lc-" + data.id;
+  let num_id  = card_id + "-num";
+  let body_id = card_id + "-body";
+  let text_id = card_id + "-text";
+
+  let alert_icon = feather.icons['alert-triangle'].toSvg({color: 'white'});
+  let check_icon = feather.icons['check'].toSvg({color: 'white'});
+
+  let html = `
+  <div class="card comment-card" id="${card_id}" data-comment-id="${data.id}">
+    <div class="card-body ${color}" id="${body_id}">
+      <div class="row">
+        <div class="col-9">
+          <p>Grader: ${data.user.name}</p>
+        </div>
+        <div class="col-3 text-right">
+          <span class="save-done" style="display: none;">
+            ${check_icon}
+          </span>
+          <span class="save-fail" style="display: none;">
+            ${alert_icon}
+          </span>
+          <button class="btn btn-success btn-sm save-button" disabled>
+            <i data-feather="save"></i>
+          </button>
+          <button class="btn btn-danger btn-sm kill-button">
+            <i data-feather="trash"></i>
+          </button>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-2">
+          <input id="${num_id}" class="form-control" type="number"
+                 value="${data.points}" />
+        </div>
+        <div class="col-10">
+          <textarea id="${text_id}" class="form-control"
+                    rows="3">${data.text}</textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+  `;
+
+  let lc = document.createElement("div");
+  lc.innerHTML = html;
+
+  let node = mirror.addLineWidget(data.line, lc, {above: true});
+  comments.push({id: data.id, node: node});
+
+  $(lc).find('input').change(comment_score_changed);
+  $(lc).find('textarea').change(comment_changed);
+  $(lc).find('textarea').keyup(comment_changed);
+  $(lc).find('.save-button').click(save_comment);
+  $(lc).find('.kill-button').click(kill_comment);
+
+  feather.replace();
+}
+
+function comment_score_changed(ev) {
+  ev.preventDefault();
+  let tgt = ev.target;
+  let score = +tgt.value;
+  let color = line_comment_color(score);
+  let body = $(tgt).closest('div.card-body');
+  body.attr('class', 'card-body ' + color);
+  comment_changed(ev);
+}
+
+function comment_changed(ev) {
+  ev.preventDefault();
+  let tgt = ev.target;
+  let body = $(tgt).closest('div.card-body');
+  body.find('.save-button').removeAttr("disabled");
+  body.find('.save-done').hide();
+  body.find('.save-fail').hide();
+}
+
+function save_comment(ev) {
+  ev.preventDefault();
+  let tgt = ev.target;
+  let card = $(tgt).closest('div.card');
+  let id = +card.data('comment-id');
+  let points = card.find('input').val();
+  let text = card.find('textarea').val();
+
+  let body = {
+    line_comment: {
+      points: points,
+      text: text,
+    }
+  }
+
+  $.ajax(`${window.line_comment_path}/${id}`, {
+    method: "patch",
+    dataType: "json",
+    contentType: "application/json; charset=UTF-8",
+    headers: { "x-csrf-token": window.csrf_token },
+    data: JSON.stringify(body),
+    success: (data, status) => {
+      console.log(status, data);
+      card.find('.save-button').attr('disabled', true);
+      card.find('.save-done').show();
+      card.find('.save-fail').hide();
+    },
+    error: (xhr, status) => {
+      console.log(status, xhr);
+      let fail = card.find('.save-fail');
+      fail.show();
+      fail.attr('title', status);
+      fail.tooltip();
+      card.find('.save-done').hide();
+    }
+  });
+}
+
+function kill_comment(ev) {
+  ev.preventDefault();
+  let tgt  = ev.target;
+  let card = $(tgt).closest('div.card');
+  let id   = +card.data('comment-id');
+
+  $.ajax(`${window.line_comment_path}/${id}`, {
+    method: "delete",
+    dataType: "json",
+    contentType: "application/json; charset=UTF-8",
+    headers: { "x-csrf-token": window.csrf_token },
+    data: "",
+    success: (data, status) => {
+      for (let ii = 0; ii < comments.length; ++ii) {
+        let item = comments[ii];
+        if (item.id == id) {
+          item.node.clear();
+          comments.splice(ii, 1);
+          break;
+        }
+      }
+    },
+    error: (xhr, status) => {
+      console.log(status, xhr);
+      let fail = card.find('.save-fail');
+      fail.show();
+      fail.attr('title', status);
+      fail.tooltip();
+      card.find('.save-done').hide();
+    }
+  });
 }
 
 function gutter_click(_cm, line, _class, ev) {
@@ -47,23 +227,26 @@ function gutter_click(_cm, line, _class, ev) {
 function create_line_comment(path, line) {
   console.log("create comment", path, line);
   let body = {
-
+    line_comment: {
+      grade_id: window.code_view_data.grade_id,
+      path: path,
+      line: line,
+      text: "",
+      points: "0",
+    },
   };
   $.ajax(window.line_comment_path, {
     method: "post",
     dataType: "json",
     contentType: "application/json; charset=UTF-8",
-    data: body,
+    data: JSON.stringify(body),
     headers: { "x-csrf-token": window.csrf_token },
-    success: () => {
-
+    success: (data, status) => {
+      console.log(status, data);
+      show_line_comment(data.data);
     },
-    error: () => {
-
+    error: (xhr, status) => {
+      console.log(status, xhr);
     }
   });
 }
-
-// comments:
-//  - addLineWidget
-//  -

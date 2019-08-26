@@ -10,7 +10,7 @@
     height: 64px;
 }
 
-textarea.form-control {
+.form-group > textarea.form-control {
     min-height: 12em;
 }
 
@@ -83,4 +83,8 @@ textarea.form-control {
 
 .CodeMirror {
     height: 90%;
+}
+
+.comment-card {
+    cursor: default;
 }

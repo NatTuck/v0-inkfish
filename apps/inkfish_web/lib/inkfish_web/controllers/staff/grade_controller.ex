@@ -50,8 +50,10 @@ defmodule InkfishWeb.Staff.GradeController do
     {id, _} = Integer.parse(id)
     grade = Grades.get_grade!(id)
     changeset = Grades.change_grade(grade)
+    lcs = InkfishWeb.Staff.LineCommentView.render_list(grade.line_comments)
     data = Inkfish.Subs.read_sub_data(grade.sub_id)
     |> Map.put(:grade_id, id)
+    |> Map.put(:comments, lcs)
     render(conn, "edit.html", grade: grade, changeset: changeset, data: data)
   end
 

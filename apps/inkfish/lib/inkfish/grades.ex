@@ -145,7 +145,10 @@ defmodule Inkfish.Grades do
       ** (Ecto.NoResultsError)
 
   """
-  def get_grade!(id), do: Repo.get!(Grade, id)
+  def get_grade!(id) do
+    Repo.get!(Grade, id)
+    |> Repo.preload([{:line_comments, [:user]}])
+  end
 
   @doc """
   Creates a grade.
