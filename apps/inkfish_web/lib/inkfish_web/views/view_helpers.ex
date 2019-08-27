@@ -95,4 +95,13 @@ defmodule InkfishWeb.ViewHelpers do
        </div>)
     |> raw
   end
+
+  def get_assoc(item, field) do
+    data = Map.get(item, field)
+    if Ecto.assoc_loaded?(data) do
+      data
+    else
+      nil
+    end
+  end
 end

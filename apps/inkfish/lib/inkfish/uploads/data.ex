@@ -15,11 +15,19 @@ defmodule Inkfish.Uploads.Data do
     info = %{
       key: rel,
       path: rel,
-      label: if rel == "" do "[root]" else rel end,
+      label: label(rel),
       type: to_string(stat.type),
       size: stat.size,
     }
     read_item(base, rel, info)
+  end
+
+  def label(path) do
+    if path == "" do
+      "[root]"
+    else
+      Path.basename(path)
+    end
   end
 
   def read_list(base, rel, items) do

@@ -29,7 +29,6 @@ defmodule InkfishWeb.Staff.LineCommentController do
   end
 
   def update(conn, %{"id" => id, "line_comment" => line_comment_params}) do
-    IO.inspect {id, line_comment_params}
     line_comment = LineComments.get_line_comment!(id)
 
     with {:ok, %LineComment{} = line_comment} <- LineComments.update_line_comment(line_comment, line_comment_params) do
@@ -41,7 +40,8 @@ defmodule InkfishWeb.Staff.LineCommentController do
     line_comment = LineComments.get_line_comment!(id)
 
     with {:ok, %LineComment{}} <- LineComments.delete_line_comment(line_comment) do
-      send_resp(conn, :no_content, "")
+      grade = Inkfish.Grades.get_grade!(line_comment.grade_id)
+      render(conn, "show.json", line_comment: %{line_comment | grade: grade})
     end
   end
 end

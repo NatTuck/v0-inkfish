@@ -147,7 +147,7 @@ defmodule Inkfish.Grades do
   """
   def get_grade!(id) do
     Repo.get!(Grade, id)
-    |> Repo.preload([{:line_comments, [:user]}])
+    |> Repo.preload([:grade_column, {:line_comments, [:user]}])
   end
 
   @doc """
@@ -171,7 +171,7 @@ defmodule Inkfish.Grades do
 
     case result do
       {:ok, grade} ->
-        {:ok, Repo.preload(grade, :grader)}
+        {:ok, Repo.preload(grade, [:grader])}
       error ->
         error
     end
@@ -232,5 +232,18 @@ defmodule Inkfish.Grades do
   """
   def change_grade(%Grade{} = grade) do
     Grade.changeset(grade, %{})
+  end
+
+
+  def update_feedback_score(grade_id) do
+    grade = get_grade!(grade_id)
+    gcol  = get_grade_column!(grade.grade_column_id)
+    delta = Enum.reduce grade.line_comments, Decimal.new("0.0"), fn (lc, acc) ->
+      Decimal.add(lc.points, acc)
+    end
+
+    score = Decimal.add(gcol.base, delta)
+    {:ok, grade} = update_grade(grade, %{score: score})
+    {:ok, %{grade|grade_column: gcol}}
   end
 end

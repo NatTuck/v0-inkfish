@@ -1,9 +1,9 @@
 
 import $ from 'jquery';
+import viewer from "./code-viewer";
 import init_tree from "./file-tree";
-import {init as init_code} from "./code-viewer";
 
 $(function() {
+  viewer.init();
   init_tree();
-  init_code();
 });

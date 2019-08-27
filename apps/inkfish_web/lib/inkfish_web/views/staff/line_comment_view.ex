@@ -15,14 +15,21 @@ defmodule InkfishWeb.Staff.LineCommentView do
   end
 
   def render("line_comment.json", %{line_comment: line_comment}) do
-    user_json = InkfishWeb.UserView.render("user.json", %{user: line_comment.user})
+    user = get_assoc(line_comment, :user)
+    user_json = render_one(user, InkfishWeb.UserView, "user.json")
+
+    grade = get_assoc(line_comment, :grade)
+    grade_json = render_one(grade, InkfishWeb.Staff.GradeView, "grade.json")
 
     %{id: line_comment.id,
       path: line_comment.path,
       line: line_comment.line,
       points: line_comment.points,
       text: line_comment.text,
+      user_id: line_comment.user_id,
       user: user_json,
-      grade_id: line_comment.grade_id}
+      grade_id: line_comment.grade_id,
+      grade: grade_json,
+    }
   end
 end

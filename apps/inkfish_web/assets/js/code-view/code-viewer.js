@@ -15,8 +15,9 @@ import feather from 'feather-icons';
 let mirror = null;
 let current_path = null;
 let comments = [];
+let grade_callback = null;
 
-export function init() {
+function init() {
   let elem = document.getElementById('code-viewer');
   if (!elem) {
     return;
@@ -28,19 +29,26 @@ export function init() {
   };
 
   mirror = CodeMirror.fromTextArea(elem, opts);
-
-  show_line_comments();
-}
-
-export function viewer_set_file(info) {
-  current_path = info.path;
-  $('#viewer-file-path').text(current_path);
-  mirror.setValue(info.text || "");
-  mirror.setOption("mode", info.mode);
   mirror.on("gutterClick", gutter_click);
 
   show_line_comments();
 }
+
+function set_file(info) {
+  current_path = info.path;
+  $('#viewer-file-path').text(current_path);
+  mirror.setValue(info.text || "");
+  mirror.setOption("mode", info.mode);
+
+  show_line_comments();
+}
+
+function set_grade_callback(cb) {
+  grade_callback = cb;
+}
+
+let viewer = { init, set_file, set_grade_callback };
+export default viewer;
 
 function line_comment_color(points) {
   let colors = "bg-secondary";
@@ -57,7 +65,7 @@ function show_line_comments() {
   _.each(comments, (item) => item.node.clear());
   comments = [];
 
-  let xs = window.code_view_data.comments;
+  let xs = window.code_view_data.grade.line_comments;
   _.each(xs, show_line_comment);
 }
 
@@ -168,6 +176,12 @@ function save_comment(ev) {
     headers: { "x-csrf-token": window.csrf_token },
     data: JSON.stringify(body),
     success: (data, status) => {
+      data = data.data;
+
+      if (grade_callback && data.grade) {
+        grade_callback(data.grade);
+      }
+
       console.log(status, data);
       card.find('.save-button').attr('disabled', true);
       card.find('.save-done').show();
@@ -197,11 +211,21 @@ function kill_comment(ev) {
     headers: { "x-csrf-token": window.csrf_token },
     data: "",
     success: (data, status) => {
+      data = data.data;
+
+      if (grade_callback && data.grade) {
+        grade_callback(data.grade);
+      }
+
       for (let ii = 0; ii < comments.length; ++ii) {
         let item = comments[ii];
         if (item.id == id) {
-          item.node.clear();
-          comments.splice(ii, 1);
+          // clear can fail in ajax callback, so we delay it
+          let del_fn = () => {
+            item.node.clear();
+            comments.splice(ii, 1);
+          };
+          setTimeout(del_fn, 0);
           break;
         }
       }
@@ -220,11 +244,11 @@ function kill_comment(ev) {
 function gutter_click(_cm, line, _class, ev) {
   ev.preventDefault();
   _.debounce(() => {
-    create_line_comment(current_path, line)
+    create_comment(current_path, line)
   }, 100, {leading: true})();
 }
 
-function create_line_comment(path, line) {
+function create_comment(path, line) {
   console.log("create comment", path, line);
   let body = {
     line_comment: {
@@ -242,8 +266,14 @@ function create_line_comment(path, line) {
     data: JSON.stringify(body),
     headers: { "x-csrf-token": window.csrf_token },
     success: (data, status) => {
-      console.log(status, data);
-      show_line_comment(data.data);
+      data = data.data;
+
+      console.log("created", data);
+      if (grade_callback && data.grade) {
+        grade_callback(data.grade);
+      }
+
+      show_line_comment(data);
     },
     error: (xhr, status) => {
       console.log(status, xhr);
