@@ -8,6 +8,7 @@ defmodule InkfishWeb.CourseController do
   plug Plugs.FetchItem, [course: "id"]
     when action not in [:index, :new, :create]
   plug Plugs.RequireReg
+    when action not in [:index, :new, :create]
 
   def index(conn, _params) do
     courses = Courses.list_courses()

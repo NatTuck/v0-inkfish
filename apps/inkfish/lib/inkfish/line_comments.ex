@@ -37,8 +37,9 @@ defmodule Inkfish.LineComments do
 
   """
   def get_line_comment!(id) do
-    Repo.get!(LineComment, id)
-    |> preload(:user)
+    Repo.one from lc in LineComment,
+      where: lc.id == ^id,
+      preload: [:user]
   end
 
   @doc """
@@ -54,9 +55,17 @@ defmodule Inkfish.LineComments do
 
   """
   def create_line_comment(attrs \\ %{}) do
-    %LineComment{}
+    lc = %LineComment{}
     |> LineComment.changeset(attrs)
     |> Repo.insert()
+
+    case lc do
+      {:ok, lc} ->
+        lc = Repo.preload(lc, [:user, {:grade, [:grade_column, :line_comments]}])
+        {:ok, lc}
+      error ->
+        error
+    end
   end
 
   @doc """
@@ -72,9 +81,18 @@ defmodule Inkfish.LineComments do
 
   """
   def update_line_comment(%LineComment{} = line_comment, attrs) do
-    line_comment
+    result = line_comment
     |> LineComment.changeset(attrs)
     |> Repo.update()
+
+    case result do
+      {:ok, %LineComment{} = lc} ->
+        {:ok, grade} = Inkfish.Grades.update_feedback_score(lc.grade_id)
+        grade = Repo.preload(grade, :line_comments)
+        {:ok, %{lc | grade: grade}}
+      other ->
+        other
+    end
   end
 
   @doc """

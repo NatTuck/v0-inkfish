@@ -77,4 +77,13 @@ defmodule InkfishWeb.Plugs.FetchItem do
     |> assign(:bucket, sub.assignment.bucket)
     |> assign(:course, sub.assignment.bucket.course)
   end
+
+  def fetch(conn, :grade, id) do
+    grade = Inkfish.Grades.get_grade_path!(id)
+    conn
+    |> assign(:sub, grade.sub)
+    |> assign(:assignment, grade.sub.assignment)
+    |> assign(:bucket, grade.sub.assignment.bucket)
+    |> assign(:course, grade.sub.assignment.bucket.course)
+  end
 end

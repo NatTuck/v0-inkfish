@@ -20,7 +20,10 @@ defmodule InkfishWeb.Staff.GradeColumnController do
   end
 
   def new(conn, _params) do
-    defaults = %GradeColumn{points: Decimal.new("50")}
+    defaults = %GradeColumn{
+      points: Decimal.new("50"),
+      base: Decimal.new("25"),
+    }
     changeset = Grades.change_grade_column(defaults)
     render(conn, "new.html", changeset: changeset)
   end

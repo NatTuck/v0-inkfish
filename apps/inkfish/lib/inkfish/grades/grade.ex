@@ -6,8 +6,8 @@ defmodule Inkfish.Grades.Grade do
     field :score, :decimal
     belongs_to :sub, Inkfish.Subs.Sub
     belongs_to :grade_column, Inkfish.Grades.GradeColumn
-
     belongs_to :grader, Inkfish.Users.User
+    has_many :line_comments, Inkfish.LineComments.LineComment
 
     timestamps()
   end

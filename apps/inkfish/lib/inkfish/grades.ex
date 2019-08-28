@@ -145,7 +145,20 @@ defmodule Inkfish.Grades do
       ** (Ecto.NoResultsError)
 
   """
-  def get_grade!(id), do: Repo.get!(Grade, id)
+  def get_grade!(id) do
+    Repo.get!(Grade, id)
+    |> Repo.preload([:grade_column, {:line_comments, [:user]}])
+  end
+
+  def get_grade_path!(id) do
+    Repo.one! from grade in Grade,
+      where: grade.id == ^id,
+      inner_join: sub in assoc(grade, :sub),
+      inner_join: as in assoc(sub, :assignment),
+      inner_join: bucket in assoc(as, :bucket),
+      inner_join: course in assoc(bucket, :course),
+      preload: [sub: {sub, assignment: {as, bucket: {bucket, course: course}}}]
+  end
 
   @doc """
   Creates a grade.
@@ -168,7 +181,7 @@ defmodule Inkfish.Grades do
 
     case result do
       {:ok, grade} ->
-        {:ok, Repo.preload(grade, :grader)}
+        {:ok, Repo.preload(grade, [:grader])}
       error ->
         error
     end
@@ -229,5 +242,18 @@ defmodule Inkfish.Grades do
   """
   def change_grade(%Grade{} = grade) do
     Grade.changeset(grade, %{})
+  end
+
+
+  def update_feedback_score(grade_id) do
+    grade = get_grade!(grade_id)
+    gcol  = get_grade_column!(grade.grade_column_id)
+    delta = Enum.reduce grade.line_comments, Decimal.new("0.0"), fn (lc, acc) ->
+      Decimal.add(lc.points, acc)
+    end
+
+    score = Decimal.add(gcol.base, delta)
+    {:ok, grade} = update_grade(grade, %{score: score})
+    {:ok, %{grade|grade_column: gcol}}
   end
 end

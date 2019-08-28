@@ -4,6 +4,15 @@ defmodule InkfishWeb.Staff.GradeController do
   alias Inkfish.Grades
   alias Inkfish.Grades.Grade
 
+  plug InkfishWeb.Plugs.FetchItem, [grade: "id"]
+    when action not in [:index, :new, :create]
+
+  alias InkfishWeb.Plugs.Breadcrumb
+  plug Breadcrumb, {"Courses (Staff)", :staff_course, :index}
+  plug Breadcrumb, {:show, :staff, :course}
+  plug Breadcrumb, {:show, :staff, :assignment}
+  plug Breadcrumb, {:show, :staff, :sub}
+
   def index(conn, _params) do
     grades = Grades.list_grades()
     render(conn, "index.html", grades: grades)
@@ -50,8 +59,11 @@ defmodule InkfishWeb.Staff.GradeController do
     {id, _} = Integer.parse(id)
     grade = Grades.get_grade!(id)
     changeset = Grades.change_grade(grade)
+    grade_json = InkfishWeb.Staff.GradeView.render("grade.json", %{grade: grade})
     data = Inkfish.Subs.read_sub_data(grade.sub_id)
+    |> Map.put(:edit, true)
     |> Map.put(:grade_id, id)
+    |> Map.put(:grade, grade_json)
     render(conn, "edit.html", grade: grade, changeset: changeset, data: data)
   end
 

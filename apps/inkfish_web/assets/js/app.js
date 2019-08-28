@@ -16,7 +16,7 @@ window.$ = jQuery;
 window.jQuery = jQuery;
 import "bootstrap/dist/js/bootstrap.bundle";
 import "bootstrap4-toggle";
-
+import feather from 'feather-icons';
 
 // Import local files
 //
@@ -27,6 +27,8 @@ import "./uploads";
 import "./grades/number-input";
 import "./code-view/init";
 
+
 $(() => {
   $('.toggle').bootstrapToggle();
+  feather.replace();
 });

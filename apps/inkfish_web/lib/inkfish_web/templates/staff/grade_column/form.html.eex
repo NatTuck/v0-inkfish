@@ -24,6 +24,12 @@
   </div>
 
   <div class="form-group">
+    <%= label f, :base %>
+    <%= number_input f, :base, step: "any", class: "form-control" %>
+    <%= error_tag f, :base %>
+  </div>
+
+  <div class="form-group">
     <%= label f, :params %>
     <%= text_input f, :params, class: "form-control" %>
     <%= error_tag f, :params %>

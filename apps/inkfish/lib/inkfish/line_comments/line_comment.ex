@@ -6,9 +6,10 @@ defmodule Inkfish.LineComments.LineComment do
     field :line, :integer
     field :path, :string
     field :points, :decimal
-    field :text, :string
-    field :grade_id, :id
-    field :user_id, :id
+    field :text, :string, default: ""
+
+    belongs_to :grade, Inkfish.Grades.Grade
+    belongs_to :user, Inkfish.Users.User
 
     timestamps()
   end
@@ -17,6 +18,6 @@ defmodule Inkfish.LineComments.LineComment do
   def changeset(line_comment, attrs) do
     line_comment
     |> cast(attrs, [:path, :line, :points, :text, :grade_id, :user_id])
-    |> validate_required([:path, :line, :points, :text, :grade_id, :user_id])
+    |> validate_required([:path, :line, :points, :grade_id, :user_id])
   end
 end

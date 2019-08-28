@@ -1,4 +1,4 @@
-defmodule InkfishWeb.LineCommentController do
+defmodule InkfishWeb.Staff.LineCommentController do
   use InkfishWeb, :controller
 
   alias Inkfish.LineComments
@@ -11,12 +11,15 @@ defmodule InkfishWeb.LineCommentController do
     render(conn, "index.json", line_comments: line_comments)
   end
 
-  def create(conn, %{"line_comment" => line_comment_params}) do
-    with {:ok, %LineComment{} = line_comment} <- LineComments.create_line_comment(line_comment_params) do
+  def create(conn, %{"line_comment" => lc_params}) do
+    lc_params = lc_params
+    |> Map.put("user_id", conn.assigns[:current_user].id)
+
+    with {:ok, %LineComment{} = lc} <- LineComments.create_line_comment(lc_params) do
       conn
       |> put_status(:created)
-      |> put_resp_header("location", Routes.line_comment_path(conn, :show, line_comment))
-      |> render("show.json", line_comment: line_comment)
+      |> put_resp_header("location", Routes.ajax_staff_line_comment_path(conn, :show, lc))
+      |> render("show.json", line_comment: lc)
     end
   end
 
@@ -37,7 +40,8 @@ defmodule InkfishWeb.LineCommentController do
     line_comment = LineComments.get_line_comment!(id)
 
     with {:ok, %LineComment{}} <- LineComments.delete_line_comment(line_comment) do
-      send_resp(conn, :no_content, "")
+      grade = Inkfish.Grades.get_grade!(line_comment.grade_id)
+      render(conn, "show.json", line_comment: %{line_comment | grade: grade})
     end
   end
 end

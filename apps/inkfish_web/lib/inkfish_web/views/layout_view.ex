@@ -58,7 +58,12 @@ defmodule InkfishWeb.LayoutView do
     parts = Enum.filter [prefix, type, "path"], &(&1 != nil)
     func = String.to_atom(Enum.join(parts, "_"))
     path = apply(Routes, func, [conn, :show, item])
-    crumb_to_link(conn, {item.name, path})
+    if Map.get(item, :name) do
+      crumb_to_link(conn, {item.name, path})
+    else
+      type_name = String.capitalize(type)
+      crumb_to_link(conn, {"#{type_name} ##{item.id}", path})
+    end
   end
  
   def crumb_to_link(conn, {name, helper, action}) do
