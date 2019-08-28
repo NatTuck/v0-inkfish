@@ -150,6 +150,16 @@ defmodule Inkfish.Grades do
     |> Repo.preload([:grade_column, {:line_comments, [:user]}])
   end
 
+  def get_grade_path!(id) do
+    Repo.one! from grade in Grade,
+      where: grade.id == ^id,
+      inner_join: sub in assoc(grade, :sub),
+      inner_join: as in assoc(sub, :assignment),
+      inner_join: bucket in assoc(as, :bucket),
+      inner_join: course in assoc(bucket, :course),
+      preload: [sub: {sub, assignment: {as, bucket: {bucket, course: course}}}]
+  end
+
   @doc """
   Creates a grade.
 

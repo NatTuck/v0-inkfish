@@ -29,7 +29,10 @@ function init() {
   };
 
   mirror = CodeMirror.fromTextArea(elem, opts);
-  mirror.on("gutterClick", gutter_click);
+
+  if (window.code_view_data.edit) {
+    mirror.on("gutterClick", gutter_click);
+  }
 
   show_line_comments();
 }
@@ -74,6 +77,43 @@ function show_line_comment(data) {
     return;
   }
 
+  if (window.code_view_data.edit) {
+    show_line_comment_edit(data);
+  }
+  else {
+    show_line_comment_view(data);
+  }
+}
+
+function show_line_comment_view(data) {
+  let color = line_comment_color(data.points);
+
+  let card_id = "lc-" + data.id;
+  let points = +data.points;
+  if (points >= 0) {
+    points = `+${points}`;
+  }
+
+  let html = `
+  <div class="card comment-card" id="${card_id}">
+    <div class="card-body">
+      <span class="badge ${color}">
+        ${points}
+      </span>
+      ${data.text}
+      (${data.user.name})
+    </div>
+  </div>
+  `;
+
+  let lc = document.createElement("div");
+  lc.innerHTML = html;
+
+  let node = mirror.addLineWidget(data.line, lc, {above: true});
+  comments.push({id: data.id, node: node});
+}
+
+function show_line_comment_edit(data) {
   let color = line_comment_color(data.points);
  
   let card_id = "lc-" + data.id;

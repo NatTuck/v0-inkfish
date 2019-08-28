@@ -1,13 +1,26 @@
-<h1>Show Grade</h1>
+<h1>Show Grade: <%= @grade.grade_column.name %></h1>
 
-<ul>
+<div class="row vh-100">
+  <div class="col-md-3 code-file-list h-100">
+    <div id="code-file-tree">
+      <!-- react component in code-viewer/file-tree.jsx -->
+      [react]
+    </div>
+  </div>
+  <div class="col-md-9 h-100">
+    <!-- CodeMirror goes here; code-viewer/code-viewer.js -->
+    <div class="card h-100">
+      <div class="card-body h-100">
+        <h2 class="card-title" id="viewer-file-path">(no file selected)</h2>
+        <textarea id="code-viewer"></textarea>
+      </div>
+    </div>
+  </div>
+</div>
 
-  <li>
-    <strong>Score:</strong>
-    <%= @grade.score %>
-  </li>
-
-</ul>
-
-<span><%= link "Edit", to: Routes.grade_path(@conn, :edit, @grade) %></span>
-<span><%= link "Back", to: Routes.grade_path(@conn, :index) %></span>
+<script>
+ window.code_view_data = JSON.parse(
+   "<%= raw(javascript_escape(Jason.encode!(@data))) %>"
+ );
+ window.line_comment_path = "<%= Routes.ajax_staff_line_comment_path(@conn, :create) %>";
+</script>
