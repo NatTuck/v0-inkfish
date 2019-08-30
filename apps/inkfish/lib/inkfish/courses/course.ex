@@ -8,6 +8,7 @@ defmodule Inkfish.Courses.Course do
     field :name, :string
     field :start_date, :date
     field :footer, :string, default: ""
+    field :grade_hide_days, :integer
     has_many :regs, Inkfish.Users.Reg
     has_many :join_reqs, Inkfish.JoinReqs.JoinReq
     has_many :buckets, Inkfish.Courses.Bucket

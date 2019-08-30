@@ -40,13 +40,13 @@
           <%= grade_column.name %>
         <% end %>
       </td>
-      <td><%= show_score(grade) %></td>
+      <td><%= show_score(@conn, grade) %></td>
       <td><%= grade_column.points %></td>
     </tr>
   <% end %>
   <tr>
     <td>Total Score</td>
-    <td><%= show_score(@sub) %></td>
+    <td><%= show_score(@conn, @sub) %></td>
     <td><%= assignment_total_points(@assignment) %></td>
   </tr>
 </table>

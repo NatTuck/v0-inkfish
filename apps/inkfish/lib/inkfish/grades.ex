@@ -150,7 +150,7 @@ defmodule Inkfish.Grades do
       where: grade.id == ^id,
       left_join: gc in assoc(grade, :grade_column),
       left_join: lcs in assoc(grade, :line_comments),
-      inner_join: user in assoc(lcs, :user),
+      left_join: user in assoc(lcs, :user),
       preload: [grade_column: gc, line_comments: {lcs, user: user}]
   end
 

@@ -5,6 +5,8 @@ defmodule InkfishWeb.ViewHelpers do
 
   alias Inkfish.Users.User
   alias Inkfish.Users.Reg
+  alias Inkfish.Subs.Sub
+  alias Inkfish.Grades.Grade
   
   def user_display_name(%User{} = user) do
     "#{user.given_name} #{user.surname}"
@@ -27,11 +29,47 @@ defmodule InkfishWeb.ViewHelpers do
     end
   end
 
-  def show_score(item) do
-    if item && item.score do
-      item.score
+  def show_score(conn, nil) do
+    "∅"
+  end
+
+  def show_score(conn, %Sub{} = sub) do
+    show_score(conn, sub.score)
+  end
+
+  def show_score(conn, %Grade{} = grade) do
+    show_score(conn, grade.score)
+  end
+
+  def show_score(:show, %Decimal{} = score) do
+    ctx = %Decimal.Context{Decimal.get_context | precision: 3}
+    Decimal.with_context ctx, fn ->
+      score
+      |> Decimal.add(Decimal.new("0"))
+      |> Decimal.to_string(:normal)
+    end
+  end
+
+  def show_score(conn, %Decimal{} = score) do
+    user = conn.assigns[:current_user]
+    reg  = conn.assigns[:current_reg]
+
+    if is_staff?(reg, user) do
+      show_score(:show, score)
     else
-      "∅"
+      course = conn.assigns[:course]
+      asgn   = conn.assigns[:assignment]
+
+      grade_hide_secs = 86400 * course.grade_hide_days
+      show_at = NaiveDateTime.add(asgn.due, grade_hide_secs)
+
+      now = Inkfish.LocalTime.now()
+      if NaiveDateTime.compare(show_at, now) == :lt do
+        # Hourglass with Flowing Sand
+        "&#9203;"
+      else
+        show_score(:show, score)
+      end
     end
   end
 

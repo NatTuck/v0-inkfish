@@ -137,11 +137,11 @@
                      data-sub-id="<%= sub.id %>"
                      data-grade-column-id="<%= gcol.id %>">
                   <!-- React component: grade_columns/number-input.jsx -->
-                  <%= show_score(grade) %>
+                  <%= show_score(@conn, grade) %>
                 </div>
               <% "feedback" -> %>
                 <%= if grade do %>
-                  <%= show_score(grade) %> / <%= gcol.points %>
+                  <%= show_score(@conn, grade) %> / <%= gcol.points %>
                   <%= link("Edit", to: Routes.staff_grade_path(@conn, :edit, grade)) %>
                 <% else %>
                   <% grade = %Inkfish.Grades.Grade{
@@ -156,11 +156,11 @@
                   <% end %>
                 <% end %>
               <% _else -> %>
-                <%= show_score(grade) %> / <%= gcol.points %>
+                <%= show_score(@conn, grade) %> / <%= gcol.points %>
             <% end %>
           </td>
         <% end %>
-        <td><%= show_score(sub) %> / <%= assignment_total_points(@assignment) %></td>
+        <td><%= show_score(@conn, sub) %> / <%= assignment_total_points(@assignment) %></td>
         <td>
           <%= link("View", to: Routes.staff_sub_path(@conn, :show, sub)) %>
         </td>

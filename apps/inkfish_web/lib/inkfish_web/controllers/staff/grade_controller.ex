@@ -32,7 +32,7 @@ defmodule InkfishWeb.Staff.GradeController do
     |> Map.put("sub_id", sub_id)
     |> Map.put("grading_user_id", conn.assigns[:current_user_id])
 
-    if conn.assigns[:client_mode] == "browser" do
+    if conn.assigns[:client_mode] == :browser do
       browser_create(conn, %{"grade" => grade_params})
     else
       ajax_create(conn, %{"grade" => grade_params})

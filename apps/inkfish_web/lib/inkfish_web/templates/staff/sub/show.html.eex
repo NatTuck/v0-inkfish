@@ -40,7 +40,7 @@
     <% grade = Enum.find(@sub.grades, &(&1.grade_column_id == grade_column.id)) %>
     <tr>
       <td><%= grade_column.name %></td>
-      <td><%= show_score(grade) %></td>
+      <td><%= show_score(@conn, grade) %></td>
       <td><%= grade_column.points %></td>
       <td>
         <%= staff_grade_action(@conn, grade_column, grade) %>
