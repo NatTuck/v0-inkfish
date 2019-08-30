@@ -209,7 +209,8 @@ function save_comment(ev) {
     }
   }
 
-  $.ajax(`${window.line_comment_path}/${id}`, {
+  let path = window.line_comment_paths.update.replace("ID", id);
+  $.ajax(path, {
     method: "patch",
     dataType: "json",
     contentType: "application/json; charset=UTF-8",
@@ -244,6 +245,7 @@ function kill_comment(ev) {
   let card = $(tgt).closest('div.card');
   let id   = +card.data('comment-id');
 
+  let path = window.line_comment_paths.update.replace("ID", id);
   $.ajax(`${window.line_comment_path}/${id}`, {
     method: "delete",
     dataType: "json",
@@ -299,7 +301,7 @@ function create_comment(path, line) {
       points: "0",
     },
   };
-  $.ajax(window.line_comment_path, {
+  $.ajax(window.line_comment_paths.create, {
     method: "post",
     dataType: "json",
     contentType: "application/json; charset=UTF-8",

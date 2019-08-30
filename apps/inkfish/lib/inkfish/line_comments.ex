@@ -42,6 +42,19 @@ defmodule Inkfish.LineComments do
       preload: [:user]
   end
 
+  def get_line_comment_path!(id) do
+    Repo.one! from lc in LineComment,
+      where: lc.id == ^id,
+      inner_join: grade in assoc(lc, :grade),
+      inner_join: sub in assoc(grade, :sub),
+      inner_join: as in assoc(sub, :assignment),
+      inner_join: bucket in assoc(as, :bucket),
+      inner_join: course in assoc(bucket, :course),
+      preload: [grade: {grade, sub: {sub, assignment:
+                {as, bucket: {bucket, course: course}}}}]
+  end
+
+
   @doc """
   Creates a line_comment.
 

@@ -146,8 +146,12 @@ defmodule Inkfish.Grades do
 
   """
   def get_grade!(id) do
-    Repo.get!(Grade, id)
-    |> Repo.preload([:grade_column, {:line_comments, [:user]}])
+    Repo.one! from grade in Grade,
+      where: grade.id == ^id,
+      left_join: gc in assoc(grade, :grade_column),
+      left_join: lcs in assoc(grade, :line_comments),
+      inner_join: user in assoc(lcs, :user),
+      preload: [grade_column: gc, line_comments: {lcs, user: user}]
   end
 
   def get_grade_path!(id) do
@@ -157,7 +161,9 @@ defmodule Inkfish.Grades do
       inner_join: as in assoc(sub, :assignment),
       inner_join: bucket in assoc(as, :bucket),
       inner_join: course in assoc(bucket, :course),
-      preload: [sub: {sub, assignment: {as, bucket: {bucket, course: course}}}]
+      inner_join: gc in assoc(grade, :grade_column),
+      preload: [sub: {sub, assignment: {as, bucket: {bucket, course: course}}},
+                grade_column: gc]
   end
 
   @doc """

@@ -3,7 +3,12 @@ defmodule InkfishWeb.Admin.CourseController do
 
   alias Inkfish.Courses
   alias Inkfish.Courses.Course
-  
+
+  plug InkfishWeb.Plugs.RequireUser, admin: true
+
+  plug InkfishWeb.Plugs.FetchItem, [course: "id"]
+    when action not in [:index, :new, :create]
+
   plug InkfishWeb.Plugs.Breadcrumb, {"Admin Courses", :admin_course, :index}
 
   def index(conn, _params) do

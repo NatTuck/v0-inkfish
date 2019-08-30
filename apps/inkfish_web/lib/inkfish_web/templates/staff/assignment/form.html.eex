@@ -23,8 +23,10 @@
   </div>
 
   <div class="form-group">
-    <%= label f, :due %>
-    <%= datetime_select f, :due, class: "form-control" %>
+    <div style="position: relative">
+      <%= label f, :due %>
+      <%= text_input(f, :due, class: "form-control date-time-picker") %>
+    </div>
     <%= error_tag f, :due %>
   </div>
 

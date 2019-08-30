@@ -6,6 +6,7 @@ defmodule InkfishWeb.Staff.TeamsetController do
     when action not in [:index, :new, :create]
   plug Plugs.FetchItem, [course: "course_id"]
     when action in [:index, :new, :create]
+  plug Plugs.RequireReg, staff: true
 
   alias InkfishWeb.Plugs.Breadcrumb
   plug Breadcrumb, {"Courses (Staff)", :staff_course, :index}

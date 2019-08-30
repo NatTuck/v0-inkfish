@@ -1,4 +1,0 @@
-<h1>New Bucket</h1>
-
-<%= render("form.html", Map.put(assigns, :action, 
-  Routes.course_bucket_path(@conn, :create, @course_id))) %>

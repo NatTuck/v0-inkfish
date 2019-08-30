@@ -14,7 +14,7 @@
     <tr>
       <td>
         <%= link course.name, to: Routes.course_path(@conn, :show, course) %>
-        <%= if staff_reg?(reg) do %>
+        <%= if reg && is_staff?(reg, reg.user) do %>
           (<%= link "Staff View", to: Routes.staff_course_path(@conn, :show, course) %>)
         <% end %>
       </td>

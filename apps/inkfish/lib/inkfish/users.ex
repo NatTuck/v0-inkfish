@@ -190,14 +190,20 @@ defmodule Inkfish.Users do
       preload: [user: user]
   end
 
-  def list_regs_for_user(%User{} = user),
-    do: list_regs_for_user(user.id)
-
-  def list_regs_for_user(user_id) do
-    Repo.all from reg in Reg,
-      where: reg.user_id == ^user_id,
+  def list_regs_for_user(%User{} = user) do
+    regs = Repo.all from reg in Reg,
+      where: reg.user_id == ^user.id,
       inner_join: course in assoc(reg, :course),
       preload: [course: course]
+
+    Enum.map regs, fn reg ->
+      %{reg | user: user}
+    end
+  end
+
+  def list_regs_for_user(user_id) do
+    user = get_user!(user_id)
+    list_regs_for_user(user)
   end
 
   @doc """
@@ -315,5 +321,10 @@ defmodule Inkfish.Users do
   """
   def change_reg(%Reg{} = reg) do
     Reg.changeset(reg, %{})
+  end
+
+
+  def next_due(%Reg{} = reg) do
+    Inkfish.Assignments.next_due(reg.course_id, reg.user_id)
   end
 end

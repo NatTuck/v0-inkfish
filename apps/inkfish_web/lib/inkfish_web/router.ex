@@ -44,7 +44,6 @@ defmodule InkfishWeb.Router do
       resources "/regs", RegController, only: [:index, :new, :create]
       resources "/join_reqs", JoinReqController, only: [:new, :create]
       resources "/teams", TeamController, only: [:index, :new, :create]
-      resources "/buckets", BucketController, only: [:index, :new, :create]
     end
     resources "/regs", RegController, except: [:index, :new, :create]
     resources "/teams", TeamController, except: [:index, :new, :create]
@@ -80,8 +79,10 @@ defmodule InkfishWeb.Router do
       resources "/subs", SubController, only: [:index, :new, :create]
     end
     resources "/grade_columns", GradeColumnController, except: [:index, :new, :create]
-    resources "/subs", SubController, except: [:index, :new, :create]
-    resources "/grades", GradeController, only: [:edit, :show, :create]
+    resources "/subs", SubController, except: [:index, :new, :create] do
+      resources "/grades", GradeController, only: [:create]
+    end
+    resources "/grades", GradeController, only: [:edit, :show]
   end
 
   scope "/admin", InkfishWeb.Admin, as: :admin do
@@ -101,13 +102,12 @@ defmodule InkfishWeb.Router do
   scope "/ajax/staff", InkfishWeb.Staff, as: :ajax_staff do
     pipe_through :ajax
 
-    post "/grades", GradeController, :ajax_create
-    resources "/line_comments", LineCommentController, except: [:new, :edit]
+    resources "/subs", SubController, only: [] do
+      resources "/grades", GradeController, only: [:create]
+    end
+    resources "/grades", GradeController, only: [] do
+      resources "/line_comments", LineCommentController, only: [:create]
+    end
+    resources "/line_comments", LineCommentController, except: [:new, :edit, :create]
   end
-
-  # Other scopes may use custom stacks.
-  # scope "/api", InkfishWeb do
-  #   pipe_through :api
-  # end
 end
-

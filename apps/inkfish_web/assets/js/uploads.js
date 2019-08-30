@@ -7,12 +7,13 @@ import uuid from 'uuid/v4';
 import socket from "./socket";
 
 function setup() {
-  if (window.current_page != 'sub/new') {
-    return;
+  if (window.current_page == 'sub/new') {
+    setup_cloner();
   }
 
-  setup_cloner();
-  setup_uploader();
+  if ($('.upload-drop-area')) {
+    setup_uploader();
+  }
 }
 
 function join_channel(topic) {

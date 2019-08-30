@@ -16,6 +16,8 @@ window.$ = jQuery;
 window.jQuery = jQuery;
 import "bootstrap/dist/js/bootstrap.bundle";
 import "bootstrap4-toggle";
+import "moment";
+import "jquery-datetimepicker";
 import feather from 'feather-icons';
 
 // Import local files
@@ -26,9 +28,15 @@ import "./search";
 import "./uploads";
 import "./grades/number-input";
 import "./code-view/init";
+import init_dates from "./human-date";
 
 
 $(() => {
+  init_dates();
   $('.toggle').bootstrapToggle();
+  $('.date-time-picker').datetimepicker({
+    format: "Y-m-d H:i:59",
+    allowTimes: ["3:59", "7:59", "11:59", "15:59", "19:59", "23:59"],
+  });
   feather.replace();
 });

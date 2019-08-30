@@ -11,6 +11,8 @@ defmodule InkfishWeb.Staff.JoinReqController do
   plug Plugs.FetchItem, [join_req: "id"]
     when action not in [:index, :new, :create]
 
+  plug Plugs.RequireReg, staff: true
+
   alias InkfishWeb.Plugs.Breadcrumb
   plug Breadcrumb, {"Courses (Staff)", :staff_course, :index}
   plug Breadcrumb, {:show, :staff, :course}
@@ -33,7 +35,10 @@ defmodule InkfishWeb.Staff.JoinReqController do
     attrs = %{
       user_id: req.user_id,
       course_id: req.course_id,
-      is_staff: req.staff_req
+      is_staff: req.staff_req,
+      is_grader: req.staff_req,
+      is_student: !req.staff_req,
+      is_prof: false,
     }
     {:ok, _reg} = Users.create_reg(attrs)
     {:ok, _join_req} = JoinReqs.delete_join_req(req)

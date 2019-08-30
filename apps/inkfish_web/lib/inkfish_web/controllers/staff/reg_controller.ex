@@ -6,7 +6,7 @@ defmodule InkfishWeb.Staff.RegController do
     when action in [:index, :new, :create]
   plug Plugs.FetchItem, [reg: "id"]
     when action not in [:index, :new, :create]
-  plug Plugs.RequireReg
+  plug Plugs.RequireReg, staff: true
 
   alias InkfishWeb.Plugs.Breadcrumb
   plug Breadcrumb, {"Courses (Staff)", :staff_course, :index}
@@ -71,6 +71,6 @@ defmodule InkfishWeb.Staff.RegController do
 
     conn
     |> put_flash(:info, "Reg deleted successfully.")
-    |> redirect(to: Routes.staff_reg_path(conn, :index))
+    |> redirect(to: Routes.staff_course_reg_path(conn, reg.course_id, :index))
   end
 end

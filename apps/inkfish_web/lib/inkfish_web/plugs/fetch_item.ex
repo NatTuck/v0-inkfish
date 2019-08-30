@@ -81,6 +81,19 @@ defmodule InkfishWeb.Plugs.FetchItem do
   def fetch(conn, :grade, id) do
     grade = Inkfish.Grades.get_grade_path!(id)
     conn
+    |> assign(:grade, grade)
+    |> assign(:sub, grade.sub)
+    |> assign(:assignment, grade.sub.assignment)
+    |> assign(:bucket, grade.sub.assignment.bucket)
+    |> assign(:course, grade.sub.assignment.bucket.course)
+  end
+
+  def fetch(conn, :line_comment, id) do
+    lc = Inkfish.LineComments.get_line_comment_path!(id)
+    grade = lc.grade
+    conn
+    |> assign(:line_comment, lc)
+    |> assign(:grade, grade)
     |> assign(:sub, grade.sub)
     |> assign(:assignment, grade.sub.assignment)
     |> assign(:bucket, grade.sub.assignment.bucket)

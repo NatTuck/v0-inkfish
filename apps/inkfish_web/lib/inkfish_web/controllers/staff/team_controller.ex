@@ -4,6 +4,13 @@ defmodule InkfishWeb.Staff.TeamController do
   alias Inkfish.Teams
   alias Inkfish.Teams.Team
 
+  alias InkfishWeb.Plugs
+  plug Plugs.FetchItem, [team: "id"]
+    when action not in [:index, :new, :create]
+  plug Plugs.FetchItem, [teamset: "teamset_id"]
+    when action in [:index, :new, :create]
+  plug Plugs.RequireReg, staff: true
+
   def index(conn, _params) do
     teams = Teams.list_teams()
     render(conn, "index.html", teams: teams)

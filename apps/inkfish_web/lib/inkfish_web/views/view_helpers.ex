@@ -27,10 +27,6 @@ defmodule InkfishWeb.ViewHelpers do
     end
   end
 
-  def staff_reg?(reg) do
-    reg && (reg.is_staff || reg.is_prof || reg.user.is_prof)
-  end
-
   def show_score(item) do
     if item && item.score do
       item.score

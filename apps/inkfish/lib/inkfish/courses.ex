@@ -224,6 +224,11 @@ defmodule Inkfish.Courses do
     Repo.all(Bucket)
   end
 
+  def list_buckets(course_id) do
+    Repo.all from bb in Bucket,
+      where: bb.course_id == ^course_id
+  end
+
   @doc """
   Gets a single bucket.
 

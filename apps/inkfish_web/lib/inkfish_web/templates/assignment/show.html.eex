@@ -14,20 +14,33 @@
   </li>
 
   <li>
-    <strong>Desc:</strong>
-    <%= @assignment.desc %>
-  </li>
-
-  <li>
     <strong>Due:</strong>
-    <%= @assignment.due %>
+    <span class="human-date">
+      <%= @assignment.due %>
+    </span>
   </li>
 
   <li>
     <strong>Weight:</strong>
     <%= @assignment.weight %>
   </li>
+
+  <li>
+    <strong>Starter:</strong>
+    <%= if @assignment.starter_upload do %>
+      <%= link(@assignment.starter_upload.name,
+            to: Routes.upload_path(@conn, :show, @assignment.starter_upload)) %>
+    <% else %>
+      ∅
+    <% end %>
+  </li>
 </ul>
+
+<h2>Description</h2>
+
+<div>
+  <%= trusted_markdown @assignment.desc %>
+</div>
 
 <h2>Submissions</h2>
 
@@ -39,8 +52,8 @@
   <thead>
     <td>Active</td>
     <td>Date</td>
-    <%= for gdr <- @assignment.grade_columns do %>
-      <td><%= gdr.name %></td>
+    <%= for gcol <- @assignment.grade_columns do %>
+      <td><%= gcol.name %></td>
     <% end %>
     <td>Total Score</td>
     <td>Actions</td>
@@ -50,9 +63,9 @@
       <tr>
         <td style="text-align: center"><%= if sub.active, do: "✓" %></td>
         <td><%= sub.inserted_at %></td>
-        <%= for gdr <- @assignment.grade_columns do %>
-          <% grade = Enum.find(sub.grades, &(&1.grade_column_id == gdr.id)) %>
-          <td><%= if grade do grade.score else "∅" end %> / <%= gdr.points %></td>
+        <%= for gcol <- @assignment.grade_columns do %>
+          <% grade = Enum.find(sub.grades, &(&1.grade_column_id == gcol.id)) %>
+          <td><%= if grade do grade.score else "∅" end %> / <%= gcol.points %></td>
         <% end %>
         <td><%= sub.score || "∅" %> / <%= assignment_total_points(@assignment) %></td>
         <td><%= link "View", to: Routes.sub_path(@conn, :show, sub) %></td>

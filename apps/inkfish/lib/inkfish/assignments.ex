@@ -154,4 +154,13 @@ defmodule Inkfish.Assignments do
   def change_assignment(%Assignment{} = assignment) do
     Assignment.changeset(assignment, %{})
   end
+
+
+  def next_due(course_id, _user_id) do
+    Repo.one from as in Assignment,
+      inner_join: bucket in assoc(as, :bucket),
+      where: bucket.course_id == ^course_id,
+      where: as.due > fragment("now()::timestamp"),
+      limit: 1
+  end
 end

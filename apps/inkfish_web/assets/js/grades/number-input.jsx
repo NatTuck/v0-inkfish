@@ -38,7 +38,7 @@ class NumberInput extends React.Component {
       }
     });
 
-    $.ajax(window.save_grade_path, {
+    $.ajax(save_grade_path(this.state.sub_id), {
       method: "post",
       dataType: "json",
       contentType: "application/json; charset=UTF-8",

@@ -23,7 +23,7 @@ defmodule InkfishWeb.Staff.GradeView do
   def render("grade.json", %{grade: grade}) do
     grader = get_assoc(grade, :grader)
     gc = get_assoc(grade, :grade_column)
-    lcs = get_assoc(grade, :line_comments)
+    lcs = get_assoc(grade, :line_comments) || []
 
     %{
       score: grade.score,

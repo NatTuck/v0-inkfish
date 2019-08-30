@@ -25,7 +25,9 @@
 
   <li>
     <strong>Due:</strong>
-    <%= @assignment.due %>
+    <span class="human-date">
+      <%= @assignment.due %>
+    </span>
   </li>
 
   <li>
@@ -96,7 +98,10 @@
 <h2>Submissions</h2>
 
 <script>
- window.save_grade_path = "<%= Routes.ajax_staff_grade_path(@conn, :ajax_create) %>";
+ function save_grade_path(sub_id) {
+   let path = "<%= Routes.ajax_staff_sub_grade_path(@conn, :create, :SubID) %>";
+   return path.replace('SubID', sub_id);
+ }
 </script>
 
 <table class="table table-striped">
@@ -143,7 +148,7 @@
                     grade_column_id: gcol.id, sub_id: sub.id
                   } %>
                   <% cset = Inkfish.Grades.change_grade(grade) %>
-                  <% action = Routes.staff_grade_path(@conn, :create) %>
+                  <% action = Routes.staff_sub_grade_path(@conn, :create, sub.id) %>
                   <%= form_for cset, action, fn f -> %>
                     <%= hidden_input f, :sub_id %>
                     <%= hidden_input f, :grade_column_id %>

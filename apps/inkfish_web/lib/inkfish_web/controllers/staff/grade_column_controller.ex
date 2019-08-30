@@ -1,12 +1,15 @@
 defmodule InkfishWeb.Staff.GradeColumnController do
   use InkfishWeb, :controller
 
-  plug InkfishWeb.Plugs.FetchItem, [assignment: "assignment_id"]
+  alias InkfishWeb.Plugs
+  plug Plugs.FetchItem, [assignment: "assignment_id"]
     when action in [:index, :new, :create]
-  plug InkfishWeb.Plugs.FetchItem, [grade_column: "id"]
+  plug Plugs.FetchItem, [grade_column: "id"]
     when action not in [:index, :new, :create]
 
-  alias InkfishWeb.Plugs.Breadcrumb
+  plug Plugs.RequireReg, staff: true
+
+  alias Plugs.Breadcrumb
   plug Breadcrumb, {"Courses (Staff)", :staff_course, :index}
   plug Breadcrumb, {:show, :staff, :course}
   plug Breadcrumb, {:show, :staff, :assignment}
@@ -39,7 +42,6 @@ defmodule InkfishWeb.Staff.GradeColumnController do
         |> redirect(to: Routes.staff_grade_column_path(conn, :show, grade_column))
 
       {:error, %Ecto.Changeset{} = changeset} ->
-        IO.inspect(changeset)
         render(conn, "new.html", changeset: changeset)
     end
   end
