@@ -7,6 +7,7 @@ defmodule InkfishWeb.ViewHelpers do
   alias Inkfish.Users.Reg
   alias Inkfish.Subs.Sub
   alias Inkfish.Grades.Grade
+  alias Inkfish.Assignments.Assignment
   
   def user_display_name(%User{} = user) do
     "#{user.given_name} #{user.surname}"
@@ -29,19 +30,7 @@ defmodule InkfishWeb.ViewHelpers do
     end
   end
 
-  def show_score(conn, nil) do
-    "∅"
-  end
-
-  def show_score(conn, %Sub{} = sub) do
-    show_score(conn, sub.score)
-  end
-
-  def show_score(conn, %Grade{} = grade) do
-    show_score(conn, grade.score)
-  end
-
-  def show_score(:show, %Decimal{} = score) do
+  def show_score(%Decimal{} = score) do
     ctx = %Decimal.Context{Decimal.get_context | precision: 3}
     Decimal.with_context ctx, fn ->
       score
@@ -50,27 +39,62 @@ defmodule InkfishWeb.ViewHelpers do
     end
   end
 
-  def show_score(conn, %Decimal{} = score) do
+  def show_score(nil) do
+    "∅"
+  end
+
+  def show_score(conn, nil) do
+    show_score(nil)
+  end
+
+  def show_score(conn, %Sub{} = sub) do
+    asgn = conn.assigns[:assignment]
+    show_score(conn, asgn, sub.score)
+  end
+
+  def show_score(conn, %Grade{} = grade) do
+    asgn = conn.assigns[:assignment]
+    show_score(conn, asgn, grade.score)
+  end
+
+  def show_score(conn, %Assignment{} = asgn) do
+    sub = Enum.find asgn.subs, &(&1.active)
+    show_score(conn, asgn, sub && sub.score)
+  end
+
+  def show_score(conn, %Assignment{} = _a, nil) do
+    show_score(nil)
+  end
+
+  def show_score(conn, %Assignment{} = asgn, %Decimal{} = score) do
     user = conn.assigns[:current_user]
     reg  = conn.assigns[:current_reg]
 
     if is_staff?(reg, user) do
-      show_score(:show, score)
+      show_score(score)
     else
       course = conn.assigns[:course]
-      asgn   = conn.assigns[:assignment]
 
       grade_hide_secs = 86400 * course.grade_hide_days
       show_at = NaiveDateTime.add(asgn.due, grade_hide_secs)
 
-      now = Inkfish.LocalTime.now()
-      if NaiveDateTime.compare(show_at, now) == :lt do
+      if grade_hidden?(conn, asgn) do
         # Hourglass with Flowing Sand
-        "&#9203;"
+        raw "&#9203;"
       else
-        show_score(:show, score)
+        show_score(score)
       end
     end
+  end
+
+  def grade_hidden?(conn, %Assignment{} = asgn) do
+    course = conn.assigns[:course]
+
+    grade_hide_secs = 86400 * course.grade_hide_days
+    show_at = NaiveDateTime.add(asgn.due, grade_hide_secs)
+
+    now = Inkfish.LocalTime.now()
+    NaiveDateTime.compare(show_at, now) != :lt
   end
 
   def assignment_total_points(as) do

@@ -36,7 +36,7 @@
           <td><%= link as.name, to: Routes.assignment_path(@conn, :show, as) %></td>
           <td><%= as.due %></td>
           <td><%= as.weight %></td>
-          <td><%= assignment_score(as) %></td>
+          <td><%= show_score(@conn, as) %></td>
         </tr>
       <% end %>
     </tbody>

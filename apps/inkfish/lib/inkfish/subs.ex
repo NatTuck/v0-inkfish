@@ -60,8 +60,12 @@ defmodule Inkfish.Subs do
     Repo.one! from sub in Sub,
       where: sub.id == ^id,
       inner_join: upload in assoc(sub, :upload),
+      inner_join: reg in assoc(sub, :reg),
+      inner_join: user in assoc(reg, :user),
       left_join: grades in assoc(sub, :grades),
-      preload: [upload: upload, grades: grades]
+      left_join: gc in assoc(grades, :grade_column),
+      preload: [upload: upload, grades: {grades, grade_column: gc},
+                reg: {reg, user: user}]
   end
 
   def get_sub_path!(id) do
@@ -72,7 +76,8 @@ defmodule Inkfish.Subs do
       left_join: grade_columns in assoc(as, :grade_columns),
       inner_join: bucket in assoc(as, :bucket),
       inner_join: course in assoc(bucket, :course),
-      preload: [assignment: {as, bucket: {bucket, course: course}, grade_columns: grade_columns}]
+      preload: [assignment: {as, bucket: {bucket, course: course},
+                             grade_columns: grade_columns}]
   end
 
   @doc """

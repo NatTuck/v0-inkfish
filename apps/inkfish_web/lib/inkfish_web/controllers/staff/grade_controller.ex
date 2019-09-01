@@ -42,6 +42,7 @@ defmodule InkfishWeb.Staff.GradeController do
   def browser_create(conn, %{"grade" => grade_params}) do
     case Grades.create_grade(grade_params) do
       {:ok, grade} ->
+        Inkfish.Subs.calc_sub_score!(grade.sub_id)
         redirect(conn, to: Routes.staff_grade_path(conn, :edit, grade))
       {:error, %Ecto.Changeset{} = changeset} ->
         conn

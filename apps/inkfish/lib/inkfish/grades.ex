@@ -250,7 +250,6 @@ defmodule Inkfish.Grades do
     Grade.changeset(grade, %{})
   end
 
-
   def update_feedback_score(grade_id) do
     grade = get_grade!(grade_id)
     gcol  = get_grade_column!(grade.grade_column_id)
@@ -260,6 +259,8 @@ defmodule Inkfish.Grades do
 
     score = Decimal.add(gcol.base, delta)
     {:ok, grade} = update_grade(grade, %{score: score})
+
+    Inkfish.Subs.calc_sub_score!(grade.sub_id)
     {:ok, %{grade|grade_column: gcol}}
   end
 end

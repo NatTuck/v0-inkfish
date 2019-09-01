@@ -2,6 +2,11 @@
 
 <ul>
   <li>
+    <strong>Submitter:</strong>
+    <%= user_display_name(@sub.reg.user) %>
+  </li>
+
+  <li>
     <strong>Active:</strong>
     <%= @sub.active %>
   </li>
@@ -27,26 +32,23 @@
     <tr>
       <th>Name</th>
       <th>Score</th>
-      <th>Max Points</th>
     </tr>
   </thead>
   <%= for grade_column <- @assignment.grade_columns do %>
     <% grade = Enum.find(@sub.grades, &(&1.grade_column_id == grade_column.id)) %>
     <tr>
       <td>
-        <%= if grade do %>
+        <%= if grade && !grade_hidden?(@conn, @assignment) do %>
           <%= link grade_column.name, to: Routes.grade_path(@conn, :show, grade.id) %>
         <% else %>
           <%= grade_column.name %>
         <% end %>
       </td>
-      <td><%= show_score(@conn, grade) %></td>
-      <td><%= grade_column.points %></td>
+      <td><%= show_score(@conn, grade) %> / <%= grade_column.points %></td>
     </tr>
   <% end %>
   <tr>
     <td>Total Score</td>
-    <td><%= show_score(@conn, @sub) %></td>
-    <td><%= assignment_total_points(@assignment) %></td>
+    <td><%= show_score(@conn, @sub) %> / <%= assignment_total_points(@assignment) %></td>
   </tr>
 </table>

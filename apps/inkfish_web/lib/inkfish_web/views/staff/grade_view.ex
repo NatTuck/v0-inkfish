@@ -4,6 +4,7 @@ defmodule InkfishWeb.Staff.GradeView do
   alias Inkfish.Grades.GradeColumn
   alias Inkfish.Grades.Grade
 
+  # FIXME: This makes no sense.
   def staff_grade_action(sub, %GradeColumn{kind: "number"} = _gcol, nil) do
     link "New Grade", to: Routes.staff_grade_path(@conn, :new, sub)
   end

@@ -37,7 +37,7 @@ defmodule InkfishWeb.Router do
     get "/", PageController, :index
     get "/dashboard", PageController, :dashboard
     resources "/session", SessionController, only: [:create, :delete], singleton: true
-    resources "/users", UserController
+    resources "/users", UserController, only: [:show, :edit, :update]
     resources "/uploads", UploadController, only: [:create, :show]
     get "/uploads/:id/thumb", UploadController, :thumb
     resources "/courses", CourseController, only: [:index, :show] do

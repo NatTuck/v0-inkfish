@@ -7,6 +7,8 @@ defmodule InkfishWeb.SubController do
   plug Plugs.FetchItem, [assignment: "assignment_id"]
     when action in [:index, :new, :create]
   plug Plugs.RequireReg
+  plug Plugs.RequireSubmitter
+    when action in [:show]
 
   alias InkfishWeb.Plugs.Breadcrumb
   plug Breadcrumb, {:show, :course}

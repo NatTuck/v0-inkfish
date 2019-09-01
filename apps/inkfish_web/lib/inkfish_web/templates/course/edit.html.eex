@@ -1,6 +1,0 @@
-<h1>Edit Course</h1>
-
-<p><%= link "Show Course", to: Routes.course_path(@conn, :show, @course.id) %></p>
-
-<%= render "form.html", Map.put(assigns, :action, Routes.course_path(@conn, :update, @course)) %>
-

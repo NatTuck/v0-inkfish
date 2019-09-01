@@ -2,6 +2,11 @@
 
 <ul>
   <li>
+    <strong>Submitter:</strong>
+    <%= user_display_name(@sub.user) %>
+  </li>
+
+  <li>
     <strong>Active:</strong>
     <%= @sub.active %>
   </li>
@@ -32,7 +37,6 @@
     <tr>
       <th>Name</th>
       <th>Score</th>
-      <th>Points</th>
       <th>Actions</th>
     </tr>
   </thead>
@@ -40,10 +44,13 @@
     <% grade = Enum.find(@sub.grades, &(&1.grade_column_id == grade_column.id)) %>
     <tr>
       <td><%= grade_column.name %></td>
-      <td><%= show_score(@conn, grade) %></td>
-      <td><%= grade_column.points %></td>
+      <td><%= show_score(@conn, grade) %> / <%= grade_column.points %></td>
       <td>
-        <%= staff_grade_action(@conn, grade_column, grade) %>
+        <%= if grade do %>
+          <%= link "Edit Grade", to: Routes.staff_grade_path(@conn, :edit, grade) %>
+        <% else %>
+          <%= link "New Grade", to: Routes.staff_sub_grade_path(@conn, :new, @sub) %>
+        <% end %>
       </td>
     </tr>
   <% end %>
