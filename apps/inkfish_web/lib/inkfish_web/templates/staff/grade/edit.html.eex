@@ -2,6 +2,17 @@
 
 <div class="row vh-100">
   <div class="col-md-3 code-file-list h-100">
+    <div class="card">
+      <div class="card-body">
+        <h4>Rubric</h4>
+        <%= if @rubric do %>
+          <% path = Routes.upload_path(@conn, :show, @rubric) <> "?show=true" %>
+          <p><%= link @rubric.name, to: path, target: "_blank" %></p>
+        <% else %>
+          <p>Not available.</p>
+        <% end %>
+      </div>
+    </div>
     <div id="code-file-tree">
       <!-- react component in code-viewer/file-tree.jsx -->
       [react]

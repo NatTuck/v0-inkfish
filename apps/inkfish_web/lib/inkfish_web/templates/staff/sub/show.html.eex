@@ -3,7 +3,12 @@
 <ul>
   <li>
     <strong>Submitter:</strong>
-    <%= user_display_name(@sub.user) %>
+    <%= user_display_name(@sub.reg.user) %>
+  </li>
+
+  <li>
+    <strong>Timestamp:</strong>
+    <%= @sub.inserted_at %>
   </li>
 
   <li>
@@ -46,10 +51,15 @@
       <td><%= grade_column.name %></td>
       <td><%= show_score(@conn, grade) %> / <%= grade_column.points %></td>
       <td>
-        <%= if grade do %>
-          <%= link "Edit Grade", to: Routes.staff_grade_path(@conn, :edit, grade) %>
+        <%= if grade_column.kind == "feedback" do %>
+          <%= if grade do %>
+            <%= link "Edit Grade", to: Routes.staff_grade_path(@conn, :edit, grade) %>
+          <% else %>
+            <%= link "New Grade", to: Routes.staff_sub_grade_path(@conn, :new, @sub) %>
+          <% end %>
         <% else %>
-          <%= link "New Grade", to: Routes.staff_sub_grade_path(@conn, :new, @sub) %>
+          <!-- FIXME: Add form to edit number grade here. -->
+          (none)
         <% end %>
       </td>
     </tr>

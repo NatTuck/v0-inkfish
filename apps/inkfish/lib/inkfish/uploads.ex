@@ -36,6 +36,7 @@ defmodule Inkfish.Uploads do
 
   """
   def get_upload!(id), do: Repo.get!(Upload, id)
+  def get_upload(id), do: Repo.get(Upload, id)
 
   @doc """
   Creates a upload.

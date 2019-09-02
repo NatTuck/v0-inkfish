@@ -72,13 +72,15 @@ defmodule InkfishWeb.Staff.GradeController do
   def edit(conn, %{"id" => id}) do
     {id, _} = Integer.parse(id)
     grade = Grades.get_grade!(id)
+    rubric = Inkfish.Uploads.get_upload(grade.grade_column.upload_id)
     changeset = Grades.change_grade(grade)
     grade_json = InkfishWeb.Staff.GradeView.render("grade.json", %{grade: grade})
     data = Inkfish.Subs.read_sub_data(grade.sub_id)
     |> Map.put(:edit, true)
     |> Map.put(:grade_id, id)
     |> Map.put(:grade, grade_json)
-    render(conn, "edit.html", grade: grade, changeset: changeset, data: data)
+    render(conn, "edit.html", grade: grade, changeset: changeset,
+      data: data, rubric: rubric)
   end
 
   def update(conn, %{"id" => id, "grade" => grade_params}) do

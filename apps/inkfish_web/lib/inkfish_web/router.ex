@@ -76,10 +76,9 @@ defmodule InkfishWeb.Router do
     end
     resources "/assignments", AssignmentController, except: [:index, :new, :create] do
       resources "/grade_columns", GradeColumnController, only: [:index, :new, :create]
-      resources "/subs", SubController, only: [:index, :new, :create]
     end
     resources "/grade_columns", GradeColumnController, except: [:index, :new, :create]
-    resources "/subs", SubController, except: [:index, :new, :create] do
+    resources "/subs", SubController, only: [:show] do
       resources "/grades", GradeController, only: [:create]
     end
     resources "/grades", GradeController, only: [:edit, :show]

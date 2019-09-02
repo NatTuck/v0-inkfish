@@ -2,6 +2,8 @@ defmodule Inkfish.Users.User do
   use Ecto.Schema
   import Ecto.Changeset
 
+  @timestamps_opts [autogenerate: {Inkfish.LocalTime, :now, []}]
+
   schema "users" do
     field :login, :string
     field :email, :string

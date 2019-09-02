@@ -2,6 +2,8 @@ defmodule Inkfish.Assignments.Assignment do
   use Ecto.Schema
   import Ecto.Changeset
 
+  @timestamps_opts [autogenerate: {Inkfish.LocalTime, :now, []}]
+
   schema "assignments" do
     field :desc, :string
     field :due, :naive_datetime
@@ -9,7 +11,6 @@ defmodule Inkfish.Assignments.Assignment do
     field :weight, :decimal
     field :allow_git, :boolean, default: true
     field :allow_upload, :boolean, default: true
-
 
     belongs_to :bucket, Inkfish.Courses.Bucket
     belongs_to :teamset, Inkfish.Teams.Teamset

@@ -1,4 +1,4 @@
-<h1>Show Grade_Column</h1>
+<h1>Show Grade Column</h1>
 
 <p>
   <%= link "Edit", to: Routes.staff_grade_column_path(@conn, :edit, @grade_column) %>

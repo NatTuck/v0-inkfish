@@ -7,6 +7,11 @@
   </li>
 
   <li>
+    <strong>Timestamp:</strong>
+    <%= @sub.inserted_at %>
+  </li>
+
+  <li>
     <strong>Active:</strong>
     <%= @sub.active %>
   </li>

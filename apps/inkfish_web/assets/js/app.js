@@ -38,5 +38,9 @@ $(() => {
     format: "Y-m-d H:i:59",
     allowTimes: ["3:59", "7:59", "11:59", "15:59", "19:59", "23:59"],
   });
+  $('.date-picker').datetimepicker({
+    timepicker: false,
+    format: "Y-m-d",
+  });
   feather.replace();
 });

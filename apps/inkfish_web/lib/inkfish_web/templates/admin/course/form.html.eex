@@ -13,7 +13,7 @@
 
   <div class="form-group">
     <%= label f, :start_date %>
-    <%= date_select f, :start_date, class: "form-control" %>
+    <%= text_input(f, :start_date, class: "form-control date-picker") %>
     <%= error_tag f, :start_date %>
   </div>
 
