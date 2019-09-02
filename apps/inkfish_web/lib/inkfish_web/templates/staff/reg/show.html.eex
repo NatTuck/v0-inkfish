@@ -29,3 +29,45 @@
     <%= @reg.is_student %>
   </li>
 </ul>
+
+<h2>Submissions</h2>
+
+<%= Enum.map @course.buckets, fn bucket -> %>
+  <h3><%= bucket.name %></h3>
+
+  <table class="table table-striped">
+    <thead>
+      <th>Active?</th>
+      <th>Timestamp</th>
+      <th>Score</th>
+      <th>Actions</th>
+    </thead>
+    <tbody>
+      <%= Enum.map bucket.assignments, fn as -> %>
+        <tr class="table-secondary">
+          <td>&nbsp;</td>
+          <td colspan="3"><strong><%= as.name %></strong></td>
+        </tr>
+
+        <%= Enum.map @subs[as.id], fn sub -> %>
+          <tr>
+            <td><%= if sub.active, do: "✓" %></td>
+            <td><%= link(sub.inserted_at,
+                to: Routes.staff_sub_path(@conn, :show, sub)) %></td>
+            <td><%= sub.score || "∅" %> / <%= assignment_total_points(as) %></td>
+            <td>
+              <%= unless sub.active do %>
+                <% path = Routes.staff_sub_path(@conn, :update, sub) %>
+                <% cset = Inkfish.Subs.change_sub(%{sub | active: true}) %>
+                <%= form_for cset, path, fn f -> %>
+                  <%= hidden_input f, :active %>
+                  <%= submit "Set Active", class: "btn btn-secondary" %>
+                <% end %>
+              <% end %>
+            </td>
+          </tr>
+        <% end %>
+      <% end %>
+    </tbody>
+  </table>
+<% end %>

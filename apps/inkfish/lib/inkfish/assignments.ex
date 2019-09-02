@@ -66,6 +66,7 @@ defmodule Inkfish.Assignments do
       left_join: starter in assoc(as, :starter_upload),
       left_join: solution in assoc(as, :solution_upload),
       left_join: subs in assoc(as, :subs),
+      where: subs.active,
       left_join: grades in assoc(subs, :grades),
       left_join: reg in assoc(subs, :reg),
       left_join: user in assoc(reg, :user),

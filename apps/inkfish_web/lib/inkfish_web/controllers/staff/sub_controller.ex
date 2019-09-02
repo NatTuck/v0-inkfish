@@ -20,4 +20,17 @@ defmodule InkfishWeb.Staff.SubController do
     sub = Subs.get_sub!(id)
     render(conn, "show.html", sub: sub)
   end
+
+  def update(conn, %{"id" => id, "sub" => params}) do
+    # This can only set a sub active.
+    sub = conn.assigns[:sub]
+
+    if params["active"] do
+      Subs.set_sub_active!(sub)
+    end
+
+    conn
+    |> put_flash(:info, "Set sub active: ##{sub.id}.")
+    |> redirect(to: Routes.staff_reg_path(conn, :show, sub.reg_id))
+  end
 end

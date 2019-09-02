@@ -16,6 +16,8 @@ defmodule InkfishWeb.Staff.RegController do
 
   alias Inkfish.Users
   alias Inkfish.Users.Reg
+  alias Inkfish.Courses
+  alias Inkfish.Subs
 
   def index(conn, _params) do
     regs = Users.list_regs_for_course(conn.assigns[:course])
@@ -42,7 +44,12 @@ defmodule InkfishWeb.Staff.RegController do
 
   def show(conn, %{"id" => id}) do
     reg = Users.get_reg!(id)
-    render(conn, "show.html", reg: reg)
+    course = Courses.get_course_for_staff_view!(reg.course_id)
+    subs = Enum.reduce Subs.list_subs_for_reg(reg), %{}, fn (sub, acc) ->
+      xs = Map.get(acc, sub.assignment_id) || []
+      Map.put(acc, sub.assignment_id, [sub | xs])
+    end
+    render(conn, "show.html", reg: reg, course: course, subs: subs)
   end
 
   def edit(conn, %{"id" => id}) do

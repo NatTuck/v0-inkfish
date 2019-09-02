@@ -99,27 +99,31 @@ defmodule Inkfish.Subs do
 
     case result do
       {:ok, sub} ->
-        set_one_sub_active(sub)
+        set_one_sub_active!(sub)
         {:ok, sub}
       error ->
         error
     end
   end
 
-  def set_one_sub_active(new_sub) do
-    reg_id = new_sub.reg_id
-    asg_id = new_sub.assignment_id
-    prev = active_sub_for_reg(reg_id)
+  def set_one_sub_active!(new_sub) do
+    prev = active_sub_for_reg(new_sub.reg_id)
     # If the active sub has been graded, we keep it.
     unless prev && prev.score do
-      user_subs = from sub in Sub,
-        where: sub.reg_id == ^reg_id and sub.assignment_id == ^asg_id
-
-      Ecto.Multi.new
-      |> Ecto.Multi.update_all(:subs, user_subs, set: [active: false])
-      |> Ecto.Multi.update(:sub, Sub.make_active(new_sub))
-      |> Repo.transaction()
+      set_sub_active!(new_sub)
     end
+  end
+
+  def set_sub_active!(new_sub) do
+    reg_id = new_sub.reg_id
+    asg_id = new_sub.assignment_id
+    user_subs = from sub in Sub,
+      where: sub.reg_id == ^reg_id and sub.assignment_id == ^asg_id
+
+    {:ok, _} = Ecto.Multi.new
+    |> Ecto.Multi.update_all(:subs, user_subs, set: [active: false])
+    |> Ecto.Multi.update(:sub, Sub.make_active(new_sub))
+    |> Repo.transaction()
   end
 
   @doc """
