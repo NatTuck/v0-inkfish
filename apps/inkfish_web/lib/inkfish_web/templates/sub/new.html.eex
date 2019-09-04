@@ -2,6 +2,7 @@
 
 <p>Course: <%= @course.name %></p>
 <p>Assignment: <%= @assignment.name %></p>
+<p>Submitting for: <%= show_team(@team) %></p>
 
 <%= form_for @changeset, Routes.assignment_sub_path(@conn, :create, @assignment), fn f -> %>
   <%= if @changeset.action do %>
@@ -27,42 +28,56 @@
     <%= text_input f, :upload_id, class: "form-control", readonly: "readonly" %>
     <%= error_tag f, :upload_id %>
 
-    <ul class="nav nav-tabs">
-      <li class="nav-item">
-        <a class="nav-link active" id="upload-tab"
-           data-toggle="tab" href="#upload-pane">
-          Upload File
-        </a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" id="git-tab"
-           data-toggle="tab" href="#git-pane">
-          Clone Git Repo
-        </a>
-      </li>
-    </ul>
+    <% use_tabs = @assignment.allow_upload && @assignment.allow_git %>
+    <%= if use_tabs do %>
+      <ul class="nav nav-tabs">
+        <li class="nav-item">
+          <a class="nav-link active" id="upload-tab"
+             data-toggle="tab" href="#upload-pane">
+            Upload File
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="git-tab"
+             data-toggle="tab" href="#git-pane">
+            Clone Git Repo
+          </a>
+        </li>
+      </ul>
+    <% else %>
+      <script>
+       $(() => $('#git-pane').show());
+      </script>
+    <% end %>
 
     <div class="tab-content" id="upload-panes">
-      <div class="tab-pane fade show active" id="upload-pane">
-        <%= ajax_upload_field "sub", "tgz,gz,txt", "sub_upload_id" %>
-      </div>
-      <div class="tab-pane fade" id="git-pane">
-        <div class="row my-2">
-          <div class="col-md-8 form-group">
-            <input type="text" placeholder="https://github.com/YourName/repo.git"
-                 class="form-control" id="git-clone-input">
+
+      <%= if @assignment.allow_upload do %>
+        <div class="tab-pane fade show active" id="upload-pane">
+          <%= ajax_upload_field "sub", "tgz,gz,txt", "sub_upload_id" %>
+        </div>
+      <% end %>
+
+      <%= if @assignment.allow_git do %>
+        <div class="tab-pane fade <%= if !use_tabs, do: "show active" %>" id="git-pane">
+          <div class="row my-2">
+            <div class="col-md-8 form-group">
+              <input type="text" placeholder="https://github.com/YourName/repo.git"
+                     class="form-control" id="git-clone-input">
+            </div>
+            <div class="col-md-4 form-group">
+              <button class="btn btn-secondary" id="git-clone-btn">Git Clone</button>
+            </div>
           </div>
-          <div class="col-md-4 form-group">
-            <button class="btn btn-secondary" id="git-clone-btn">Git Clone</button>
+          <div class="row">
+            <div class="col">
+              <div class="output-log" id="git-output-log"
+                   data-id-field="sub_upload_id"></div>
+            </div>
           </div>
         </div>
-        <div class="row">
-          <div class="col">
-            <div class="output-log" id="git-output-log"
-                 data-id-field="sub_upload_id"></div>
-          </div>
-        </div>
-      </div>
+      <% end %>
+
     </div>
   </div>
 

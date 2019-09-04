@@ -4,10 +4,11 @@
   <%= link "New Teamset", to: Routes.staff_course_teamset_path(@conn, :new, @course) %>
 </p>
 
-<table>
+<table class="table table-striped">
   <thead>
     <tr>
       <th>Name</th>
+      <th>Actions</th>
     </tr>
   </thead>
   <tbody>
@@ -17,9 +18,12 @@
         <%= teamset.name %>
       </td>
       <td>
-        <%= link "Show", to: Routes.staff_teamset_path(@conn, :show, teamset) %>
-        <%= link "Edit", to: Routes.staff_teamset_path(@conn, :edit, teamset) %>
-        <%= link "Delete", to: Routes.staff_teamset_path(@conn, :delete, teamset), method: :delete, data: [confirm: "Are you sure?"] %>
+        <%= link "Show", to: Routes.staff_teamset_path(@conn, :show, teamset) %>&nbsp;
+        <%= link "Edit", to: Routes.staff_teamset_path(@conn, :edit, teamset) %>&nbsp;
+        <%= link("Delete",
+          to: Routes.staff_teamset_path(@conn, :delete, teamset),
+          method: :delete, data: [confirm: "Are you sure?"],
+          class: "btn btn-sm btn-danger") %>
       </td>
     </tr>
 <% end %>

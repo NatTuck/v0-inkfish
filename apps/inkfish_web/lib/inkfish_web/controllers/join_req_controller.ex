@@ -4,9 +4,10 @@ defmodule InkfishWeb.JoinReqController do
   alias Inkfish.JoinReqs
   alias Inkfish.JoinReqs.JoinReq
 
-  plug InkfishWeb.Plugs.FetchItem, [course: "course_id"]
+  alias InkfishWeb.Plugs
+  plug Plugs.FetchItem, [course: "course_id"]
     when action in [:index, :new, :create]
-  plug InkfishWeb.Plugs.FetchItem, [join_req: "id"]
+  plug Plugs.FetchItem, [join_req: "id"]
     when action not in [:index, :new, :create]
   plug Plugs.RequireUser
 

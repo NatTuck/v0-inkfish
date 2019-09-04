@@ -25,7 +25,11 @@ defmodule InkfishWeb.Staff.BucketController do
   end
 
   def new(conn, %{"course_id" => course_id}) do
-    changeset = Courses.change_bucket(%Bucket{course_id: course_id})
+    defaults = %Bucket{
+      course_id: course_id,
+      weight: 100,
+    }
+    changeset = Courses.change_bucket(defaults)
     render(conn, "new.html", changeset: changeset)
   end
 

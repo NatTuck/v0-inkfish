@@ -1,7 +1,24 @@
-<h1>Show Teamset</h1>
+<h1>Teamset: <%= @teamset.name %></h1>
 
-<p><%= link "Edit", to: Routes.staff_teamset_path(@conn, :edit, @teamset) %></p>
+<%= if @course.solo_teamset_id == @teamset.id do %>
 
-<ul>
-  <li><strong>Name</strong>: <%= @teamset.name %></li>
-</ul>
+  <p>This is the solo teamset, managed automatically.</p>
+
+<% else %>
+
+  <div id="team-manager">
+    <!-- react component: teams/team-manager.jsx -->
+    [react]
+  </div>
+
+  <script>
+   window.create_team_path =
+     "<%= Routes.ajax_staff_teamset_team_path(@conn, :create, @teamset) %>";
+   window.team_path_template =
+     "<%= Routes.ajax_staff_team_path(@conn, :show, :ID) %>";
+   window.teamset_data = JSON.parse(`
+<%= raw(Jason.encode!(@data, pretty: true)) %>
+   `);
+  </script>
+
+<% end %>

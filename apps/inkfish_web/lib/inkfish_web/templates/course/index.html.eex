@@ -13,9 +13,13 @@
   <% reg = Enum.find(@regs, &(&1.course_id == course.id)) %>
     <tr>
       <td>
-        <%= link course.name, to: Routes.course_path(@conn, :show, course) %>
-        <%= if reg && is_staff?(reg, reg.user) do %>
-          (<%= link "Staff View", to: Routes.staff_course_path(@conn, :show, course) %>)
+        <%= if reg do %>
+          <%= link course.name, to: Routes.course_path(@conn, :show, course) %>
+          <%= if is_staff?(reg, reg.user) do %>
+            (<%= link "Staff View", to: Routes.staff_course_path(@conn, :show, course) %>)
+          <% end %>
+        <% else %>
+          <%= course.name %>
         <% end %>
       </td>
       <td><%= course.start_date %></td>

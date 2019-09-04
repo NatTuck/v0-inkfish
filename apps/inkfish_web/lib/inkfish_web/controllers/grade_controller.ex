@@ -4,7 +4,8 @@ defmodule InkfishWeb.GradeController do
   alias Inkfish.Grades
   alias Inkfish.Grades.Grade
 
-  plug InkfishWeb.Plugs.FetchItem, [grade: "id"]
+  alias InkfishWeb.Plugs
+  plug Plugs.FetchItem, [grade: "id"]
     when action not in [:index, :new, :create]
   plug Plugs.RequireReg
   plug Plugs.RequireSubmitter

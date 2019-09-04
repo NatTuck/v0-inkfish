@@ -8,6 +8,7 @@ defmodule InkfishWeb.ViewHelpers do
   alias Inkfish.Subs.Sub
   alias Inkfish.Grades.Grade
   alias Inkfish.Assignments.Assignment
+  alias Inkfish.Teams.Team
   
   def user_display_name(%User{} = user) do
     "#{user.given_name} #{user.surname}"
@@ -28,6 +29,14 @@ defmodule InkfishWeb.ViewHelpers do
       true ->
         "observer"
     end
+  end
+
+  def show_team(%Team{} = team) do
+    members = team.team_members
+    |> Enum.map(&(user_display_name(&1.reg.user)))
+    |> Enum.join(", ")
+
+    "Team ##{team.id} (#{members})"
   end
 
   def show_score(%Decimal{} = score) do

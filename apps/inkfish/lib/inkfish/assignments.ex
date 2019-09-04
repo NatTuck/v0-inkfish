@@ -8,6 +8,8 @@ defmodule Inkfish.Assignments do
 
   alias Inkfish.Assignments.Assignment
   alias Inkfish.Subs.Sub
+  alias Inkfish.Users.Reg
+  alias Inkfish.Teams.Team
 
   @doc """
   Returns the list of assignments.
@@ -47,15 +49,34 @@ defmodule Inkfish.Assignments do
                 starter_upload: starter, solution_upload: solution]
   end
 
-  def list_subs_for_reg(as_id, %Inkfish.Users.Reg{} = reg),
+  def list_subs_for_reg(as_id, %Reg{} = reg),
     do: list_subs_for_reg(as_id, reg.id)
 
   def list_subs_for_reg(as_id, reg_id) do
+    teams = Repo.all from tt in Team,
+      inner_join: teamset in assoc(tt, :teamset),
+      left_join: asgs in assoc(teamset, :assignments),
+      left_join: members in assoc(tt, :team_members),
+      where: members.reg_id == ^reg_id,
+      where: asgs.id == ^as_id
+    team_ids = Enum.map teams, &(&1.id)
+
     Repo.all from sub in Sub,
-      where: sub.reg_id == ^reg_id and sub.assignment_id == ^as_id,
+      where: sub.assignment_id == ^as_id,
+      where: sub.reg_id == ^reg_id or sub.team_id in ^team_ids,
       left_join: grades in assoc(sub, :grades),
       order_by: [desc: :inserted_at],
       preload: [grades: grades]
+  end
+
+  def list_active_subs(%Assignment{} = as) do
+    Repo.all from sub in Sub,
+      where: sub.assignment_id == ^as.id,
+      where: sub.active,
+      left_join: grades in assoc(sub, :grades),
+      left_join: reg in assoc(sub, :reg),
+      left_join: user in assoc(reg, :user),
+      preload: [grades: grades, reg: {reg, user: user}]
   end
 
   def get_assignment_for_staff!(id) do
@@ -65,17 +86,11 @@ defmodule Inkfish.Assignments do
       left_join: grade_columns in assoc(as, :grade_columns),
       left_join: starter in assoc(as, :starter_upload),
       left_join: solution in assoc(as, :solution_upload),
-      left_join: subs in assoc(as, :subs),
-      where: subs.active,
-      left_join: grades in assoc(subs, :grades),
-      left_join: reg in assoc(subs, :reg),
-      left_join: user in assoc(reg, :user),
       preload: [
         teamset: teamset,
         grade_columns: grade_columns,
         starter_upload: starter,
         solution_upload: solution,
-        subs: {subs, grades: grades, reg: {reg, user: user}},
       ]
   end
 

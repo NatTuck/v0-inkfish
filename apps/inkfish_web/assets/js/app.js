@@ -29,11 +29,17 @@ import "./uploads";
 import "./grades/number-input";
 import "./code-view/init";
 import init_dates from "./human-date";
-
+import init_teams from "./teams/team-manager";
 
 $(() => {
   init_dates();
+  init_date_time_pickers();
+  init_teams();
   $('.toggle').bootstrapToggle();
+  feather.replace();
+});
+
+function init_date_time_pickers() {
   $('.date-time-picker').datetimepicker({
     format: "Y-m-d H:i:59",
     allowTimes: ["3:59", "7:59", "11:59", "15:59", "19:59", "23:59"],
@@ -42,5 +48,4 @@ $(() => {
     timepicker: false,
     format: "Y-m-d",
   });
-  feather.replace();
-});
+}

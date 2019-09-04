@@ -45,6 +45,15 @@ defmodule InkfishWeb.Plugs.FetchItem do
     |> assign(:course, ts.course)
   end
 
+  def fetch(conn, :team, id) do
+    team = Inkfish.Teams.get_team_path!(id)
+    ts = team.teamset
+    conn
+    |> assign(:team, team)
+    |> assign(:teamset, ts)
+    |> assign(:course, ts.course)
+  end
+
   def fetch(conn, :bucket, id) do
     bucket = Inkfish.Courses.get_bucket_path!(id)
     conn

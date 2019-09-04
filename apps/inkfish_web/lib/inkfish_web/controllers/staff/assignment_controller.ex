@@ -53,7 +53,8 @@ defmodule InkfishWeb.Staff.AssignmentController do
 
   def show(conn, %{"id" => id}) do
     assignment = Assignments.get_assignment_for_staff!(id)
-    render(conn, "show.html", assignment: assignment)
+    subs = Assignments.list_active_subs(assignment)
+    render(conn, "show.html", assignment: %{assignment | subs: subs})
   end
 
   def edit(conn, %{"id" => id}) do

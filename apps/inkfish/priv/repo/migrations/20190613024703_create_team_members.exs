@@ -3,7 +3,6 @@ defmodule Inkfish.Repo.Migrations.CreateTeamMembers do
 
   def change do
     create table(:team_members) do
-      add :active, :boolean, default: true, null: false
       add :team_id, references(:teams, on_delete: :delete_all), null: false
       add :reg_id, references(:regs, on_delete: :delete_all), null: false
 

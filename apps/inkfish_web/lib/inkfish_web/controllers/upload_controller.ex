@@ -57,6 +57,10 @@ defmodule InkfishWeb.UploadController do
     end
   end
 
+  def show(conn, %{"id" => id}) do
+    show(conn, %{"id" => id, "show" => false})
+  end
+
   def thumb(conn, %{"id" => id}) do
     upload = Uploads.get_upload!(id)
     path = Uploads.Photo.thumb_path(upload)

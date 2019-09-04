@@ -15,8 +15,9 @@ defmodule InkfishWeb.Plugs.RequireSubmitter do
     asgn = conn.assigns[:assignment]
 
     is_staff = reg.is_staff || reg.is_prof
+    on_team = Enum.any?(sub.team.regs, &(&1.id == reg.id))
 
-    if sub.reg_id == reg.id || is_staff || user.is_admin do
+    if on_team || sub.reg_id == reg.id || is_staff || user.is_admin do
       conn
     else
       conn

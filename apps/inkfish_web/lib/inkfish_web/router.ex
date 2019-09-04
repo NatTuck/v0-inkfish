@@ -67,10 +67,7 @@ defmodule InkfishWeb.Router do
     resources "/regs", RegController, except: [:index, :new, :create]
     resources "/join_reqs", JoinReqController, only: [:show, :delete]
     post "/join_reqs/:id/accept", JoinReqController, :accept
-    resources "/teamsets", TeamsetController, except: [:index, :new, :create] do
-      resources "/teams", TeamController, only: [:index, :new, :create]
-    end
-    resources "/teams", TeamController, except: [:index, :new, :create]
+    resources "/teamsets", TeamsetController, except: [:index, :new, :create]
     resources "/buckets", BucketController, except: [:index, :new, :create] do
       resources "/assignments", AssignmentController, only: [:index, :new, :create]
     end
@@ -108,5 +105,9 @@ defmodule InkfishWeb.Router do
       resources "/line_comments", LineCommentController, only: [:create]
     end
     resources "/line_comments", LineCommentController, except: [:new, :edit, :create]
+    resources "/teamsets", TeamsetController, only: [] do
+      resources "/teams", TeamController, only: [:index, :create]
+    end
+    resources "/teams", TeamController, only: [:show, :update, :delete]
   end
 end

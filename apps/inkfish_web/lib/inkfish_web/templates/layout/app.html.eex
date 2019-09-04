@@ -26,7 +26,7 @@
             <%= if @current_user && @current_user.is_admin do %>
               <%= render InkfishWeb.LayoutView, "admin_nav.html", assigns %>
             <% else %>
-              Not an admin.
+              &nbsp;
             <% end %>
           </div>
           <div class="col-md-5">

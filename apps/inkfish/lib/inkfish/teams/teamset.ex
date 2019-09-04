@@ -8,6 +8,7 @@ defmodule Inkfish.Teams.Teamset do
     field :name, :string
     belongs_to :course, Inkfish.Courses.Course
     has_many :assignments, Inkfish.Assignments.Assignment
+    has_many :teams, Inkfish.Teams.Team
 
     timestamps()
   end

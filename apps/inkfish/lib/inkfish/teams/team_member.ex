@@ -2,10 +2,11 @@ defmodule Inkfish.Teams.TeamMember do
   use Ecto.Schema
   import Ecto.Changeset
 
+  @timestamps_opts [autogenerate: {Inkfish.LocalTime, :now, []}]
+
   schema "team_members" do
-    field :active, :boolean, default: false
-    field :team_id, :id
-    field :reg_id, :id
+    belongs_to :team, Inkfish.Teams.Team
+    belongs_to :reg, Inkfish.Users.Reg
 
     timestamps()
   end
@@ -13,7 +14,7 @@ defmodule Inkfish.Teams.TeamMember do
   @doc false
   def changeset(team_member, attrs) do
     team_member
-    |> cast(attrs, [:active])
-    |> validate_required([:active])
+    |> cast(attrs, [:team_id, :reg_id])
+    |> validate_required([:team_id, :reg_id])
   end
 end
