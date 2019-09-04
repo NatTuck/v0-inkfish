@@ -64,7 +64,7 @@ class TeamManager extends React.Component {
       headers: { "x-csrf-token": window.csrf_token },
       success: (data, status) => {
         data = data.data;
-        console.log("created", data.teamset);
+        console.log("created", data);
         this.reset_data(data.teamset);
       },
       error: (xhr, status) => {
@@ -75,6 +75,23 @@ class TeamManager extends React.Component {
 
   set_active_team(team, active) {
     console.log("set active", team, active);
+    let body = { team: { active: active } };
+    let path = window.team_path_template.replace("ID", team.id);
+    $.ajax(path, {
+      method: "patch",
+      dataType: "json",
+      contentType: "application/json; charset=UTF-8",
+      data: JSON.stringify(body),
+      headers: { "x-csrf-token": window.csrf_token },
+      success: (data, status) => {
+        data = data.data;
+        console.log("created", data);
+        this.reset_data(data.teamset);
+      },
+      error: (xhr, status) => {
+        console.log("create failed", status, xhr);
+      }
+    });
   }
 
   delete_team(team) {

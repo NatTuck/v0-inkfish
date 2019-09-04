@@ -224,7 +224,11 @@ defmodule Inkfish.Teams do
       team
     end
 
-    get_team!(team1.id)
+    if team1 do
+      get_team!(team1.id)
+    else
+      nil
+    end
   end
 
   def create_solo_team(%Assignment{} = asg, %Reg{} = reg) do
