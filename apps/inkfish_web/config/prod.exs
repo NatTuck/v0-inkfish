@@ -14,9 +14,12 @@ use Mix.Config
 # which you should run after static files are built and
 # before starting your production server.
 config :inkfish_web, InkfishWeb.Endpoint,
-  http: [:inet6, port: System.get_env("PORT") || 4000],
-  url: [host: "example.com", port: 80],
-  cache_static_manifest: "priv/static/cache_manifest.json"
+  http: [:inet6, port: {:system, "PORT"}],
+  url: [host: "inkfish.ccs.neu.edu", port: 443],
+  cache_static_manifest: "priv/static/cache_manifest.json",
+  server: true,
+  root: ".",
+  version: Application.spec(:phoenix_distillery, :vsn)
 
 config :phoenix, :serve_endpoints, true
 

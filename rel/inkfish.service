@@ -1,0 +1,16 @@
+[Unit]
+Description=Inkfish
+
+[Service]
+Type=simple
+User=inkfish
+Group=inkfish
+Restart=on-failure
+Environment=MIX_ENV=prod "PORT=4080"
+Environment=LANG=en_US.UTF-8
+
+WorkingDirectory=/home/inkfish/inkfish
+ExecStart=/home/inkfish/inkfish/start.sh
+
+[Install]
+WantedBy=multi-user.target
