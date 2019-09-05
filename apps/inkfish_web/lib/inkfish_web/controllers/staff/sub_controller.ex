@@ -20,7 +20,8 @@ defmodule InkfishWeb.Staff.SubController do
   def show(conn, %{"id" => id}) do
     sub = Subs.get_sub!(id)
     sub = %{sub | team: Teams.get_team!(sub.team_id)}
-    render(conn, "show.html", sub: sub)
+    sub_data = InkfishWeb.Staff.SubView.render("sub.json", sub: sub)
+    render(conn, "show.html", sub: sub, sub_data: sub_data)
   end
 
   def update(conn, %{"id" => id, "sub" => params}) do

@@ -76,9 +76,10 @@ defmodule Inkfish.Subs do
       inner_join: reg in assoc(sub, :reg),
       inner_join: user in assoc(reg, :user),
       left_join: grades in assoc(sub, :grades),
+      left_join: lcs in assoc(grades, :line_comments),
       left_join: gc in assoc(grades, :grade_column),
       preload: [upload: upload,
-                grades: {grades, grade_column: gc},
+                grades: {grades, grade_column: gc, line_comments: lcs},
                 reg: {reg, user: user}]
   end
 
@@ -232,6 +233,14 @@ defmodule Inkfish.Subs do
     points_avail = Inkfish.Assignments.Assignment.assignment_total_points(sub.assignment)
     penalty_frac = Decimal.from_float(hours_late(sub) / 100.0)
     penalty = Decimal.mult(points_avail, penalty_frac)
+  end
+
+  def save_sub_dump!(sub_id, json) do
+    sub = get_sub!(sub_id)
+    base = Inkfish.Uploads.Upload.upload_dir(sub.upload_id)
+    path = Path.join(base, "dump.json")
+    File.write!(path, json)
+    IO.inspect({"Data for sub dumped", sub.id, path})
   end
 
   @doc """

@@ -11,7 +11,7 @@ defmodule InkfishWeb.Staff.TeamsetView do
       name: teamset.name,
       course: render_one(course, InkfishWeb.Staff.CourseView, "course.json"),
       assignments: render_many(assigns, Inkfish.Staff.AssignmentView, "assignment.json"),
-      teams: render_many(teamset.teams, InkfishWeb.Staff.TeamView, "team.json"),
+      teams: render_many(teams, InkfishWeb.Staff.TeamView, "team.json"),
     }
   end
 end

@@ -79,3 +79,13 @@
     </tr>
   <% end %>
 </table>
+
+<!--
+
+<h2>Data Dump</h2>
+
+<pre>
+  <%= raw Jason.encode!(@sub_data, pretty: true) %>
+</pre>
+
+-->

@@ -43,6 +43,7 @@ defmodule InkfishWeb.Staff.GradeController do
     case Grades.create_grade(grade_params) do
       {:ok, grade} ->
         Inkfish.Subs.calc_sub_score!(grade.sub_id)
+        save_sub_dump!(grade.sub_id)
         redirect(conn, to: Routes.staff_grade_path(conn, :edit, grade))
       {:error, %Ecto.Changeset{} = changeset} ->
         conn
@@ -55,6 +56,7 @@ defmodule InkfishWeb.Staff.GradeController do
     case Grades.create_grade(grade_params) do
       {:ok, grade} ->
         Inkfish.Subs.calc_sub_score!(grade.sub_id)
+        save_sub_dump!(grade.sub_id)
         render(conn, "grade.json", grade: grade)
 
       {:error, %Ecto.Changeset{} = changeset} ->
@@ -89,6 +91,7 @@ defmodule InkfishWeb.Staff.GradeController do
     case Grades.update_grade(grade, grade_params) do
       {:ok, grade} ->
         Inkfish.Subs.calc_sub_score!(grade.sub_id)
+        save_sub_dump!(grade.sub_id)
 
         conn
         |> put_flash(:info, "Grade updated successfully.")
@@ -106,5 +109,12 @@ defmodule InkfishWeb.Staff.GradeController do
     conn
     |> put_flash(:info, "Grade deleted successfully.")
     |> redirect(to: Routes.staff_grade_path(conn, :index))
+  end
+
+  def save_sub_dump!(sub_id) do
+    sub = Inkfish.Subs.get_sub!(sub_id)
+    json = InkfishWeb.Staff.SubView.render("sub.json", %{sub: sub})
+    |> Jason.encode!(pretty: true)
+    Inkfish.Subs.save_sub_dump!(sub.id, json)
   end
 end

@@ -16,6 +16,7 @@ defmodule InkfishWeb.Staff.SubView do
   def render("sub.json", %{sub: sub}) do
     reg = get_assoc(sub, :reg)
     team = get_assoc(sub, :team)
+    grades = get_assoc(sub, :grades) || []
 
     %{
       active: sub.active,
@@ -25,6 +26,7 @@ defmodule InkfishWeb.Staff.SubView do
       reg: render_one(reg, InkfishWeb.Staff.RegView, "reg.json"),
       team_id: sub.team_id,
       team: render_one(team, InkfishWeb.Staff.TeamView, "team.json"),
+      grades: render_many(grades, InkfishWeb.Staff.GradeView, "grade.json"),
     }
   end
 end
