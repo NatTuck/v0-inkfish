@@ -1,6 +1,6 @@
 
 get_secret = fn name ->
-  base = Path.expand("~/.config/husky_shop")
+  base = Path.expand("~/.config/inkfish")
   File.mkdir_p!(base)
   path = Path.join(base, name)
   unless File.exists?(path) do
