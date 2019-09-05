@@ -23,10 +23,11 @@ config :inkfish_web, InkfishWeb.Endpoint,
 
 config :phoenix, :serve_endpoints, true
 
-import_config "../../config/get_secret.exs"
+#import_config "../../config/get_secret.exs"
+{get_secret, _} = Code.eval_file "./config/get_secret.exs"
 
 config :inkfish_web, InkfishWeb.Endpoint,
-  secret_key_base: get_config.("key_base")
+  secret_key_base: get_secret.("key_base")
 
 # ## Using releases (distillery)
 #

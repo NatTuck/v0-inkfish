@@ -2,8 +2,6 @@
 
 export MIX_ENV=prod
 export PORT=4080
-export NODEBIN=`pwd`/assets/node_modules/.bin
-export PATH="$PATH:$NODEBIN"
 
 echo "Building..."
 
@@ -12,8 +10,13 @@ mkdir -p priv/static
 
 mix deps.get
 mix compile
+mix ecto.migrate
 
 cd apps/inkfish_web
+
+export NODEBIN=`pwd`/assets/node_modules/.bin
+export PATH="$PATH:$NODEBIN"
+
 (cd assets && npm install)
 (cd assets && webpack --mode production)
 mix phx.digest

@@ -6,7 +6,8 @@ use Mix.Config
 
 config :inkfish, :env, :prod
 
-import_config "../../config/get_secret.exs"
+#import_config "../../config/get_secret.exs"
+{get_secret, _} = Code.eval_file "./config/get_secret.exs"
 
 config :paddle, Paddle,
   host: "ldap.ccs.neu.edu",
@@ -21,7 +22,7 @@ config :paddle, Paddle,
 
 config :inkfish, Inkfish.Repo,
   username: "inkfish",
-  password: get_secret.("db_pass")
+  password: get_secret.("db_pass"),
   database: "inkfish_prod",
   pool_size: 15
 
