@@ -31,4 +31,10 @@ defmodule Inkfish.Assignments.Assignment do
                     :allow_upload])
     |> validate_required([:name, :desc, :due, :weight, :bucket_id, :teamset_id])
   end
+
+  def assignment_total_points(as) do
+    Enum.reduce as.grade_columns, Decimal.new("0"), fn (gcol, sum) ->
+      Decimal.add(gcol.points, sum)
+    end
+  end
 end

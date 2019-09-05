@@ -17,6 +17,10 @@ let current_path = null;
 let comments = [];
 let grade_callback = null;
 
+// FIXME: Want single source of truth between this
+// and the file list.
+let grade = null;
+
 function init() {
   let elem = document.getElementById('code-viewer');
   if (!elem) {
@@ -29,6 +33,7 @@ function init() {
   };
 
   mirror = CodeMirror.fromTextArea(elem, opts);
+  grade = window.code_view_data.grade;
 
   if (window.code_view_data.edit) {
     mirror.on("gutterClick", gutter_click);
@@ -68,7 +73,7 @@ function show_line_comments() {
   _.each(comments, (item) => item.node.clear());
   comments = [];
 
-  let xs = window.code_view_data.grade.line_comments;
+  let xs = grade.line_comments;
   _.each(xs, show_line_comment);
 }
 
@@ -220,6 +225,7 @@ function save_comment(ev) {
       data = data.data;
 
       if (grade_callback && data.grade) {
+        grade = data.grade;
         grade_callback(data.grade);
       }
 
@@ -256,6 +262,7 @@ function kill_comment(ev) {
       data = data.data;
 
       if (grade_callback && data.grade) {
+        grade = data.grade;
         grade_callback(data.grade);
       }
 
@@ -317,6 +324,7 @@ function create_comment(path, line) {
 
       console.log("created", data);
       if (grade_callback && data.grade) {
+        grade = data.grade;
         grade_callback(data.grade);
       }
 

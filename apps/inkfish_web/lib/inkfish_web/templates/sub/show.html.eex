@@ -63,6 +63,10 @@
     </tr>
   <% end %>
   <tr>
+    <td>Late Penalty</td>
+    <td><%= show_score(@sub.late_penalty) %></td>
+  </tr>
+  <tr>
     <td>Total Score</td>
     <td><%= show_score(@conn, @sub) %> / <%= assignment_total_points(@assignment) %></td>
   </tr>

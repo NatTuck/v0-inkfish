@@ -6,6 +6,7 @@ defmodule Inkfish.Subs.Sub do
 
   schema "subs" do
     field :active, :boolean, default: false
+    field :late_penalty, :decimal
     field :score, :decimal
     field :hours_spent, :decimal, default: Decimal.new("1.0")
     field :note, :string

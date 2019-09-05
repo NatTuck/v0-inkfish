@@ -1,6 +1,7 @@
 defmodule InkfishWeb.Staff.TeamView do
   use InkfishWeb, :view
 
+  alias Inkfish.Teams.Team
   alias InkfishWeb.Staff.TeamView
 
   def render("index.json", %{teams: teams}) do
@@ -11,7 +12,7 @@ defmodule InkfishWeb.Staff.TeamView do
     %{data: render_one(team, TeamView, "team.json")}
   end
 
-  def render("team.json", %{team: team}) do
+  def render("team.json", %{team: %Team{} = team}) do
     regs = get_assoc(team, :regs) || []
     teamset = get_assoc(team, :teamset)
     subs = get_assoc(team, :subs) || []

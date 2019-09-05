@@ -60,7 +60,16 @@
           <%= if grade do %>
             <%= link "Edit Grade", to: Routes.staff_grade_path(@conn, :edit, grade) %>
           <% else %>
-            <%= link "New Grade", to: Routes.staff_sub_grade_path(@conn, :new, @sub) %>
+            <% grade = %Inkfish.Grades.Grade{
+              grade_column_id: grade_column.id, sub_id: @sub.id
+            } %>
+            <% cset = Inkfish.Grades.change_grade(grade) %>
+            <% action = Routes.staff_sub_grade_path(@conn, :create, @sub.id) %>
+            <%= form_for cset, action, fn f -> %>
+              <%= hidden_input f, :sub_id %>
+              <%= hidden_input f, :grade_column_id %>
+              <%= submit "Create Grade", class: "btn btn-primary btn-sm" %>
+            <% end %>
           <% end %>
         <% else %>
           <!-- FIXME: Add form to edit number grade here. -->

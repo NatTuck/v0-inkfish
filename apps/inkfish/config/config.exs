@@ -7,4 +7,8 @@ use Mix.Config
 config :inkfish,
   ecto_repos: [Inkfish.Repo]
 
+config :elixir, :time_zone_database, Tzdata.TimeZoneDatabase
+
+config :inkfish, :time_zone, "America/New_York"
+
 import_config "#{Mix.env()}.exs"

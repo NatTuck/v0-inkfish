@@ -77,7 +77,8 @@ defmodule Inkfish.Subs do
       inner_join: user in assoc(reg, :user),
       left_join: grades in assoc(sub, :grades),
       left_join: gc in assoc(grades, :grade_column),
-      preload: [upload: upload, grades: {grades, grade_column: gc},
+      preload: [upload: upload,
+                grades: {grades, grade_column: gc},
                 reg: {reg, user: user}]
   end
 
@@ -194,13 +195,43 @@ defmodule Inkfish.Subs do
         grade && grade.score
       end
       if Enum.all? scores, &(!is_nil(&1)) do
-        total = Enum.reduce scores, Decimal.new("0"), &Decimal.add/2
-        Ecto.Changeset.change(sub, score: total)
+        late_penalty = late_penalty(sub)
+        total = Enum.reduce(scores, Decimal.new("0"), &Decimal.add/2)
+        |> apply_penalty(late_penalty)
+        Ecto.Changeset.change(sub, score: total, late_penalty: late_penalty)
       else
         Ecto.Changeset.change(sub, score: nil)
       end
     end)
     |> Repo.transaction()
+  end
+
+  def hours_late(sub) do
+    tz = Application.get_env(:inkfish, :time_zone)
+    due = DateTime.from_naive!(sub.assignment.due, tz)
+    subed = DateTime.from_naive!(sub.inserted_at, tz)
+    seconds_late = DateTime.diff(subed, due)
+    hours_late = (seconds_late + 3599) / 3600
+    if hours_late > 0 do
+      hours_late
+    else
+      0
+    end
+  end
+
+  def apply_penalty(score0, penalty) do
+    score1 = Decimal.sub(score0, penalty)
+    if Decimal.cmp(score1, Decimal.new("0")) == :lt do
+      0
+    else
+      score1
+    end
+  end
+
+  def late_penalty(sub) do
+    points_avail = Inkfish.Assignments.Assignment.assignment_total_points(sub.assignment)
+    penalty_frac = Decimal.from_float(hours_late(sub) / 100.0)
+    penalty = Decimal.mult(points_avail, penalty_frac)
   end
 
   @doc """

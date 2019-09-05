@@ -107,9 +107,7 @@ defmodule InkfishWeb.ViewHelpers do
   end
 
   def assignment_total_points(as) do
-    Enum.reduce as.grade_columns, Decimal.new("0"), fn (gcol, sum) ->
-      Decimal.add(gcol.points, sum)
-    end
+    Inkfish.Assignments.Assignment.assignment_total_points(as)
   end
 
   def trusted_markdown(nil), do: "∅"
