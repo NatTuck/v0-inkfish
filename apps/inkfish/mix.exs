@@ -41,6 +41,7 @@ defmodule Inkfish.MixProject do
       {:paddle, "~> 0.1.0"},
       {:gmex, "~> 0.1"},
       {:erlexec, "~> 1.10"},
+      {:tzdata, "~> 1.0.1"},
       {:ex_machina, "~> 2.3", only: :test},
     ]
   end

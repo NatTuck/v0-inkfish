@@ -2,6 +2,21 @@
 
 <ul>
   <li>
+    <strong>Team:</strong>
+    <%= show_team(@sub.team) %>
+  </li>
+
+  <li>
+    <strong>Submitter:</strong>
+    <%= user_display_name(@sub.reg.user) %>
+  </li>
+
+  <li>
+    <strong>Timestamp:</strong>
+    <%= @sub.inserted_at %>
+  </li>
+
+  <li>
     <strong>Active:</strong>
     <%= @sub.active %>
   </li>
@@ -14,6 +29,7 @@
   <li>
     <strong>Upload:</strong>
     <%= link @sub.upload.name, to: Routes.upload_path(@conn, :show, @sub.upload) %>
+  </li>
 </ul>
 
 <p><strong>Student Note:</strong></p>
@@ -27,26 +43,31 @@
     <tr>
       <th>Name</th>
       <th>Score</th>
-      <th>Max Points</th>
     </tr>
   </thead>
   <%= for grade_column <- @assignment.grade_columns do %>
     <% grade = Enum.find(@sub.grades, &(&1.grade_column_id == grade_column.id)) %>
     <tr>
       <td>
-        <%= if grade do %>
-          <%= link grade_column.name, to: Routes.grade_path(@conn, :show, grade.id) %>
+        <%= if grade && !grade_hidden?(@conn, @assignment) do %>
+          <%= if grade_column.kind == "feedback" do %>
+            <%= link grade_column.name, to: Routes.grade_path(@conn, :show, grade.id) %>
+          <% else %>
+            <%= grade_column.name %>
+          <% end %>
         <% else %>
           <%= grade_column.name %>
         <% end %>
       </td>
-      <td><%= show_score(grade) %></td>
-      <td><%= grade_column.points %></td>
+      <td><%= show_score(@conn, grade) %> / <%= grade_column.points %></td>
     </tr>
   <% end %>
   <tr>
+    <td>Late Penalty</td>
+    <td><%= show_score(@sub.late_penalty) %></td>
+  </tr>
+  <tr>
     <td>Total Score</td>
-    <td><%= show_score(@sub) %></td>
-    <td><%= assignment_total_points(@assignment) %></td>
+    <td><%= show_score(@conn, @sub) %> / <%= assignment_total_points(@assignment) %></td>
   </tr>
 </table>

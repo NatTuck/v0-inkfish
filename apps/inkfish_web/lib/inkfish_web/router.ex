@@ -37,14 +37,13 @@ defmodule InkfishWeb.Router do
     get "/", PageController, :index
     get "/dashboard", PageController, :dashboard
     resources "/session", SessionController, only: [:create, :delete], singleton: true
-    resources "/users", UserController
+    resources "/users", UserController, only: [:show, :edit, :update]
     resources "/uploads", UploadController, only: [:create, :show]
     get "/uploads/:id/thumb", UploadController, :thumb
     resources "/courses", CourseController, only: [:index, :show] do
       resources "/regs", RegController, only: [:index, :new, :create]
       resources "/join_reqs", JoinReqController, only: [:new, :create]
       resources "/teams", TeamController, only: [:index, :new, :create]
-      resources "/buckets", BucketController, only: [:index, :new, :create]
     end
     resources "/regs", RegController, except: [:index, :new, :create]
     resources "/teams", TeamController, except: [:index, :new, :create]
@@ -68,20 +67,18 @@ defmodule InkfishWeb.Router do
     resources "/regs", RegController, except: [:index, :new, :create]
     resources "/join_reqs", JoinReqController, only: [:show, :delete]
     post "/join_reqs/:id/accept", JoinReqController, :accept
-    resources "/teamsets", TeamsetController, except: [:index, :new, :create] do
-      resources "/teams", TeamController, only: [:index, :new, :create]
-    end
-    resources "/teams", TeamController, except: [:index, :new, :create]
+    resources "/teamsets", TeamsetController, except: [:index, :new, :create]
     resources "/buckets", BucketController, except: [:index, :new, :create] do
       resources "/assignments", AssignmentController, only: [:index, :new, :create]
     end
     resources "/assignments", AssignmentController, except: [:index, :new, :create] do
       resources "/grade_columns", GradeColumnController, only: [:index, :new, :create]
-      resources "/subs", SubController, only: [:index, :new, :create]
     end
     resources "/grade_columns", GradeColumnController, except: [:index, :new, :create]
-    resources "/subs", SubController, except: [:index, :new, :create]
-    resources "/grades", GradeController, only: [:edit, :show, :create]
+    resources "/subs", SubController, only: [:show, :update] do
+      resources "/grades", GradeController, only: [:create]
+    end
+    resources "/grades", GradeController, only: [:edit, :show]
   end
 
   scope "/admin", InkfishWeb.Admin, as: :admin do
@@ -101,13 +98,16 @@ defmodule InkfishWeb.Router do
   scope "/ajax/staff", InkfishWeb.Staff, as: :ajax_staff do
     pipe_through :ajax
 
-    post "/grades", GradeController, :ajax_create
-    resources "/line_comments", LineCommentController, except: [:new, :edit]
+    resources "/subs", SubController, only: [] do
+      resources "/grades", GradeController, only: [:create]
+    end
+    resources "/grades", GradeController, only: [] do
+      resources "/line_comments", LineCommentController, only: [:create]
+    end
+    resources "/line_comments", LineCommentController, except: [:new, :edit, :create]
+    resources "/teamsets", TeamsetController, only: [] do
+      resources "/teams", TeamController, only: [:index, :create]
+    end
+    resources "/teams", TeamController, only: [:show, :update, :delete]
   end
-
-  # Other scopes may use custom stacks.
-  # scope "/api", InkfishWeb do
-  #   pipe_through :api
-  # end
 end
-

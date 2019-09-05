@@ -5,9 +5,11 @@
     </div>
   <% end %>
 
+  <%= hidden_input f, :course_id %>
+
   <div class="form-group">
     <%= label f, :name %>
-    <%= text_input f, :name %>
+    <%= text_input f, :name, placeholder: "Homework" %>
     <%= error_tag f, :name %>
   </div>
 

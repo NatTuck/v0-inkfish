@@ -17,6 +17,10 @@ let current_path = null;
 let comments = [];
 let grade_callback = null;
 
+// FIXME: Want single source of truth between this
+// and the file list.
+let grade = null;
+
 function init() {
   let elem = document.getElementById('code-viewer');
   if (!elem) {
@@ -29,6 +33,7 @@ function init() {
   };
 
   mirror = CodeMirror.fromTextArea(elem, opts);
+  grade = window.code_view_data.grade;
 
   if (window.code_view_data.edit) {
     mirror.on("gutterClick", gutter_click);
@@ -68,7 +73,7 @@ function show_line_comments() {
   _.each(comments, (item) => item.node.clear());
   comments = [];
 
-  let xs = window.code_view_data.grade.line_comments;
+  let xs = grade.line_comments;
   _.each(xs, show_line_comment);
 }
 
@@ -110,7 +115,7 @@ function show_line_comment_view(data) {
   lc.innerHTML = html;
 
   let node = mirror.addLineWidget(data.line, lc, {above: true});
-  comments.push({id: data.id, node: node});
+  comments.push({id: data.id, node: node, lc: lc});
 }
 
 function show_line_comment_edit(data) {
@@ -164,7 +169,7 @@ function show_line_comment_edit(data) {
   lc.innerHTML = html;
 
   let node = mirror.addLineWidget(data.line, lc, {above: true});
-  comments.push({id: data.id, node: node});
+  comments.push({id: data.id, node: node, lc: lc});
 
   $(lc).find('input').change(comment_score_changed);
   $(lc).find('textarea').change(comment_changed);
@@ -209,7 +214,8 @@ function save_comment(ev) {
     }
   }
 
-  $.ajax(`${window.line_comment_path}/${id}`, {
+  let path = window.line_comment_paths.update.replace("ID", id);
+  $.ajax(path, {
     method: "patch",
     dataType: "json",
     contentType: "application/json; charset=UTF-8",
@@ -219,6 +225,7 @@ function save_comment(ev) {
       data = data.data;
 
       if (grade_callback && data.grade) {
+        grade = data.grade;
         grade_callback(data.grade);
       }
 
@@ -244,7 +251,8 @@ function kill_comment(ev) {
   let card = $(tgt).closest('div.card');
   let id   = +card.data('comment-id');
 
-  $.ajax(`${window.line_comment_path}/${id}`, {
+  let path = window.line_comment_paths.update.replace("ID", id);
+  $.ajax(path, {
     method: "delete",
     dataType: "json",
     contentType: "application/json; charset=UTF-8",
@@ -254,6 +262,7 @@ function kill_comment(ev) {
       data = data.data;
 
       if (grade_callback && data.grade) {
+        grade = data.grade;
         grade_callback(data.grade);
       }
 
@@ -262,8 +271,13 @@ function kill_comment(ev) {
         if (item.id == id) {
           // clear can fail in ajax callback, so we delay it
           let del_fn = () => {
-            item.node.clear();
             comments.splice(ii, 1);
+            $(item.lc).hide();
+            // FIXME: clear() sometimes throws:
+            //  << Permission denied to access property "nodeType" >>
+            // This leaks a DOM node.
+            // Why?
+            item.node.clear();
           };
           setTimeout(del_fn, 0);
           break;
@@ -299,7 +313,7 @@ function create_comment(path, line) {
       points: "0",
     },
   };
-  $.ajax(window.line_comment_path, {
+  $.ajax(window.line_comment_paths.create, {
     method: "post",
     dataType: "json",
     contentType: "application/json; charset=UTF-8",
@@ -310,10 +324,11 @@ function create_comment(path, line) {
 
       console.log("created", data);
       if (grade_callback && data.grade) {
+        grade = data.grade;
         grade_callback(data.grade);
       }
 
-      show_line_comment(data);
+      window.setTimeout(() => show_line_comment(data), 0);
     },
     error: (xhr, status) => {
       console.log(status, xhr);

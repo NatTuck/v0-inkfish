@@ -1,3 +1,7 @@
 <h1>Edit Teamset</h1>
 
+<p>
+  <%= link "Back to List", to: Routes.staff_course_teamset_path(@conn, :index, @course) %>
+</p>
+
 <%= render "form.html", Map.put(assigns, :action, Routes.staff_teamset_path(@conn, :update, @teamset)) %>

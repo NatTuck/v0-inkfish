@@ -5,6 +5,7 @@ defmodule Inkfish.Uploads.Upload do
   alias Inkfish.Uploads.Photo
 
   @primary_key {:id, :binary_id, autogenerate: true}
+  @timestamps_opts [autogenerate: {Inkfish.LocalTime, :now, []}]
 
   @valid_kinds ["user_photo", "grade_column", "sub",
                 "assignment_starter", "assignment_solution"]

@@ -1,5 +1,0 @@
-<h1>Edit Bucket</h1>
-
-<%= render "form.html", Map.put(assigns, :action, Routes.bucket_path(@conn, :update, @bucket)) %>
-
-<span><%= link "Back", to: Routes.course_bucket_path(@conn, :index, @bucket.course_id) %></span>

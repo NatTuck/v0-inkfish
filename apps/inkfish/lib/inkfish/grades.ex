@@ -146,18 +146,36 @@ defmodule Inkfish.Grades do
 
   """
   def get_grade!(id) do
-    Repo.get!(Grade, id)
-    |> Repo.preload([:grade_column, {:line_comments, [:user]}])
+    Repo.one! from grade in Grade,
+      where: grade.id == ^id,
+      inner_join: sub in assoc(grade, :sub),
+      inner_join: reg in assoc(sub, :reg),
+      inner_join: reg_user in assoc(reg, :user),
+      inner_join: team in assoc(sub, :team),
+      left_join: team_regs in assoc(team, :regs),
+      left_join: team_user in assoc(team_regs, :user),
+      left_join: gc in assoc(grade, :grade_column),
+      left_join: lcs in assoc(grade, :line_comments),
+      left_join: user in assoc(lcs, :user),
+      preload: [grade_column: gc, line_comments: {lcs, user: user},
+                sub: {sub, reg: {reg, user: reg_user},
+                      team: {team, regs: {team_regs, user: team_user}}}]
   end
 
   def get_grade_path!(id) do
     Repo.one! from grade in Grade,
       where: grade.id == ^id,
       inner_join: sub in assoc(grade, :sub),
+      inner_join: team in assoc(sub, :team),
+      left_join: regs in assoc(team, :regs),
+      left_join: user in assoc(regs, :user),
       inner_join: as in assoc(sub, :assignment),
       inner_join: bucket in assoc(as, :bucket),
       inner_join: course in assoc(bucket, :course),
-      preload: [sub: {sub, assignment: {as, bucket: {bucket, course: course}}}]
+      inner_join: gc in assoc(grade, :grade_column),
+      preload: [sub: {sub, assignment: {as, bucket: {bucket, course: course}},
+                           team: {team, regs: {regs, user: user}}},
+                grade_column: gc]
   end
 
   @doc """
@@ -244,7 +262,6 @@ defmodule Inkfish.Grades do
     Grade.changeset(grade, %{})
   end
 
-
   def update_feedback_score(grade_id) do
     grade = get_grade!(grade_id)
     gcol  = get_grade_column!(grade.grade_column_id)
@@ -254,6 +271,8 @@ defmodule Inkfish.Grades do
 
     score = Decimal.add(gcol.base, delta)
     {:ok, grade} = update_grade(grade, %{score: score})
+
+    Inkfish.Subs.calc_sub_score!(grade.sub_id)
     {:ok, %{grade|grade_column: gcol}}
   end
 end

@@ -8,6 +8,10 @@ defmodule Inkfish.Teams do
 
   alias Inkfish.Courses.Course
   alias Inkfish.Teams.Teamset
+  alias Inkfish.Teams.Team
+  alias Inkfish.Teams.TeamMember
+  alias Inkfish.Assignments.Assignment
+  alias Inkfish.Users.Reg
 
   @doc """
   Returns the list of teamsets.
@@ -23,8 +27,13 @@ defmodule Inkfish.Teams do
   end
 
   def list_teamsets(%Course{} = course) do
+    list_teamsets(course.id)
+  end
+
+  def list_teamsets(course_id) do
     Repo.all from ts in Teamset,
-      where: ts.id == ^course.id
+      where: ts.course_id == ^course_id,
+      order_by: ts.inserted_at
   end
 
   @doc """
@@ -41,8 +50,23 @@ defmodule Inkfish.Teams do
       ** (Ecto.NoResultsError)
 
   """
-  def get_teamset!(id), do: Repo.get!(Teamset, id)
-  def get_teamset(id), do: Repo.get(Teamset, id)
+  def get_teamset!(id) do
+    %Teamset{} = get_teamset(id)
+  end
+
+  def get_teamset(id) do
+    Repo.one from ts in Teamset,
+      where: ts.id == ^id,
+      inner_join: course in assoc(ts, :course),
+      left_join: cregs in assoc(course, :regs),
+      left_join: cuser in assoc(cregs, :user),
+      left_join: teams in assoc(ts, :teams),
+      left_join: regs in assoc(teams, :regs),
+      left_join: user in assoc(regs, :user),
+      left_join: subs in assoc(teams, :subs),
+      preload: [course: {course, regs: {cregs, user: cuser}},
+                teams: {teams, subs: subs, regs: {regs, user: user}}]
+  end
 
   def get_teamset_path!(id) do
     Repo.one! from ts in Teamset,
@@ -134,8 +158,6 @@ defmodule Inkfish.Teams do
     Teamset.changeset(teamset, %{})
   end
 
-  alias Inkfish.Teams.Team
-
   @doc """
   Returns the list of teams.
 
@@ -163,8 +185,62 @@ defmodule Inkfish.Teams do
       ** (Ecto.NoResultsError)
 
   """
-  def get_team!(id), do: Repo.get!(Team, id)
-  def get_team(id), do: Repo.get(Team, id)
+  def get_team!(id) do
+    %Team{} = team = get_team(id)
+  end
+
+  def get_team(id) do
+    Repo.one from team in Team,
+      where: team.id == ^id,
+      inner_join: ts in assoc(team, :teamset),
+      left_join: members in assoc(team, :team_members),
+      left_join: reg in assoc(members, :reg),
+      left_join: user in assoc(reg, :user),
+      preload: [team_members: {members, reg: {reg, user: user}},
+                teamset: ts]
+  end
+
+  def get_team_path!(id) do
+    Repo.one! from team in Team,
+      where: team.id == ^id,
+      inner_join: ts in assoc(team, :teamset),
+      inner_join: course in assoc(ts, :course),
+      preload: [teamset: {ts, course: course}]
+  end
+
+  def get_active_team(%Assignment{} = asg, %Reg{} = reg) do
+    asg = Repo.preload(asg, :teamset)
+
+    team = Repo.one from team in Team,
+      inner_join: ts in assoc(team, :teamset),
+      left_join: member in assoc(team, :team_members),
+      where: team.teamset_id == ^asg.teamset_id,
+      where: member.reg_id == ^reg.id,
+      where: team.active
+
+    team1 = if team == nil && asg.teamset.name == "Solo Work" do
+      create_solo_team(asg, reg)
+    else
+      team
+    end
+
+    if team1 do
+      get_team!(team1.id)
+    else
+      nil
+    end
+  end
+
+  def create_solo_team(%Assignment{} = asg, %Reg{} = reg) do
+    regs = [Inkfish.Users.Reg.changeset(reg, %{})]
+    team_attrs = %{
+      active: true,
+      teamset_id: asg.teamset_id,
+      regs: regs
+    }
+    {:ok, team} = create_team(team_attrs)
+    team
+  end
 
   @doc """
   Creates a team.
@@ -229,5 +305,99 @@ defmodule Inkfish.Teams do
   """
   def change_team(%Team{} = team) do
     Team.changeset(team, %{})
+  end
+
+  @doc """
+  Returns the list of team_members.
+
+  ## Examples
+
+      iex> list_team_members()
+      [%TeamMember{}, ...]
+
+  """
+  def list_team_members do
+    Repo.all(TeamMember)
+  end
+
+  @doc """
+  Gets a single team_member.
+
+  Raises `Ecto.NoResultsError` if the Team member does not exist.
+
+  ## Examples
+
+      iex> get_team_member!(123)
+      %TeamMember{}
+
+      iex> get_team_member!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_team_member!(id), do: Repo.get!(TeamMember, id)
+
+  @doc """
+  Creates a team_member.
+
+  ## Examples
+
+      iex> create_team_member(%{field: value})
+      {:ok, %TeamMember{}}
+
+      iex> create_team_member(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_team_member(attrs \\ %{}) do
+    %TeamMember{}
+    |> TeamMember.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  @doc """
+  Updates a team_member.
+
+  ## Examples
+
+      iex> update_team_member(team_member, %{field: new_value})
+      {:ok, %TeamMember{}}
+
+      iex> update_team_member(team_member, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_team_member(%TeamMember{} = team_member, attrs) do
+    team_member
+    |> TeamMember.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Deletes a TeamMember.
+
+  ## Examples
+
+      iex> delete_team_member(team_member)
+      {:ok, %TeamMember{}}
+
+      iex> delete_team_member(team_member)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_team_member(%TeamMember{} = team_member) do
+    Repo.delete(team_member)
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking team_member changes.
+
+  ## Examples
+
+      iex> change_team_member(team_member)
+      %Ecto.Changeset{source: %TeamMember{}}
+
+  """
+  def change_team_member(%TeamMember{} = team_member) do
+    TeamMember.changeset(team_member, %{})
   end
 end

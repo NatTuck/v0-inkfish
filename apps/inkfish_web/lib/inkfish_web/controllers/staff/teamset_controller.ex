@@ -6,18 +6,19 @@ defmodule InkfishWeb.Staff.TeamsetController do
     when action not in [:index, :new, :create]
   plug Plugs.FetchItem, [course: "course_id"]
     when action in [:index, :new, :create]
+  plug Plugs.RequireReg, staff: true
 
   alias InkfishWeb.Plugs.Breadcrumb
   plug Breadcrumb, {"Courses (Staff)", :staff_course, :index}
+  plug Breadcrumb, {:show, :staff, :course}
   plug Breadcrumb, {"Team Sets", :staff_course_teamset, :index, :course}
-  plug Breadcrumb, {:show, :staff, :teamset}
-    when action in [:edit]
+    when action not in [:index]
 
   alias Inkfish.Teams
   alias Inkfish.Teams.Teamset
 
-  def index(conn, _params) do
-    teamsets = Teams.list_teamsets()
+  def index(conn, %{"course_id" => course_id}) do
+    teamsets = Teams.list_teamsets(course_id)
     render(conn, "index.html", teamsets: teamsets)
   end
 
@@ -26,7 +27,10 @@ defmodule InkfishWeb.Staff.TeamsetController do
     render(conn, "new.html", changeset: changeset)
   end
 
-  def create(conn, %{"teamset" => teamset_params}) do
+  def create(conn, %{"course_id" => course_id, "teamset" => teamset_params}) do
+    teamset_params = teamset_params
+    |> Map.put("course_id", course_id)
+
     case Teams.create_teamset(teamset_params) do
       {:ok, teamset} ->
         conn
@@ -40,7 +44,8 @@ defmodule InkfishWeb.Staff.TeamsetController do
 
   def show(conn, %{"id" => id}) do
     teamset = Teams.get_teamset!(id)
-    render(conn, "show.html", teamset: teamset)
+    data = InkfishWeb.Staff.TeamsetView.render("teamset.json", %{teamset: teamset})
+    render(conn, "show.html", teamset: teamset, data: data)
   end
 
   def edit(conn, %{"id" => id}) do
@@ -69,6 +74,6 @@ defmodule InkfishWeb.Staff.TeamsetController do
 
     conn
     |> put_flash(:info, "Teamset deleted successfully.")
-    |> redirect(to: Routes.staff_teamset_path(conn, :index))
+    |> redirect(to: Routes.staff_course_teamset_path(conn, :index, teamset.course_id))
   end
 end

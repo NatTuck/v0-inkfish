@@ -51,8 +51,15 @@ module.exports = (env, options) => ({
           loader: 'expose-loader',
           options: '$',
         }],
-      }
-    ]
+      },
+      {
+        test: require.resolve('moment'),
+        use: [{
+          loader: 'expose-loader',
+          options: 'moment',
+        }],
+      },
+    ],
   },
   resolve: {
     extensions: ['.js', '.jsx', '.css'],

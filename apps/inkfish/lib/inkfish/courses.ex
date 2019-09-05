@@ -71,7 +71,8 @@ defmodule Inkfish.Courses do
       left_join: teamsets in assoc(cc, :teamsets),
       left_join: tas in assoc(teamsets, :assignments),
       left_join: reqs in assoc(cc, :join_reqs),
-      preload: [buckets: {buckets, assignments: bas},
+      left_join: gcols in assoc(bas, :grade_columns),
+      preload: [buckets: {buckets, assignments: {bas, grade_columns: gcols}},
                 teamsets: {teamsets, assignments: tas},
                 join_reqs: reqs]
   end
@@ -222,6 +223,11 @@ defmodule Inkfish.Courses do
   """
   def list_buckets do
     Repo.all(Bucket)
+  end
+
+  def list_buckets(course_id) do
+    Repo.all from bb in Bucket,
+      where: bb.course_id == ^course_id
   end
 
   @doc """

@@ -4,10 +4,18 @@ defmodule InkfishWeb.Staff.LineCommentController do
   alias Inkfish.LineComments
   alias Inkfish.LineComments.LineComment
 
+  alias InkfishWeb.Plugs
+  plug Plugs.FetchItem, [line_comment: "id"]
+    when action not in [:index, :new, :create]
+  plug Plugs.FetchItem, [grade: "grade_id"]
+    when action in [:index, :new, :create]
+
+  plug Plugs.RequireReg, staff: true
+
   action_fallback InkfishWeb.FallbackController
 
-  def index(conn, _params) do
-    line_comments = LineComments.list_line_comments()
+  def index(conn, %{"grade_id" => grade_id}) do
+    line_comments = LineComments.list_line_comments(grade_id)
     render(conn, "index.json", line_comments: line_comments)
   end
 
@@ -24,12 +32,12 @@ defmodule InkfishWeb.Staff.LineCommentController do
   end
 
   def show(conn, %{"id" => id}) do
-    line_comment = LineComments.get_line_comment!(id)
+    line_comment = conn.assigns[:line_comment]
     render(conn, "show.json", line_comment: line_comment)
   end
 
   def update(conn, %{"id" => id, "line_comment" => line_comment_params}) do
-    line_comment = LineComments.get_line_comment!(id)
+    line_comment = conn.assigns[:line_comment]
 
     with {:ok, %LineComment{} = line_comment} <- LineComments.update_line_comment(line_comment, line_comment_params) do
       render(conn, "show.json", line_comment: line_comment)
@@ -37,9 +45,10 @@ defmodule InkfishWeb.Staff.LineCommentController do
   end
 
   def delete(conn, %{"id" => id}) do
-    line_comment = LineComments.get_line_comment!(id)
+    line_comment = conn.assigns[:line_comment]
 
     with {:ok, %LineComment{}} <- LineComments.delete_line_comment(line_comment) do
+      # Get updated grade, with all line comments, after delete.
       grade = Inkfish.Grades.get_grade!(line_comment.grade_id)
       render(conn, "show.json", line_comment: %{line_comment | grade: grade})
     end

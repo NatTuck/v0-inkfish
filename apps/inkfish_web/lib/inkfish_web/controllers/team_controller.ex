@@ -4,6 +4,8 @@ defmodule InkfishWeb.TeamController do
   alias Inkfish.Teams
   alias Inkfish.Teams.Team
 
+  # FIXME: figure out permissions for students accessing teams
+
   def index(conn, _params) do
     teams = Teams.list_teams()
     render(conn, "index.html", teams: teams)

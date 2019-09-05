@@ -7,6 +7,7 @@ defmodule Inkfish.LineComments do
   alias Inkfish.Repo
 
   alias Inkfish.LineComments.LineComment
+  alias Inkfish.Grades
 
   @doc """
   Returns the list of line_comments.
@@ -42,6 +43,19 @@ defmodule Inkfish.LineComments do
       preload: [:user]
   end
 
+  def get_line_comment_path!(id) do
+    Repo.one! from lc in LineComment,
+      where: lc.id == ^id,
+      inner_join: grade in assoc(lc, :grade),
+      inner_join: sub in assoc(grade, :sub),
+      inner_join: as in assoc(sub, :assignment),
+      inner_join: bucket in assoc(as, :bucket),
+      inner_join: course in assoc(bucket, :course),
+      preload: [grade: {grade, sub: {sub, assignment:
+                {as, bucket: {bucket, course: course}}}}]
+  end
+
+
   @doc """
   Creates a line_comment.
 
@@ -61,8 +75,9 @@ defmodule Inkfish.LineComments do
 
     case lc do
       {:ok, lc} ->
-        lc = Repo.preload(lc, [:user, {:grade, [:grade_column, :line_comments]}])
-        {:ok, lc}
+        lc = Repo.preload(lc, :user)
+        grade = Grades.get_grade!(lc.grade_id)
+        {:ok, %{lc | grade: grade}}
       error ->
         error
     end
@@ -88,7 +103,7 @@ defmodule Inkfish.LineComments do
     case result do
       {:ok, %LineComment{} = lc} ->
         {:ok, grade} = Inkfish.Grades.update_feedback_score(lc.grade_id)
-        grade = Repo.preload(grade, :line_comments)
+        grade = Grades.get_grade!(grade.id)
         {:ok, %{lc | grade: grade}}
       other ->
         other

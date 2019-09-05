@@ -34,22 +34,31 @@ defmodule InkfishWeb.UploadController do
     end
   end
 
-  def show(conn, %{"id" => id}) do
+  def show(conn, %{"id" => id, "show" => show}) do
     upload = Uploads.get_upload!(id)
     path = Upload.upload_path(upload)
 
-    case upload.kind do
-      "user_photo" ->
+    cond do
+      show ->
+        conn
+        |> put_resp_header("content-type", "text/plain")
+        |> put_resp_header("content-disposition", "inline")
+        |> send_resp(200, File.read!(path))
+      upload.kind == "user_photo" ->
         conn
         |> put_resp_header("content-type", "image/jpeg")
         |> put_resp_header("content-disposition", "inline")
         |> send_resp(200, File.read!(path))
-      _ ->
+      true ->
         conn
         |> put_resp_header("content-type", "application/octet-stream")
         |> put_resp_header("content-disposition", "attachment; filename=\"#{upload.name}\"")
         |> send_resp(200, File.read!(path))
     end
+  end
+
+  def show(conn, %{"id" => id}) do
+    show(conn, %{"id" => id, "show" => false})
   end
 
   def thumb(conn, %{"id" => id}) do

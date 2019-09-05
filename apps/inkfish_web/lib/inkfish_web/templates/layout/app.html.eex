@@ -26,7 +26,7 @@
             <%= if @current_user && @current_user.is_admin do %>
               <%= render InkfishWeb.LayoutView, "admin_nav.html", assigns %>
             <% else %>
-              Not an admin.
+              &nbsp;
             <% end %>
           </div>
           <div class="col-md-5">
@@ -60,6 +60,13 @@
           <%= render InkfishWeb.LayoutView, "course_footer.html", assigns %>
         <% end %>
       </main>
+
+      <div class="inkfish-footer">
+        <p>Inkfish copyright &copy; 2018-2019 Nat Tuck. Licensed under the GNU AGPLv3. No
+          warranty, this code will probably eat your dog. Source code at
+          <a href=https://github.com/NatTuck/inkfish">http://github.com/NatTuck/inkfish</a>.
+        </p>
+      </div>
     </div>
     <script type="text/javascript"
             src="<%= Routes.static_path(@conn, "/js/app.js") %>"></script>

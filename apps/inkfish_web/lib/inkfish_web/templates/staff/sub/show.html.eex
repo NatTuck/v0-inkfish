@@ -2,6 +2,21 @@
 
 <ul>
   <li>
+    <strong>Team:</strong>
+    <%= show_team(@sub.team) %>
+  </li>
+
+  <li>
+    <strong>Submitter:</strong>
+    <%= user_display_name(@sub.reg.user) %>
+  </li>
+
+  <li>
+    <strong>Timestamp:</strong>
+    <%= @sub.inserted_at %>
+  </li>
+ 
+  <li>
     <strong>Active:</strong>
     <%= @sub.active %>
   </li>
@@ -32,7 +47,6 @@
     <tr>
       <th>Name</th>
       <th>Score</th>
-      <th>Points</th>
       <th>Actions</th>
     </tr>
   </thead>
@@ -40,10 +54,27 @@
     <% grade = Enum.find(@sub.grades, &(&1.grade_column_id == grade_column.id)) %>
     <tr>
       <td><%= grade_column.name %></td>
-      <td><%= show_score(grade) %></td>
-      <td><%= grade_column.points %></td>
+      <td><%= show_score(@conn, grade) %> / <%= grade_column.points %></td>
       <td>
-        <%= staff_grade_action(@conn, grade_column, grade) %>
+        <%= if grade_column.kind == "feedback" do %>
+          <%= if grade do %>
+            <%= link "Edit Grade", to: Routes.staff_grade_path(@conn, :edit, grade) %>
+          <% else %>
+            <% grade = %Inkfish.Grades.Grade{
+              grade_column_id: grade_column.id, sub_id: @sub.id
+            } %>
+            <% cset = Inkfish.Grades.change_grade(grade) %>
+            <% action = Routes.staff_sub_grade_path(@conn, :create, @sub.id) %>
+            <%= form_for cset, action, fn f -> %>
+              <%= hidden_input f, :sub_id %>
+              <%= hidden_input f, :grade_column_id %>
+              <%= submit "Create Grade", class: "btn btn-primary btn-sm" %>
+            <% end %>
+          <% end %>
+        <% else %>
+          <!-- FIXME: Add form to edit number grade here. -->
+          (none)
+        <% end %>
       </td>
     </tr>
   <% end %>

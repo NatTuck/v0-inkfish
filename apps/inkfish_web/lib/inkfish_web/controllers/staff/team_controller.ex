@@ -3,60 +3,65 @@ defmodule InkfishWeb.Staff.TeamController do
 
   alias Inkfish.Teams
   alias Inkfish.Teams.Team
+  alias Inkfish.Users
+  alias Inkfish.Users.Reg
 
-  def index(conn, _params) do
-    teams = Teams.list_teams()
-    render(conn, "index.html", teams: teams)
+  action_fallback InkfishWeb.FallbackController
+
+  alias InkfishWeb.Plugs
+  plug Plugs.FetchItem, [team: "id"]
+    when action not in [:index, :new, :create]
+  plug Plugs.FetchItem, [teamset: "teamset_id"]
+    when action in [:index, :new, :create]
+  plug Plugs.RequireReg, staff: true
+
+  def index(conn, %{"teamset_id" => teamset_id}) do
+    teams = Teams.list_teams(teamset_id)
+    render(conn, "index.json", teams: teams)
   end
 
-  def new(conn, _params) do
-    changeset = Teams.change_team(%Team{})
-    render(conn, "new.html", changeset: changeset)
-  end
+  def create(conn, %{"teamset_id" => teamset_id, "team" => team_params}) do
+    regs = Enum.map team_params["reg_ids"], fn (reg_id) ->
+      Users.get_reg!(reg_id)
+    end
 
-  def create(conn, %{"team" => team_params}) do
-    case Teams.create_team(team_params) do
-      {:ok, team} ->
-        conn
-        |> put_flash(:info, "Team created successfully.")
-        |> redirect(to: Routes.staff_team_path(conn, :show, team))
+    team_params = team_params
+    |> Map.put("teamset_id", teamset_id)
+    |> Map.put("regs", regs)
 
-      {:error, %Ecto.Changeset{} = changeset} ->
-        render(conn, "new.html", changeset: changeset)
+    with {:ok, %Team{} = team} <- Teams.create_team(team_params) do
+      # Fetch updated teamset
+      teamset = Teams.get_teamset!(team.teamset_id)
+      team = %{team | teamset: teamset}
+      conn
+      |> put_status(:created)
+      |> put_resp_header("location", Routes.ajax_staff_team_path(conn, :show, team))
+      |> render("show.json", team: team)
     end
   end
 
   def show(conn, %{"id" => id}) do
     team = Teams.get_team!(id)
-    render(conn, "show.html", team: team)
-  end
-
-  def edit(conn, %{"id" => id}) do
-    team = Teams.get_team!(id)
-    changeset = Teams.change_team(team)
-    render(conn, "edit.html", team: team, changeset: changeset)
+    render(conn, "show.json", team: team)
   end
 
   def update(conn, %{"id" => id, "team" => team_params}) do
     team = Teams.get_team!(id)
 
-    case Teams.update_team(team, team_params) do
-      {:ok, team} ->
-        conn
-        |> put_flash(:info, "Team updated successfully.")
-        |> redirect(to: Routes.staff_team_path(conn, :show, team))
-
-      {:error, %Ecto.Changeset{} = changeset} ->
-        render(conn, "edit.html", team: team, changeset: changeset)
+    with {:ok, %Team{} = team} <- Teams.update_team(team, team_params) do
+      teamset = Teams.get_teamset!(team.teamset_id)
+      team = %{team | teamset: teamset}
+      render(conn, "show.json", team: team)
     end
   end
 
   def delete(conn, %{"id" => id}) do
     team = Teams.get_team!(id)
-    {:ok, _team} = Teams.delete_team(team)
 
-    conn
-    |> put_flash(:info, "Team deleted successfully.")
-    |> redirect(to: Routes.staff_team_path(conn, :index))
+    with {:ok, %Team{}} <- Teams.delete_team(team) do
+      teamset = Teams.get_teamset!(team.teamset_id)
+      team = %{team | teamset: teamset}
+      render(conn, "show.json", team: team)
+    end
   end
 end

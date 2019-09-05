@@ -2,6 +2,7 @@ defmodule Inkfish.Users.Reg do
   use Ecto.Schema
   import Ecto.Changeset
 
+  @timestamps_opts [autogenerate: {Inkfish.LocalTime, :now, []}]
 
   schema "regs" do
     field :is_grader, :boolean, default: false
@@ -10,6 +11,7 @@ defmodule Inkfish.Users.Reg do
     field :is_student, :boolean, default: false
     belongs_to :user, Inkfish.Users.User
     belongs_to :course, Inkfish.Courses.Course
+    many_to_many :teams, Inkfish.Teams.Team, join_through: "team_members"
 
     field :user_login, :string, virtual: true
 

@@ -10,7 +10,9 @@ defmodule InkfishWeb.Plugs.RequireReg do
     course = conn.assigns[:course]
     reg = Users.find_reg(user, course)
 
-    if is_nil(reg) || (args[:staff] && !reg.is_staff && !user.is_admin) do
+    is_staff = reg.is_staff || reg.is_prof
+
+    if is_nil(reg) || (args[:staff] && !is_staff && !user.is_admin) do
       conn
       |> put_flash(:error, "Access denied.")
       |> redirect(to: Routes.page_path(conn, :index))

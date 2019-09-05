@@ -26,7 +26,14 @@ class NumberInput extends React.Component {
   }
 
   change(ev) {
+    ev.preventDefault();
     this.setState({score: ev.target.value});
+  }
+
+  keypress(ev) {
+    if (ev.key == "Enter") {
+      this.save();
+    }
   }
 
   save() {
@@ -38,7 +45,7 @@ class NumberInput extends React.Component {
       }
     });
 
-    $.ajax(window.save_grade_path, {
+    $.ajax(save_grade_path(this.state.sub_id), {
       method: "post",
       dataType: "json",
       contentType: "application/json; charset=UTF-8",
@@ -98,6 +105,7 @@ class NumberInput extends React.Component {
       <div>
         <input type="number" className="number-grade-input"
                value={this.state.score}
+               onKeyPress={this.keypress.bind(this)}
                onChange={this.change.bind(this)} />
         {btn}
       </div>

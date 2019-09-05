@@ -24,7 +24,7 @@
 
   <div class="form-group">
     <%= label f, :due %>
-    <%= datetime_select f, :due, class: "form-control" %>
+    <%= text_input(f, :due, class: "form-control date-time-picker") %>
     <%= error_tag f, :due %>
   </div>
 

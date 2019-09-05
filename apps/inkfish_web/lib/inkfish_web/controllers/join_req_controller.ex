@@ -4,10 +4,12 @@ defmodule InkfishWeb.JoinReqController do
   alias Inkfish.JoinReqs
   alias Inkfish.JoinReqs.JoinReq
 
-  plug InkfishWeb.Plugs.FetchItem, [course: "course_id"]
+  alias InkfishWeb.Plugs
+  plug Plugs.FetchItem, [course: "course_id"]
     when action in [:index, :new, :create]
-  plug InkfishWeb.Plugs.FetchItem, [join_req: "id"]
+  plug Plugs.FetchItem, [join_req: "id"]
     when action not in [:index, :new, :create]
+  plug Plugs.RequireUser
 
   def new(conn, _params) do
     changeset = JoinReqs.change_join_req(%JoinReq{})
@@ -31,7 +33,16 @@ defmodule InkfishWeb.JoinReqController do
   end
 
   def show(conn, %{"id" => id}) do
-    join_req = JoinReqs.get_join_req!(id)
-    render(conn, "show.html", join_req: join_req)
+    {id, _} = Integer.parse(id)
+    user = conn.assigns[:current_user]
+
+    if user.id == id || user.is_admin do
+      join_req = JoinReqs.get_join_req!(id)
+      render(conn, "show.html", join_req: join_req)
+    else
+      conn
+      |> put_flash(:error, "Permission denied.")
+      |> redirect(to: Routes.course_path(conn, :index))
+    end
   end
 end

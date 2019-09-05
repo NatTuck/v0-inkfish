@@ -2,6 +2,8 @@ defmodule Inkfish.Grades.Grade do
   use Ecto.Schema
   import Ecto.Changeset
 
+  @timestamps_opts [autogenerate: {Inkfish.LocalTime, :now, []}]
+
   schema "grades" do
     field :score, :decimal
     belongs_to :sub, Inkfish.Subs.Sub

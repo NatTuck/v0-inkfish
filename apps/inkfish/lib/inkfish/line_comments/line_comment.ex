@@ -2,6 +2,8 @@ defmodule Inkfish.LineComments.LineComment do
   use Ecto.Schema
   import Ecto.Changeset
 
+  @timestamps_opts [autogenerate: {Inkfish.LocalTime, :now, []}]
+
   schema "line_comments" do
     field :line, :integer
     field :path, :string

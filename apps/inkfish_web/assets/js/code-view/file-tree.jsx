@@ -22,6 +22,8 @@ class FileTree extends React.Component {
     let dirs = list_top_dirs(props.data.files);
     let grade = props.data.grade;
 
+    console.log(grade);
+
     this.state = deepFreeze({
       sub_id: props.data.sub_id,
       grade_id: props.data.grade_id,
@@ -95,6 +97,8 @@ function GradeInfo({grade}) {
     sum = `+${sum}`;
   }
 
+  let team_users = _.map(grade.sub.team.regs, (reg) => reg.user.name);
+
   return (
     <div className="card">
       <div className="card-body">
@@ -102,6 +106,10 @@ function GradeInfo({grade}) {
         <p>Base: {grade.grade_column.base}</p>
         <p>Comments: {count} ({sum})</p>
         <p>Total: {grade.score} / {grade.grade_column.points}</p>
+
+        <h4>Submitter</h4>
+        <p>Team: {team_users.join(', ')}</p>
+        <p>User: {grade.sub.reg.user.name}</p>
       </div>
     </div>
   );

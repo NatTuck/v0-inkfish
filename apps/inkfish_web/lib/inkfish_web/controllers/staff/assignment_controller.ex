@@ -1,12 +1,16 @@
 defmodule InkfishWeb.Staff.AssignmentController do
   use InkfishWeb, :controller
 
-  plug InkfishWeb.Plugs.FetchItem, [bucket: "bucket_id"]
+  alias InkfishWeb.Plugs
+
+  plug Plugs.FetchItem, [bucket: "bucket_id"]
     when action in [:index, :new, :create]
-  plug InkfishWeb.Plugs.FetchItem, [assignment: "id"]
+  plug Plugs.FetchItem, [assignment: "id"]
     when action not in [:index, :new, :create]
 
-  alias InkfishWeb.Plugs.Breadcrumb
+  plug Plugs.RequireReg, staff: true
+
+  alias Plugs.Breadcrumb
   plug Breadcrumb, {"Courses (Staff)", :staff_course, :index}
   plug Breadcrumb, {:show, :staff, :course}
   plug Breadcrumb, {:show, :staff, :assignment}
@@ -22,10 +26,13 @@ defmodule InkfishWeb.Staff.AssignmentController do
 
   def new(conn, params) do
     teamsets = Inkfish.Teams.list_teamsets(conn.assigns[:course])
+    today = Inkfish.LocalTime.today()
+    {:ok, due} = NaiveDateTime.new(Date.add(today, 7), ~T[23:59:59])
     as = %Assignment{
       bucket_id: params["bucket_id"],
       teamset_id: hd(teamsets).id,
       weight: Decimal.new("1.0"),
+      due: due,
     }
     changeset = Assignments.change_assignment(as)
     render(conn, "new.html", changeset: changeset, teamsets: teamsets)
@@ -46,7 +53,8 @@ defmodule InkfishWeb.Staff.AssignmentController do
 
   def show(conn, %{"id" => id}) do
     assignment = Assignments.get_assignment_for_staff!(id)
-    render(conn, "show.html", assignment: assignment)
+    subs = Assignments.list_active_subs(assignment)
+    render(conn, "show.html", assignment: %{assignment | subs: subs})
   end
 
   def edit(conn, %{"id" => id}) do

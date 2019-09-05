@@ -22,6 +22,7 @@ defmodule InkfishWeb do
       use Phoenix.Controller, namespace: InkfishWeb
       import Plug.Conn
       import InkfishWeb.Gettext
+      import InkfishWeb.ViewHelpers
       alias InkfishWeb.Router.Helpers, as: Routes
     end
   end

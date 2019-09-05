@@ -6,6 +6,10 @@ defmodule InkfishWeb.Staff.GradeController do
 
   plug InkfishWeb.Plugs.FetchItem, [grade: "id"]
     when action not in [:index, :new, :create]
+  plug InkfishWeb.Plugs.FetchItem, [sub: "sub_id"]
+    when action in [:index, :new, :create]
+
+  plug InkfishWeb.Plugs.RequireReg, staff: true
 
   alias InkfishWeb.Plugs.Breadcrumb
   plug Breadcrumb, {"Courses (Staff)", :staff_course, :index}
@@ -23,9 +27,22 @@ defmodule InkfishWeb.Staff.GradeController do
     render(conn, "new.html", changeset: changeset)
   end
 
-  def create(conn, %{"grade" => grade_params}) do
+  def create(conn, %{"sub_id" => sub_id, "grade" => grade_params}) do
+    grade_params = grade_params
+    |> Map.put("sub_id", sub_id)
+    |> Map.put("grading_user_id", conn.assigns[:current_user_id])
+
+    if conn.assigns[:client_mode] == :browser do
+      browser_create(conn, %{"grade" => grade_params})
+    else
+      ajax_create(conn, %{"grade" => grade_params})
+    end
+  end
+
+  def browser_create(conn, %{"grade" => grade_params}) do
     case Grades.create_grade(grade_params) do
       {:ok, grade} ->
+        Inkfish.Subs.calc_sub_score!(grade.sub_id)
         redirect(conn, to: Routes.staff_grade_path(conn, :edit, grade))
       {:error, %Ecto.Changeset{} = changeset} ->
         conn
@@ -35,9 +52,6 @@ defmodule InkfishWeb.Staff.GradeController do
   end
 
   def ajax_create(conn, %{"grade" => grade_params}) do
-    grade_params = grade_params
-    |> Map.put("grading_user_id", conn.assigns[:current_user_id])
-
     case Grades.create_grade(grade_params) do
       {:ok, grade} ->
         Inkfish.Subs.calc_sub_score!(grade.sub_id)
@@ -58,13 +72,15 @@ defmodule InkfishWeb.Staff.GradeController do
   def edit(conn, %{"id" => id}) do
     {id, _} = Integer.parse(id)
     grade = Grades.get_grade!(id)
+    rubric = Inkfish.Uploads.get_upload(grade.grade_column.upload_id)
     changeset = Grades.change_grade(grade)
     grade_json = InkfishWeb.Staff.GradeView.render("grade.json", %{grade: grade})
     data = Inkfish.Subs.read_sub_data(grade.sub_id)
     |> Map.put(:edit, true)
     |> Map.put(:grade_id, id)
     |> Map.put(:grade, grade_json)
-    render(conn, "edit.html", grade: grade, changeset: changeset, data: data)
+    render(conn, "edit.html", grade: grade, changeset: changeset,
+      data: data, rubric: rubric)
   end
 
   def update(conn, %{"id" => id, "grade" => grade_params}) do

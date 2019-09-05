@@ -1,10 +1,13 @@
 defmodule InkfishWeb.Staff.BucketController do
   use InkfishWeb, :controller
 
-  plug InkfishWeb.Plugs.FetchItem, [course: "course_id"]
+  alias InkfishWeb.Plugs
+  plug Plugs.FetchItem, [course: "course_id"]
     when action in [:index, :new, :create]
-  plug InkfishWeb.Plugs.FetchItem, [bucket: "id"]
+  plug Plugs.FetchItem, [bucket: "id"]
     when action not in [:index, :new, :create]
+
+  plug Plugs.RequireReg, staff: true
 
   alias InkfishWeb.Plugs.Breadcrumb
   plug Breadcrumb, {"Courses (Staff)", :staff_course, :index}
@@ -15,14 +18,18 @@ defmodule InkfishWeb.Staff.BucketController do
   alias Inkfish.Courses
   alias Inkfish.Courses.Bucket
 
-  def index(conn, _params) do
+  def index(conn, %{"course_id" => course_id}) do
     conn = assign(conn, :page_title, "List Buckets")
-    buckets = Courses.list_buckets()
+    buckets = Courses.list_buckets(course_id)
     render(conn, "index.html", buckets: buckets)
   end
 
-  def new(conn, _params) do
-    changeset = Courses.change_bucket(%Bucket{})
+  def new(conn, %{"course_id" => course_id}) do
+    defaults = %Bucket{
+      course_id: course_id,
+      weight: 100,
+    }
+    changeset = Courses.change_bucket(defaults)
     render(conn, "new.html", changeset: changeset)
   end
 
@@ -36,7 +43,6 @@ defmodule InkfishWeb.Staff.BucketController do
         |> redirect(to: Routes.staff_bucket_path(conn, :show, bucket))
 
       {:error, %Ecto.Changeset{} = changeset} ->
-        IO.inspect(changeset)
         render(conn, "new.html", changeset: changeset)
     end
   end

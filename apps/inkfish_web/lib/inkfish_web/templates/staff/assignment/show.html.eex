@@ -25,7 +25,9 @@
 
   <li>
     <strong>Due:</strong>
-    <%= @assignment.due %>
+    <span class="human-date">
+      <%= @assignment.due %>
+    </span>
   </li>
 
   <li>
@@ -96,7 +98,10 @@
 <h2>Submissions</h2>
 
 <script>
- window.save_grade_path = "<%= Routes.ajax_staff_grade_path(@conn, :ajax_create) %>";
+ function save_grade_path(sub_id) {
+   let path = "<%= Routes.ajax_staff_sub_grade_path(@conn, :create, :SubID) %>";
+   return path.replace('SubID', sub_id);
+ }
 </script>
 
 <table class="table table-striped">
@@ -132,18 +137,18 @@
                      data-sub-id="<%= sub.id %>"
                      data-grade-column-id="<%= gcol.id %>">
                   <!-- React component: grade_columns/number-input.jsx -->
-                  <%= show_score(grade) %>
+                  <%= show_score(@conn, grade) %>
                 </div>
               <% "feedback" -> %>
                 <%= if grade do %>
-                  <%= show_score(grade) %> / <%= gcol.points %>
+                  <%= show_score(@conn, grade) %> / <%= gcol.points %>
                   <%= link("Edit", to: Routes.staff_grade_path(@conn, :edit, grade)) %>
                 <% else %>
                   <% grade = %Inkfish.Grades.Grade{
                     grade_column_id: gcol.id, sub_id: sub.id
                   } %>
                   <% cset = Inkfish.Grades.change_grade(grade) %>
-                  <% action = Routes.staff_grade_path(@conn, :create) %>
+                  <% action = Routes.staff_sub_grade_path(@conn, :create, sub.id) %>
                   <%= form_for cset, action, fn f -> %>
                     <%= hidden_input f, :sub_id %>
                     <%= hidden_input f, :grade_column_id %>
@@ -151,11 +156,11 @@
                   <% end %>
                 <% end %>
               <% _else -> %>
-                <%= show_score(grade) %> / <%= gcol.points %>
+                <%= show_score(@conn, grade) %> / <%= gcol.points %>
             <% end %>
           </td>
         <% end %>
-        <td><%= show_score(sub) %> / <%= assignment_total_points(@assignment) %></td>
+        <td><%= show_score(@conn, sub) %> / <%= assignment_total_points(@assignment) %></td>
         <td>
           <%= link("View", to: Routes.staff_sub_path(@conn, :show, sub)) %>
         </td>

@@ -4,27 +4,21 @@ defmodule InkfishWeb.UserController do
   alias Inkfish.Users
   alias Inkfish.Users.User
   
-  plug InkfishWeb.Plugs.RequireUser, admin: true
+  plug InkfishWeb.Plugs.RequireUser
+  plug :user_check_permission
 
-  def index(conn, _params) do
-    users = Users.list_users()
-    render(conn, "index.html", users: users)
-  end
-
-  def new(conn, _params) do
-    changeset = Users.change_user(%User{})
-    render(conn, "new.html", changeset: changeset)
-  end
-
-  def create(conn, %{"user" => user_params}) do
-    case Users.create_user(user_params) do
-      {:ok, user} ->
-        conn
-        |> put_flash(:info, "User created successfully.")
-        |> redirect(to: Routes.user_path(conn, :show, user))
-
-      {:error, %Ecto.Changeset{} = changeset} ->
-        render(conn, "new.html", changeset: changeset)
+  def user_check_permission(conn, _foo) do
+    id = conn.params["id"]
+    {id, _} = Integer.parse(id)
+    user = conn.assigns[:current_user]
+    IO.inspect {user, id}
+    if !user.is_admin && user.id != id do
+      conn
+      |> put_flash(:error, "Access denied.")
+      |> redirect(to: Routes.page_path(conn, :dashboard))
+      |> halt
+    else
+      conn
     end
   end
 
@@ -51,14 +45,5 @@ defmodule InkfishWeb.UserController do
       {:error, %Ecto.Changeset{} = changeset} ->
         render(conn, "edit.html", user: user, changeset: changeset)
     end
-  end
-
-  def delete(conn, %{"id" => id}) do
-    user = Users.get_user!(id)
-    {:ok, _user} = Users.delete_user(user)
-
-    conn
-    |> put_flash(:info, "User deleted successfully.")
-    |> redirect(to: Routes.user_path(conn, :index))
   end
 end

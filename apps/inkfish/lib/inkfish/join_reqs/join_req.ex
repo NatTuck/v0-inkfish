@@ -2,6 +2,8 @@ defmodule Inkfish.JoinReqs.JoinReq do
   use Ecto.Schema
   import Ecto.Changeset
 
+  @timestamps_opts [autogenerate: {Inkfish.LocalTime, :now, []}]
+
   schema "join_reqs" do
     belongs_to :course, Inkfish.Courses.Course
     belongs_to :user, Inkfish.Users.User
