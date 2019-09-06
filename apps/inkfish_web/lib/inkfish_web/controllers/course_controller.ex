@@ -19,6 +19,7 @@ defmodule InkfishWeb.CourseController do
 
   def show(conn, %{"id" => id}) do
     course = Courses.get_course_for_student_view!(id)
+    |> Courses.preload_subs_for_student!(conn.assigns[:current_reg].id)
     render(conn, "show.html", course: course)
   end
 end
