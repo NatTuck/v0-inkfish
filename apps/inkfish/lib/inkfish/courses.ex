@@ -12,6 +12,7 @@ defmodule Inkfish.Courses do
   alias Inkfish.Users.User
   alias Inkfish.Users.Reg
   alias Inkfish.Teams.Teamset
+  alias Inkfish.Assignments.Assignment
 
   @doc """
   Returns the list of courses.
@@ -84,10 +85,27 @@ defmodule Inkfish.Courses do
       left_join: tas in assoc(teamsets, :assignments),
       left_join: buckets in assoc(cc, :buckets),
       left_join: bas in assoc(buckets, :assignments),
-      left_join: subs in assoc(bas, :subs),
-      where: subs.active == true or is_nil(subs.active),
-      preload: [buckets: {buckets, assignments: {bas, subs: subs}},
+      preload: [buckets: {buckets, assignments: bas},
                 teamsets: {teamsets, assignments: tas}]
+  end
+
+  def preload_subs_for_student!(%Course{} = course, reg_id) do
+    buckets = Enum.map course.buckets, fn (bucket) ->
+      preload_subs_for_student!(bucket, reg_id)
+    end
+    %{course | buckets: buckets}
+  end
+
+  def preload_subs_for_student!(%Bucket{} = bucket, reg_id) do
+    asgs = Enum.map bucket.assignments, fn asg ->
+      preload_subs_for_student!(asg, reg_id)
+    end
+    %{bucket | assignments: asgs}
+  end
+
+  def preload_subs_for_student!(%Assignment{} = asg, reg_id) do
+    subs = Inkfish.Assignments.list_subs_for_reg(asg.id, reg_id)
+    %{asg | subs: subs}
   end
 
   @doc """
@@ -253,6 +271,7 @@ defmodule Inkfish.Courses do
       inner_join: course in assoc(bb, :course),
       preload: [course: course]
   end
+
 
   @doc """
   Creates a bucket.
