@@ -73,8 +73,10 @@ function show_line_comments() {
   _.each(comments, (item) => item.node.clear());
   comments = [];
 
-  let xs = grade.line_comments;
-  _.each(xs, show_line_comment);
+  if (grade) {
+    let xs = grade.line_comments;
+    _.each(xs, show_line_comment);
+  }
 }
 
 function show_line_comment(data) {

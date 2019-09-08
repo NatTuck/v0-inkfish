@@ -29,6 +29,7 @@
   <li>
     <strong>Upload:</strong>
     <%= link @sub.upload.name, to: Routes.upload_path(@conn, :show, @sub.upload) %>
+    (<%= link "View Files", to: Routes.sub_path(@conn, :files, @sub) %>)
   </li>
 </ul>
 
