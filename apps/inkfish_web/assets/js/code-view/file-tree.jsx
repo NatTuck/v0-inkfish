@@ -64,9 +64,14 @@ class FileTree extends React.Component {
       }
     }
 
+    let grade_info = "";
+    if (this.state.grade.grade_column) {
+        grade_info = <GradeInfo grade={this.state.grade} />;
+    }
+
     return (
       <div>
-        <GradeInfo grade={this.state.grade} />
+        {grade_info}
         <TreeMenu
           data={[this.state.files]}
           onClickItem={({...props}) => this.pick_file(props)}

@@ -1,0 +1,25 @@
+<h1>View Files: Sub #<%= @sub.id %></h1>
+
+<div class="row vh-100">
+  <div class="col-md-3 code-file-list h-100">
+    <div id="code-file-tree">
+      <!-- react component in code-viewer/file-tree.jsx -->
+      [react]
+    </div>
+  </div>
+  <div class="col-md-9 h-100">
+    <!-- CodeMirror goes here; code-viewer/code-viewer.js -->
+    <div class="card h-100">
+      <div class="card-body h-100">
+        <h2 class="card-title" id="viewer-file-path">(no file selected)</h2>
+        <textarea id="code-viewer"></textarea>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+ window.code_view_data = JSON.parse(
+   "<%= raw(javascript_escape(Jason.encode!(@data))) %>"
+ );
+</script>

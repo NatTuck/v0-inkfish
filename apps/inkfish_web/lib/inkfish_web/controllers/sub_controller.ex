@@ -13,6 +13,8 @@ defmodule InkfishWeb.SubController do
   alias InkfishWeb.Plugs.Breadcrumb
   plug Breadcrumb, {:show, :course}
   plug Breadcrumb, {:show, :assignment}
+  plug Breadcrumb, {:show, :sub}
+    when action in [:files]
 
   alias Inkfish.Subs
   alias Inkfish.Subs.Sub
@@ -58,5 +60,14 @@ defmodule InkfishWeb.SubController do
     sub = Subs.get_sub!(id)
     sub = %{sub | team: Teams.get_team!(sub.team_id)}
     render(conn, "show.html", sub: sub)
+  end
+
+  def files(conn, %{"id" => id}) do
+    sub = Subs.get_sub!(id)
+    sub_data = InkfishWeb.SubView.render("sub.json", %{sub: sub})
+    data = Inkfish.Subs.read_sub_data(sub.id)
+    |> Map.put(:edit, false)
+    |> Map.put(:grade, %{line_comments: [], sub: sub_data})
+    render(conn, "files.html", sub: sub, data: data)
   end
 end
