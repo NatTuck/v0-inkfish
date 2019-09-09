@@ -70,9 +70,13 @@ defmodule Inkfish.Uploads.Upload do
 
   def validate_file_size(%Ecto.Changeset{} = cset) do
     upload = get_field(cset, :upload)
-    {:ok, stat} = File.stat(upload.path)
-    if stat.size > 10_485_760 do
-      add_error(cset, :upload, "uploaded file is too big")
+    if upload do
+      {:ok, stat} = File.stat(upload.path)
+      if stat.size > 10_485_760 do
+        add_error(cset, :upload, "uploaded file is too big")
+      else
+        cset
+      end
     else
       cset
     end

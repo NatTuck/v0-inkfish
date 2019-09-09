@@ -4,6 +4,8 @@ defmodule Inkfish.Factory do
   alias Inkfish.Users.User
   alias Inkfish.Users.Reg
   alias Inkfish.Courses.Course
+  alias Inkfish.JoinReqs.JoinReq
+  alias Inkfish.Uploads.Upload
   alias Inkfish.Courses.Bucket
   
   def user_factory do
@@ -35,6 +37,23 @@ defmodule Inkfish.Factory do
       is_student: true,
       user: build(:user),
       course: build(:course),
+    }
+  end
+
+  def join_req_factory do
+    %JoinReq{
+      course: build(:course),
+      user: build(:user),
+      note: "let me in",
+      staff_req: false,
+    }
+  end
+
+  def upload_factory do
+    %Upload{
+      name: "helloc.tar.gz",
+      kind: "assignment_starter",
+      user: build(:user),
     }
   end
   

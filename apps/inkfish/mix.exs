@@ -43,6 +43,7 @@ defmodule Inkfish.MixProject do
       {:erlexec, "~> 1.10"},
       {:tzdata, "~> 1.0.1"},
       {:ex_machina, "~> 2.3", only: :test},
+      {:sandbox, in_umbrella: true},
     ]
   end
 
