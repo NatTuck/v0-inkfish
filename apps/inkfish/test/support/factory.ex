@@ -4,9 +4,10 @@ defmodule Inkfish.Factory do
   alias Inkfish.Users.User
   alias Inkfish.Users.Reg
   alias Inkfish.Courses.Course
+  alias Inkfish.Courses.Bucket
   alias Inkfish.JoinReqs.JoinReq
   alias Inkfish.Uploads.Upload
-  alias Inkfish.Courses.Bucket
+  alias Inkfish.Assignments.Assignment
   
   def user_factory do
     login = sequence(:login, &"sam#{&1}")
@@ -24,7 +25,7 @@ defmodule Inkfish.Factory do
   def course_factory do
     %Course{
       footer: "",
-      name: sequence(:name, &"CS #{&1}"),
+      name: sequence(:user_name, &"CS #{&1}"),
       start_date: Date.utc_today(),
     }
   end
@@ -62,6 +63,19 @@ defmodule Inkfish.Factory do
       name: "Homework",
       weight: Decimal.new("1.0"),
       course: build(:course),
+    }
+  end
+
+  def assignment_factory do
+    course = build(:course)
+
+    %Assignment{
+      desc: "Do some work.",
+      due: Inkfish.LocalTime.in_days(4),
+      name: sequence(:as_name, &"HW #{&1}"),
+      weight: Decimal.new("1.0"),
+      bucket: build(:bucket, course: course),
+      course: course,
     }
   end
 end
