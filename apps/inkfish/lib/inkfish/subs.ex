@@ -213,7 +213,7 @@ defmodule Inkfish.Subs do
     due = DateTime.from_naive!(sub.assignment.due, tz)
     subed = DateTime.from_naive!(sub.inserted_at, tz)
     seconds_late = DateTime.diff(subed, due)
-    hours_late = (seconds_late + 3599) / 3600
+    hours_late = floor((seconds_late + 3599) / 3600)
     if hours_late > 0 do
       hours_late
     else
