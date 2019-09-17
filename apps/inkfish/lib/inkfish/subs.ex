@@ -180,6 +180,14 @@ defmodule Inkfish.Subs do
     |> Repo.update()
   end
 
+  def update_sub_ignore_late(%Sub{} = sub, attrs) do
+    {:ok, sub} = sub
+    |> Sub.change_ignore_late(attrs)
+    |> Repo.update()
+    calc_sub_score!(sub.id)
+    sub
+  end
+
   def calc_sub_score!(sub_id) do
     Ecto.Multi.new()
     |> Ecto.Multi.run(:sub0, fn (_,_) ->
@@ -234,6 +242,11 @@ defmodule Inkfish.Subs do
     points_avail = Inkfish.Assignments.Assignment.assignment_total_points(sub.assignment)
     penalty_frac = Decimal.from_float(hours_late(sub) / 100.0)
     penalty = Decimal.mult(points_avail, penalty_frac)
+    if sub.ignore_late_penalty do
+      0
+    else
+      penalty
+    end
   end
 
   def save_sub_dump!(sub_id, json) do

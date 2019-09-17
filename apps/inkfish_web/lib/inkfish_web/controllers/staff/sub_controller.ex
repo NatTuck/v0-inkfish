@@ -25,15 +25,19 @@ defmodule InkfishWeb.Staff.SubController do
   end
 
   def update(conn, %{"id" => id, "sub" => params}) do
-    # This can only set a sub active.
+    # This can only set a sub active or ignore late penalty.
     sub = conn.assigns[:sub]
 
     if params["active"] do
       Subs.set_sub_active!(sub)
     end
 
+    if params["ignore_late_penalty"] do
+      Subs.update_sub_ignore_late(sub, params)
+    end
+
     conn
-    |> put_flash(:info, "Set sub active: ##{sub.id}.")
+    |> put_flash(:info, "Updated sub flags: ##{sub.id}.")
     |> redirect(to: Routes.staff_reg_path(conn, :show, sub.reg_id))
   end
 end

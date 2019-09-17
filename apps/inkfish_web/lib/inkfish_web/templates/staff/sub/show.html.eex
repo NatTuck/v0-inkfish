@@ -1,5 +1,10 @@
 <h1>Show Sub</h1>
 
+<p>
+  <%= link("Student View",
+    to: Routes.sub_path(@conn, :show, @sub)) %>
+</p>
+
 <ul>
   <li>
     <strong>Team:</strong>
@@ -19,6 +24,20 @@
   <li>
     <strong>Active:</strong>
     <%= @sub.active %>
+  </li>
+
+  <li>
+    <% cset = Inkfish.Subs.change_sub(
+      %{ @sub | ignore_late_penalty: !@sub.ignore_late_penalty }
+      ) %>
+    <% action = Routes.staff_sub_path(@conn, :update, @sub.id) %>
+    <%= form_for cset, action, fn f -> %>
+      <strong>Ignore Late Penalty:</strong>
+      <%= @sub.ignore_late_penalty %>
+      &nbsp;
+      <%= hidden_input f, :ignore_late_penalty %>
+      <%= submit "Toggle", class: "btn btn-secondary btn-sm" %>
+    <% end %>
   </li>
 
   <li>

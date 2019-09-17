@@ -10,6 +10,7 @@ defmodule Inkfish.Subs.Sub do
     field :score, :decimal
     field :hours_spent, :decimal, default: Decimal.new("1.0")
     field :note, :string
+    field :ignore_late_penalty, :boolean, default: false
     belongs_to :assignment, Inkfish.Assignments.Assignment
     belongs_to :reg, Inkfish.Users.Reg
     belongs_to :team, Inkfish.Teams.Team
@@ -30,5 +31,11 @@ defmodule Inkfish.Subs.Sub do
 
   def make_active(sub) do
     cast(sub, %{active: true}, [:active])
+  end
+
+  def change_ignore_late(sub, attrs) do
+    sub
+    |> cast(attrs, [:ignore_late_penalty])
+    |> validate_required([:ignore_late_penalty])
   end
 end
