@@ -12,6 +12,7 @@ TODO:
  - Allow photo uploads for profile.
  - Make sure view / feedback works on single file uploads.
  - Confirm file viewer behavior with binary files.
+ - Feature: Individual due date extensions
 
 ## OS Package Dependencies
 

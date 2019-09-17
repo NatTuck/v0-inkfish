@@ -1,5 +1,12 @@
 <h1>Show Sub</h1>
 
+<%= if is_staff?(@current_reg, @current_user) do %>
+  <p>
+    <%= link("Staff View",
+      to: Routes.staff_sub_path(@conn, :show, @sub)) %>
+  </p>
+<% end %>
+
 <ul>
   <li>
     <strong>Team:</strong>
@@ -29,7 +36,6 @@
   <li>
     <strong>Upload:</strong>
     <%= link @sub.upload.name, to: Routes.upload_path(@conn, :show, @sub.upload) %>
-    (<%= link "View Files", to: Routes.sub_path(@conn, :files, @sub) %>)
   </li>
 </ul>
 
@@ -65,7 +71,13 @@
   <% end %>
   <tr>
     <td>Late Penalty</td>
-    <td><%= show_score(@sub.late_penalty) %></td>
+    <td>
+      <%= if @sub.ignore_late_penalty do %>
+        (ignored)
+      <% else %>
+        <%= show_score(@sub.late_penalty) %>
+      <% end %>
+    </td>
   </tr>
   <tr>
     <td>Total Score</td>

@@ -1,5 +1,10 @@
 <h1>Show Sub</h1>
 
+<p>
+  <%= link("Student View",
+    to: Routes.sub_path(@conn, :show, @sub)) %>
+</p>
+
 <ul>
   <li>
     <strong>Team:</strong>
