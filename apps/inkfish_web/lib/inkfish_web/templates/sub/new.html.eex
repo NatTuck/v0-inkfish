@@ -27,6 +27,7 @@
     <%= label f, :upload_id %>
     <%= text_input f, :upload_id, class: "form-control", readonly: "readonly" %>
     <%= error_tag f, :upload_id %>
+    <p>Max upload size is 5MB, larger uploads will fail.</p>
 
     <% use_tabs = @assignment.allow_upload && @assignment.allow_git %>
     <%= if use_tabs do %>
