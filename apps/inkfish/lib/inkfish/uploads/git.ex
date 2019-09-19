@@ -56,7 +56,7 @@ defmodule Inkfish.Uploads.Git do
   end
 
   def clone_repo(url, tdir, spid) do
-    cmd = ~s(cd "#{tdir}" && git clone --progress "#{url}")
+    cmd = ~s(cd "#{tdir}" && git clone --depth 1 --progress "#{url}")
     {:ok, _} = Inkfish.Exec.run(cmd, spid)
     {:ok, [gdir]} = File.ls(tdir)
     {:ok, gdir}
