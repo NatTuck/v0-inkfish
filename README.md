@@ -3,8 +3,6 @@
 
 TODO:
 
- - Add distillery and configure release mode.
- - Add a sample nginx config to the /rel directory.
  - Add grade summary to student course/show
  - Add grade summary to reg/show, with links for staff to view student status.
  - Render footer markdown & limit length in staff/course/show.

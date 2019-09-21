@@ -73,6 +73,7 @@ defmodule Inkfish.Courses do
       left_join: tas in assoc(teamsets, :assignments),
       left_join: reqs in assoc(cc, :join_reqs),
       left_join: gcols in assoc(bas, :grade_columns),
+      order_by: [asc: buckets.name, desc: bas.due, asc: bas.name],
       preload: [buckets: {buckets, assignments: {bas, grade_columns: gcols}},
                 teamsets: {teamsets, assignments: tas},
                 join_reqs: reqs]
@@ -85,6 +86,7 @@ defmodule Inkfish.Courses do
       left_join: tas in assoc(teamsets, :assignments),
       left_join: buckets in assoc(cc, :buckets),
       left_join: bas in assoc(buckets, :assignments),
+      order_by: [asc: buckets.name, desc: bas.due, asc: bas.name],
       preload: [buckets: {buckets, assignments: bas},
                 teamsets: {teamsets, assignments: tas}]
   end
