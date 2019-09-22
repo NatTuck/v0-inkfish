@@ -50,4 +50,21 @@ defmodule Inkfish.DataCase do
       end)
     end)
   end
+
+  def drop_assocs(xs) when is_list(xs) do
+    Enum.map xs, &drop_assocs/1
+  end
+
+  def drop_assocs(x) do
+    sample = Map.drop(struct(x.__struct__), [:__struct__])
+    assocs = Enum.reduce sample, [], fn ({kk, vv}, acc) ->
+      case vv do
+        %Ecto.Association.NotLoaded{} ->
+          [kk | acc]
+        _any ->
+          acc
+      end
+    end
+    Map.drop(x, assocs)
+  end
 end

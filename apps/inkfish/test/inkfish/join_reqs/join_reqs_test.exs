@@ -7,14 +7,6 @@ defmodule Inkfish.JoinReqsTest do
   describe "join_reqs" do
     alias Inkfish.JoinReqs.JoinReq
 
-    def drop_assocs(%JoinReq{} = jreq) do
-      Map.drop(jreq, [:user, :course])
-    end
-
-    def drop_assocs(jrs) do
-      Enum.map jrs, &drop_assocs/1
-    end
-
     test "list_join_reqs/0 returns all join_reqs" do
       join_req = insert(:join_req)
       assert drop_assocs(JoinReqs.list_join_reqs()) == drop_assocs([join_req])

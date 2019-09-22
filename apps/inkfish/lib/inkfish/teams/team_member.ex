@@ -16,5 +16,7 @@ defmodule Inkfish.Teams.TeamMember do
     team_member
     |> cast(attrs, [:team_id, :reg_id])
     |> validate_required([:team_id, :reg_id])
+    |> foreign_key_constraint(:team_id)
+    |> foreign_key_constraint(:reg_id)
   end
 end

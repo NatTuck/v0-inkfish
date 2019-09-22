@@ -42,6 +42,7 @@ defmodule Inkfish.MixProject do
       {:gmex, "~> 0.1"},
       {:erlexec, "~> 1.10"},
       {:tzdata, "~> 1.0.1"},
+      {:jason, "~> 1.1"},
       {:ex_machina, "~> 2.3", only: :test},
       {:sandbox, in_umbrella: true},
     ]

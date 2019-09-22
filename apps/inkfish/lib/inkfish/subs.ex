@@ -249,13 +249,6 @@ defmodule Inkfish.Subs do
     end
   end
 
-  def save_sub_dump!(sub_id, json) do
-    sub = get_sub!(sub_id)
-    base = Inkfish.Uploads.Upload.upload_dir(sub.upload_id)
-    path = Path.join(base, "dump.json")
-    File.write!(path, json)
-    IO.inspect({"Data for sub dumped", sub.id, path})
-  end
 
   @doc """
   Deletes a Sub.
@@ -296,5 +289,20 @@ defmodule Inkfish.Subs do
 
   def read_sub_data(sub_id) do
     read_sub_data(get_sub!(sub_id))
+  end
+
+  def save_sub_dump!(sub_id) do
+    sub = Inkfish.Subs.get_sub!(sub_id)
+    json = Sub.to_map(sub)
+    |> Jason.encode!(pretty: true)
+    Inkfish.Subs.save_sub_dump!(sub.id, json)
+  end
+
+  def save_sub_dump!(sub_id, json) do
+    sub = get_sub!(sub_id)
+    base = Inkfish.Uploads.Upload.upload_dir(sub.upload_id)
+    path = Path.join(base, "dump.json")
+    File.write!(path, json)
+    #IO.inspect({"Data for sub dumped", sub.id, path})
   end
 end

@@ -20,4 +20,12 @@ defmodule Inkfish.Grades.Grade do
     |> cast(attrs, [:grade_column_id, :sub_id, :score, :grader_id])
     |> validate_required([:grade_column_id, :sub_id])
   end
+
+  def to_map(grade) do
+    grade = Map.drop(grade, [:__struct__, :__meta__, :sub, :grade_column, :grader])
+    lcs = Enum.map grade.line_comments, fn lc ->
+      Inkfish.LineComments.LineComment.to_map(lc)
+    end
+    %{ grade | line_comments: lcs }
+  end
 end

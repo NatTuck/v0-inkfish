@@ -38,4 +38,12 @@ defmodule Inkfish.Subs.Sub do
     |> cast(attrs, [:ignore_late_penalty])
     |> validate_required([:ignore_late_penalty])
   end
+
+  def to_map(sub) do
+    grades = Enum.map sub.grades, fn gr ->
+      Inkfish.Grades.Grade.to_map(gr)
+    end
+    sub = Map.drop(sub, [:__struct__, :__meta__, :assignment, :reg, :team, :upload])
+    %{ sub | grades: grades }
+  end
 end

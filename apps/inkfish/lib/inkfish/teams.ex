@@ -186,11 +186,7 @@ defmodule Inkfish.Teams do
 
   """
   def get_team!(id) do
-    %Team{} = team = get_team(id)
-  end
-
-  def get_team(id) do
-    Repo.one from team in Team,
+    Repo.one! from team in Team,
       where: team.id == ^id,
       inner_join: ts in assoc(team, :teamset),
       left_join: members in assoc(team, :team_members),
@@ -198,6 +194,14 @@ defmodule Inkfish.Teams do
       left_join: user in assoc(reg, :user),
       preload: [team_members: {members, reg: {reg, user: user}},
                 teamset: ts]
+  end
+
+  def get_team(id) do
+    try do
+      get_team!(id)
+    rescue
+      Ecto.NoResultsError -> nil
+    end
   end
 
   def get_team_path!(id) do

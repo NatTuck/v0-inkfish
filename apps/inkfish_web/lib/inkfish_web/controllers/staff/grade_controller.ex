@@ -112,9 +112,6 @@ defmodule InkfishWeb.Staff.GradeController do
   end
 
   def save_sub_dump!(sub_id) do
-    sub = Inkfish.Subs.get_sub!(sub_id)
-    json = InkfishWeb.Staff.SubView.render("sub.json", %{sub: sub})
-    |> Jason.encode!(pretty: true)
-    Inkfish.Subs.save_sub_dump!(sub.id, json)
+    Inkfish.Subs.save_sub_dump!(sub_id)
   end
 end

@@ -16,7 +16,7 @@ defmodule Inkfish.UsersTest do
 
     test "get_user!/1 returns the user with given id" do
       user = insert(:user)
-      assert Users.get_user!(user.id) == user
+      assert drop_assocs(Users.get_user!(user.id)) == drop_assocs(user)
     end
 
     test "create_user/1 with valid data creates a user" do
@@ -44,7 +44,7 @@ defmodule Inkfish.UsersTest do
       user = insert(:user)
       bad_attrs = %{given_name: ""}
       assert {:error, %Ecto.Changeset{}} = Users.update_user(user, bad_attrs)
-      assert user == Users.get_user!(user.id)
+      assert drop_assocs(user) == drop_assocs(Users.get_user!(user.id))
     end
 
     test "delete_user/1 deletes the user" do
@@ -62,14 +62,6 @@ defmodule Inkfish.UsersTest do
   describe "regs" do
     alias Inkfish.Users.Reg
     
-    defp drop_assocs(%Reg{} = reg) do
-      Map.drop(reg, [:course, :user])
-    end
-    
-    defp drop_assocs(regs) do
-      Enum.map(regs, &drop_assocs/1)
-    end
-
     test "list_regs/0 returns newly inserted reg" do
       reg = insert(:reg)
       regs = Users.list_regs

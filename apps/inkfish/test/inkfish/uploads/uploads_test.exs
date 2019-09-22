@@ -33,22 +33,20 @@ defmodule Inkfish.UploadsTest do
       upload
     end
 
-    def drop_assocs(%Upload{} = jreq) do
-      Map.drop(jreq, [:upload, :user])
-    end
-
-    def drop_assocs(ups) do
-      Enum.map ups, &drop_assocs/1
+    def assert_uploads_eq(u1, u2) do
+      u1 = Map.drop(u1, [:upload])
+      u2 = Map.drop(u2, [:upload])
+      assert u1 == u2
     end
 
     test "list_uploads/0 returns all uploads" do
       upload = upload_fixture()
-      assert drop_assocs(Uploads.list_uploads()) == drop_assocs([upload])
+      assert_uploads_eq hd(Uploads.list_uploads()), upload
     end
 
     test "get_upload!/1 returns the upload with given id" do
       upload = upload_fixture()
-      assert drop_assocs(Uploads.get_upload!(upload.id)) == drop_assocs(upload)
+      assert_uploads_eq Uploads.get_upload!(upload.id), upload
     end
 
     test "create_upload/1 with valid data creates a upload" do

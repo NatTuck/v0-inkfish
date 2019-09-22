@@ -9,9 +9,10 @@ defmodule InkfishWeb.Application do
     # List all child processes to be supervised
     children = [
       # Start the endpoint when the application starts
-      InkfishWeb.Endpoint
+      InkfishWeb.Endpoint,
       # Starts a worker by calling: InkfishWeb.Worker.start_link(arg)
       # {InkfishWeb.Worker, arg},
+      InkfishWeb.ChannelRelay,
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
