@@ -27,6 +27,7 @@ defmodule Inkfish.Subs.Sub do
     sub
     |> cast(attrs, [:assignment_id, :reg_id, :team_id, :upload_id, :hours_spent, :note])
     |> validate_required([:assignment_id, :reg_id, :team_id, :upload_id, :hours_spent])
+    |> foreign_key_constraint(:upload_id)
   end
 
   def make_active(sub) do

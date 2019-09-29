@@ -1,20 +1,18 @@
 defmodule InkfishWeb.JoinReqControllerTest do
   use InkfishWeb.ConnCase
+  import Inkfish.Factory
 
   alias Inkfish.JoinReqs
 
-  @create_attrs %{login: "some login", note: "some note", staff_req: true}
-  @update_attrs %{login: "some updated login", note: "some updated note", staff_req: false}
-  @invalid_attrs %{login: nil, note: nil, staff_req: nil}
-
   def fixture(:join_req) do
-    {:ok, join_req} = JoinReqs.create_join_req(@create_attrs)
-    join_req
+    insert(:join_req)
   end
 
   describe "index" do
-    test "lists all join_reqs", %{conn: conn} do
-      conn = get(conn, Routes.join_req_path(conn, :index))
+    test "lists all join_reqs", %{conn: conn, course: course} do
+      conn = conn
+      |> login("bob")
+      |> get(Routes.staff_course_join_req_path(conn, :index))
       assert html_response(conn, 200) =~ "Listing Join reqs"
     end
   end

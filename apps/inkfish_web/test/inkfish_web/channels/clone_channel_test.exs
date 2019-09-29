@@ -2,21 +2,19 @@ defmodule InkfishWeb.CloneChannelTest do
   use InkfishWeb.ChannelCase
 
   setup do
+    user = Inkfish.Users.get_user_by_login!("bob")
+
     {:ok, _, socket} =
-      socket(InkfishWeb.UserSocket, "user_id", %{some: :assign})
-      |> subscribe_and_join(InkfishWeb.CloneChannel, "clone:lobby")
+      socket(InkfishWeb.UserSocket, nil, %{user_id: user.id})
+      |> subscribe_and_join(InkfishWeb.CloneChannel, "clone:101")
 
     {:ok, socket: socket}
   end
 
-  test "ping replies with status ok", %{socket: socket} do
-    ref = push socket, "ping", %{"hello" => "there"}
-    assert_reply ref, :ok, %{"hello" => "there"}
-  end
-
-  test "shout broadcasts to clone:lobby", %{socket: socket} do
-    push socket, "shout", %{"hello" => "all"}
-    assert_broadcast "shout", %{"hello" => "all"}
+  test "clone clones a git repo", %{socket: socket} do
+    pancake = "https://github.com/NatTuck/pancake.git"
+    _ref = push socket, "clone", %{"url" => pancake}
+    assert_push "done", %{upload_id: _uuid}, 2_000
   end
 
   test "broadcasts are pushed to the client", %{socket: socket} do

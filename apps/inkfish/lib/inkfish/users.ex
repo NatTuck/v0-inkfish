@@ -139,7 +139,12 @@ defmodule Inkfish.Users do
 
   """
   def delete_user(%User{} = user) do
-    Repo.delete(user)
+    try do
+      Repo.delete(user)
+    rescue
+      Ecto.ConstraintError ->
+        {:error, "User #{user.email} can't be deleted"}
+    end
   end
 
   @doc """

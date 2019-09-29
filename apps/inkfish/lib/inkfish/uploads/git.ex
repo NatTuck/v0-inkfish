@@ -120,7 +120,7 @@ defmodule Inkfish.Uploads.Git do
     if pid == wpid do
       case reason do
         :normal ->
-          IO.inspect("Work task exited normally")
+          :ok
         {{:badmatch, error}, _} ->
           payload = %{ msg: inspect(error) }
           broadcast(channel, "fail", payload)
