@@ -85,7 +85,7 @@ defmodule InkfishWeb.Router do
   scope "/admin", InkfishWeb.Admin, as: :admin do
     pipe_through [:browser, :admin]
     
-    resources "/users", UserController
+    resources "/users", UserController, except: [:new, :create]
     resources "/courses", CourseController
     resources "/uploads", UploadController
   end

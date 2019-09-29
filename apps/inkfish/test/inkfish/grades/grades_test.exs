@@ -1,53 +1,49 @@
 defmodule Inkfish.GradesTest do
   use Inkfish.DataCase
+  import Inkfish.Factory
 
   alias Inkfish.Grades
 
   describe "grades" do
     alias Inkfish.Grades.Grade
 
-    @valid_attrs %{score: "120.5"}
-    @update_attrs %{score: "456.7"}
-    @invalid_attrs %{score: nil}
-
     def grade_fixture(attrs \\ %{}) do
-      {:ok, grade} =
-        attrs
-        |> Enum.into(@valid_attrs)
-        |> Grades.create_grade()
-
-      grade
+      insert(:grade, attrs)
     end
 
     test "list_grades/0 returns all grades" do
       grade = grade_fixture()
-      assert Grades.list_grades() == [grade]
+      assert drop_assocs(Grades.list_grades()) == drop_assocs([grade])
     end
 
     test "get_grade!/1 returns the grade with given id" do
       grade = grade_fixture()
-      assert Grades.get_grade!(grade.id) == grade
+      assert drop_assocs(Grades.get_grade!(grade.id)) == drop_assocs(grade)
     end
 
     test "create_grade/1 with valid data creates a grade" do
-      assert {:ok, %Grade{} = grade} = Grades.create_grade(@valid_attrs)
-      assert grade.score == Decimal.new("120.5")
+      params = params_with_assocs(:grade)
+      assert {:ok, %Grade{} = grade} = Grades.create_grade(params)
+      assert grade.score == Decimal.new("45.7")
     end
 
     test "create_grade/1 with invalid data returns error changeset" do
-      assert {:error, %Ecto.Changeset{}} = Grades.create_grade(@invalid_attrs)
+      params = %{}
+      assert {:error, %Ecto.Changeset{}} = Grades.create_grade(params)
     end
 
     test "update_grade/2 with valid data updates the grade" do
       grade = grade_fixture()
-      assert {:ok, %Grade{} = grade} = Grades.update_grade(grade, @update_attrs)
-      assert grade.score == Decimal.new("456.7")
+      params = %{score: "25.1"}
+      assert {:ok, %Grade{} = grade} = Grades.update_grade(grade, params)
+      assert grade.score == Decimal.new("25.1")
     end
 
     test "update_grade/2 with invalid data returns error changeset" do
       grade = grade_fixture()
-      assert {:error, %Ecto.Changeset{}} = Grades.update_grade(grade, @invalid_attrs)
-      assert grade == Grades.get_grade!(grade.id)
+      params = %{score: "", sub_id: ""}
+      assert {:error, %Ecto.Changeset{}} = Grades.update_grade(grade, params)
+      assert drop_assocs(grade) == drop_assocs(Grades.get_grade!(grade.id))
     end
 
     test "delete_grade/1 deletes the grade" do
@@ -65,56 +61,49 @@ defmodule Inkfish.GradesTest do
   describe "grade_columns" do
     alias Inkfish.Grades.GradeColumn
 
-    @valid_attrs %{kind: "some kind", name: "some name", params: "some params", points: "120.5", weight: "120.5"}
-    @update_attrs %{kind: "some updated kind", name: "some updated name", params: "some updated params", points: "456.7", weight: "456.7"}
-    @invalid_attrs %{kind: nil, name: nil, params: nil, points: nil, weight: nil}
-
     def grade_column_fixture(attrs \\ %{}) do
-      {:ok, grade_column} =
-        attrs
-        |> Enum.into(@valid_attrs)
-        |> Grades.create_grade_column()
-
-      grade_column
+      insert(:grade_column, attrs)
     end
 
     test "list_grade_columns/0 returns all grade_columns" do
       grade_column = grade_column_fixture()
-      assert Grades.list_grade_columns() == [grade_column]
+      assert drop_assocs(Grades.list_grade_columns()) == drop_assocs([grade_column])
     end
 
     test "get_grade_column!/1 returns the grade_column with given id" do
       grade_column = grade_column_fixture()
-      assert Grades.get_grade_column!(grade_column.id) == grade_column
+      assert drop_assocs(Grades.get_grade_column!(grade_column.id)) == drop_assocs(grade_column)
     end
 
     test "create_grade_column/1 with valid data creates a grade_column" do
-      assert {:ok, %GradeColumn{} = grade_column} = Grades.create_grade_column(@valid_attrs)
-      assert grade_column.kind == "some kind"
-      assert grade_column.name == "some name"
-      assert grade_column.params == "some params"
-      assert grade_column.points == Decimal.new("120.5")
-      assert grade_column.weight == Decimal.new("120.5")
+      params = params_with_assocs(:grade_column)
+      assert {:ok, %GradeColumn{} = grade_column} = Grades.create_grade_column(params)
+      assert grade_column.kind == "number"
+      assert grade_column.name == "Number Grade"
+      assert grade_column.points == Decimal.new("50.0")
+      assert grade_column.base == Decimal.new("40.0")
     end
 
     test "create_grade_column/1 with invalid data returns error changeset" do
-      assert {:error, %Ecto.Changeset{}} = Grades.create_grade_column(@invalid_attrs)
+      assert {:error, %Ecto.Changeset{}} = Grades.create_grade_column(%{})
     end
 
     test "update_grade_column/2 with valid data updates the grade_column" do
       grade_column = grade_column_fixture()
-      assert {:ok, %GradeColumn{} = grade_column} = Grades.update_grade_column(grade_column, @update_attrs)
-      assert grade_column.kind == "some updated kind"
-      assert grade_column.name == "some updated name"
-      assert grade_column.params == "some updated params"
-      assert grade_column.points == Decimal.new("456.7")
-      assert grade_column.weight == Decimal.new("456.7")
+      params = %{ name: "Updated", base: "30.0" }
+      assert {:ok, %GradeColumn{} = gc1} = Grades.update_grade_column(grade_column, params)
+      assert gc1.kind == grade_column.kind
+      assert gc1.name == "Updated"
+      assert gc1.params == grade_column.params
+      assert gc1.points == grade_column.points
+      assert gc1.base == Decimal.new("30.0")
     end
 
     test "update_grade_column/2 with invalid data returns error changeset" do
       grade_column = grade_column_fixture()
-      assert {:error, %Ecto.Changeset{}} = Grades.update_grade_column(grade_column, @invalid_attrs)
-      assert grade_column == Grades.get_grade_column!(grade_column.id)
+      params = %{points: ""}
+      assert {:error, %Ecto.Changeset{}} = Grades.update_grade_column(grade_column, params)
+      assert drop_assocs(grade_column) == drop_assocs(Grades.get_grade_column!(grade_column.id))
     end
 
     test "delete_grade_column/1 deletes the grade_column" do

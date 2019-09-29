@@ -90,27 +90,27 @@ defmodule Inkfish.Uploads.Git do
 
   def handle_call({:done, upload_id}, _from, state) do
     channel = state[:channel]
-    InkfishWeb.Endpoint.broadcast(channel, "done", %{upload_id: upload_id})
+    broadcast(channel, "done", %{upload_id: upload_id})
     {:reply, :ok, state}
   end
 
   def handle_call({:print, msg}, _from, state) do
     channel = state[:channel]
-    InkfishWeb.Endpoint.broadcast(channel, "print", %{msg: "#{msg}\n"})
+    broadcast(channel, "print", %{msg: "#{msg}\n"})
     {:reply, :ok, state}
   end
 
   def handle_info({:stdout, _, data}, state) do
     channel = state[:channel]
     msg = " o: #{data}"
-    InkfishWeb.Endpoint.broadcast(channel, "print", %{msg: msg})
+    broadcast(channel, "print", %{msg: msg})
     {:noreply, state}
   end
 
   def handle_info({:stderr, _, data}, state) do
     channel = state[:channel]
     msg = " E: #{data}"
-    InkfishWeb.Endpoint.broadcast(channel, "print", %{msg: msg})
+    broadcast(channel, "print", %{msg: msg})
     {:noreply, state}
   end
 
@@ -120,10 +120,10 @@ defmodule Inkfish.Uploads.Git do
     if pid == wpid do
       case reason do
         :normal ->
-          IO.inspect("Work task exited normally")
+          :ok
         {{:badmatch, error}, _} ->
           payload = %{ msg: inspect(error) }
-          InkfishWeb.Endpoint.broadcast(channel, "fail", payload)
+          broadcast(channel, "fail", payload)
         _ ->
           IO.inspect({"unknown reason", reason})
       end
@@ -136,5 +136,9 @@ defmodule Inkfish.Uploads.Git do
   def handle_info(msg, state) do
     IO.inspect({:info, msg})
     {:noreply, state}
+  end
+
+  def broadcast(channel, msg, body) do
+    Inkfish.ChannelRelay.broadcast(channel, msg, body)
   end
 end

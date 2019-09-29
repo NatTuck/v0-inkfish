@@ -1,59 +1,55 @@
 defmodule Inkfish.AssignmentsTest do
   use Inkfish.DataCase
+  import Inkfish.Factory
 
   alias Inkfish.Assignments
 
   describe "assignments" do
     alias Inkfish.Assignments.Assignment
 
-    @valid_attrs %{desc: "some desc", due: ~N[2010-04-17 14:00:00], name: "some name", weight: "120.5"}
-    @update_attrs %{desc: "some updated desc", due: ~N[2011-05-18 15:01:01], name: "some updated name", weight: "456.7"}
-    @invalid_attrs %{desc: nil, due: nil, name: nil, weight: nil}
-
     def assignment_fixture(attrs \\ %{}) do
-      {:ok, assignment} =
-        attrs
-        |> Enum.into(@valid_attrs)
-        |> Assignments.create_assignment()
-
-      assignment
+      insert(:assignment, attrs)
     end
 
     test "list_assignments/0 returns all assignments" do
       assignment = assignment_fixture()
-      assert Assignments.list_assignments() == [assignment]
+      assert drop_assocs(Assignments.list_assignments()) == drop_assocs([assignment])
     end
 
     test "get_assignment!/1 returns the assignment with given id" do
       assignment = assignment_fixture()
-      assert Assignments.get_assignment!(assignment.id) == assignment
+      assert drop_assocs(Assignments.get_assignment!(assignment.id)) == drop_assocs(assignment)
     end
 
     test "create_assignment/1 with valid data creates a assignment" do
-      assert {:ok, %Assignment{} = assignment} = Assignments.create_assignment(@valid_attrs)
-      assert assignment.desc == "some desc"
-      assert assignment.due == ~N[2010-04-17 14:00:00]
-      assert assignment.name == "some name"
-      assert assignment.weight == Decimal.new("120.5")
+      attrs = params_with_assocs(:assignment)
+      assert {:ok, %Assignment{} = assignment} = Assignments.create_assignment(attrs)
+      assert assignment.desc == attrs.desc
+      assert assignment.due  == attrs.due
+      assert assignment.name == attrs.name
+      assert assignment.weight == attrs.weight
     end
 
     test "create_assignment/1 with invalid data returns error changeset" do
-      assert {:error, %Ecto.Changeset{}} = Assignments.create_assignment(@invalid_attrs)
+      attrs = %{params_for(:assignment) | name: ""}
+      assert {:error, %Ecto.Changeset{}} = Assignments.create_assignment(attrs)
     end
 
     test "update_assignment/2 with valid data updates the assignment" do
       assignment = assignment_fixture()
-      assert {:ok, %Assignment{} = assignment} = Assignments.update_assignment(assignment, @update_attrs)
-      assert assignment.desc == "some updated desc"
-      assert assignment.due == ~N[2011-05-18 15:01:01]
-      assert assignment.name == "some updated name"
-      assert assignment.weight == Decimal.new("456.7")
+      attrs = %{ params_for(:assignment) | name: "Updated name" }
+      assert {:ok, %Assignment{} = a1} = Assignments.update_assignment(assignment, attrs)
+      assert a1.desc == assignment.desc
+      assert a1.due == assignment.due
+      assert a1.name == "Updated name"
+      assert a1.weight == assignment.weight
     end
 
     test "update_assignment/2 with invalid data returns error changeset" do
       assignment = assignment_fixture()
-      assert {:error, %Ecto.Changeset{}} = Assignments.update_assignment(assignment, @invalid_attrs)
-      assert assignment == Assignments.get_assignment!(assignment.id)
+      attrs = %{name: ""}
+      assert {:error, %Ecto.Changeset{}} = Assignments.update_assignment(assignment, attrs)
+      assert drop_assocs(assignment) == drop_assocs(Assignments.get_assignment!(assignment.id))
     end
 
     test "delete_assignment/1 deletes the assignment" do

@@ -44,7 +44,7 @@ defmodule InkfishWeb.MixProject do
       {:phoenix_live_reload, "~> 1.2", only: :dev},
       {:gettext, "~> 0.11"},
       {:inkfish, in_umbrella: true},
-      {:jason, "~> 1.0"},
+      {:jason, "~> 1.1"},
       {:earmark, "~> 1.3"},
       {:html_sanitize_ex, "~> 1.3"},
       {:inflex, "~> 1.10" },

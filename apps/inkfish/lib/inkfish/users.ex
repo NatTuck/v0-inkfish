@@ -139,7 +139,12 @@ defmodule Inkfish.Users do
 
   """
   def delete_user(%User{} = user) do
-    Repo.delete(user)
+    try do
+      Repo.delete(user)
+    rescue
+      Ecto.ConstraintError ->
+        {:error, "User #{user.email} can't be deleted"}
+    end
   end
 
   @doc """
@@ -221,14 +226,20 @@ defmodule Inkfish.Users do
 
   """
   def get_reg!(id) do
-    Repo.one from reg in Reg,
+    Repo.one! from reg in Reg,
       where: reg.id == ^id,
       inner_join: user in assoc(reg, :user),
       inner_join: course in assoc(reg, :course),
       preload: [user: user, course: course]
   end
 
-  def get_reg(id), do: Repo.get(Reg, id)
+  def get_reg(id) do
+    try do
+      get_reg!(id)
+    rescue
+      Ecto.NoResultsError -> nil
+    end
+  end
 
   def get_reg_path!(id) do
     Repo.one! from reg in Reg,
@@ -272,7 +283,6 @@ defmodule Inkfish.Users do
   def create_reg(attrs) do
     %Reg{}
     |> Reg.changeset(attrs)
-    |> IO.inspect()
     |> Repo.insert()
   end
 

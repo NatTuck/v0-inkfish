@@ -8,7 +8,14 @@ defmodule Inkfish.Factory do
   alias Inkfish.JoinReqs.JoinReq
   alias Inkfish.Uploads.Upload
   alias Inkfish.Assignments.Assignment
-  
+  alias Inkfish.Teams.Teamset
+  alias Inkfish.Teams.Team
+  alias Inkfish.Teams.TeamMember
+  alias Inkfish.Subs.Sub
+  alias Inkfish.Grades.GradeColumn
+  alias Inkfish.Grades.Grade
+  alias Inkfish.LineComments.LineComment
+
   def user_factory do
     login = sequence(:login, &"sam#{&1}")
     
@@ -66,6 +73,27 @@ defmodule Inkfish.Factory do
     }
   end
 
+  def teamset_factory do
+    %Teamset{
+      name: "Homework Teamset",
+      course: build(:course),
+    }
+  end
+
+  def team_factory do
+    %Team{
+      active: true,
+      teamset: build(:teamset),
+    }
+  end
+
+  def team_member_factory do
+    %TeamMember{
+      team: build(:team),
+      reg: build(:reg),
+    }
+  end
+
   def assignment_factory do
     course = build(:course)
 
@@ -75,7 +103,49 @@ defmodule Inkfish.Factory do
       name: sequence(:as_name, &"HW #{&1}"),
       weight: Decimal.new("1.0"),
       bucket: build(:bucket, course: course),
-      course: course,
+      teamset: build(:teamset, course: course),
+    }
+  end
+
+  def sub_factory do
+    %Sub{
+      active: true,
+      hours_spent: Decimal.new("4.5"),
+      note: "",
+      assignment: build(:assignment),
+      reg: build(:reg),
+      team: build(:team),
+      upload: build(:upload),
+    }
+  end
+
+  def grade_column_factory do
+    %GradeColumn{
+      kind: "number",
+      name: "Number Grade",
+      points: Decimal.new("50.0"),
+      base: Decimal.new("40.0"),
+      assignment: build(:assignment),
+    }
+  end
+
+  def grade_factory do
+    %Grade{
+      score: Decimal.new("45.7"),
+      sub: build(:sub),
+      grade_column: build(:grade_column),
+      grader: build(:user),
+    }
+  end
+
+  def line_comment_factory do
+    %LineComment{
+      line: 10,
+      path: "hw03/main.c",
+      points: Decimal.new("-5.0"),
+      text: "Don't mix tabs and spaces",
+      grade: build(:grade),
+      user: build(:user),
     }
   end
 end

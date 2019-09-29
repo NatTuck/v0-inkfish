@@ -19,3 +19,11 @@ TODO:
  - graphicsmagick
 
 
+## Testing
+
+Inkfish relies on LDAP for user info and authenication. This means that we
+need to run an LDAP server for testing.
+
+This can be started by running "test/setup.sh" from the project root.
+
+

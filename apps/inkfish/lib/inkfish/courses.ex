@@ -49,19 +49,22 @@ defmodule Inkfish.Courses do
 
   """
   def get_course!(id) do
-    Repo.get!(Course, id)
-    #%Course{} = get_course(id)
+    course = Repo.get!(Course, id)
+    if course.solo_teamset_id == nil do
+      %Course{} = course
+      ts = Inkfish.Teams.create_solo_teamset!(course)
+      %Course{course | solo_teamset_id: ts.id}
+    else
+      course
+    end
   end
 
   def get_course(id) do
-    Repo.get(Course, id)
-    #if course != nil && course.solo_teamset_id == nil do
-    #  %Course{} = course
-    #  ts = Inkfish.Teams.create_solo_teamset!(course)
-    #  %Course{course | solo_teamset_id: ts.id}
-    #else
-    #  course
-    #end
+    try do
+      get_course!(id)
+    rescue
+      Ecto.NoResultsError -> nil
+    end
   end
 
   def get_course_for_staff_view!(id) do
@@ -136,7 +139,7 @@ defmodule Inkfish.Courses do
       {:ok, %{course_w_ts: course}} -> {:ok, course}
       {:error, :course, cset, _}  -> {:error, cset}
       {:error, :reg, cset, _} ->
-        cset = Ecto.Changeset.add_error(course, :instructor, "instructor reg failed")
+        cset = Ecto.Changeset.add_error(cset, :instructor, "instructor reg failed")
         {:error, cset}
     end
   end
@@ -190,7 +193,7 @@ defmodule Inkfish.Courses do
       {:ok, %{course: course}} -> {:ok, course}
       {:error, :course, cset, _}  -> {:error, cset}
       {:error, :reg, cset, _} ->
-        cset = Ecto.Changeset.add_error(course, :instructor, "instructor reg failed")
+        cset = Ecto.Changeset.add_error(cset, :instructor, "instructor reg failed")
         {:error, cset}
     end
   end
