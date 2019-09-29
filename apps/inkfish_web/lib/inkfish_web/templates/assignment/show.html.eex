@@ -45,6 +45,7 @@
 <h2>Submissions</h2>
 
 <p>
+  Your Team: <%= show_team(@team) %> <br>
   <%= link "New Submission", to: Routes.assignment_sub_path(@conn, :new, @assignment) %>
 </p>
 
