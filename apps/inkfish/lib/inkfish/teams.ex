@@ -212,18 +212,22 @@ defmodule Inkfish.Teams do
       preload: [teamset: {ts, course: course}]
   end
 
+  # FIXME
   def get_active_team(%Assignment{} = asg, %Reg{} = reg) do
     asg = Repo.preload(asg, :teamset)
+    get_active_team(asg.teamset, reg)
+  end
 
+  def get_active_team(%Teamset{} = ts, %Reg{} = reg) do
     team = Repo.one from team in Team,
       inner_join: ts in assoc(team, :teamset),
       left_join: member in assoc(team, :team_members),
-      where: team.teamset_id == ^asg.teamset_id,
+      where: team.teamset_id == ^ts.id,
       where: member.reg_id == ^reg.id,
       where: team.active
 
-    team1 = if team == nil && asg.teamset.name == "Solo Work" do
-      create_solo_team(asg, reg)
+    team1 = if team == nil && ts.name == "Solo Work" do
+      create_solo_team(ts, reg)
     else
       team
     end
@@ -235,11 +239,11 @@ defmodule Inkfish.Teams do
     end
   end
 
-  def create_solo_team(%Assignment{} = asg, %Reg{} = reg) do
+  def create_solo_team(%Teamset{} = ts, %Reg{} = reg) do
     regs = [Inkfish.Users.Reg.changeset(reg, %{})]
     team_attrs = %{
       active: true,
-      teamset_id: asg.teamset_id,
+      teamset_id: ts.id,
       regs: regs
     }
     {:ok, team} = create_team(team_attrs)

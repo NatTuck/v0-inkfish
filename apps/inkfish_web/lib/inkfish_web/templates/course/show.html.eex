@@ -42,3 +42,28 @@
     </tbody>
   </table>
 <% end %>
+
+<h2>Active Teams</h2>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Category</th>
+      <th>Members</th>
+      <th>Assignments</th>
+    </tr>
+  </thead>
+  <tbody>
+    <%= for ts <- @course.teamsets do %>
+      <tr>
+        <td><%= ts.name %></td>
+        <%= if team = @teams[ts.id] do %>
+          <td><%= show_team_members(team) %></td>
+        <% else %>
+          <td>∅</td>
+        <% end %>
+        <td><%= show_teamset_assignments(ts) %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
