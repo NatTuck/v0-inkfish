@@ -1,5 +1,10 @@
 <h1>Show Course</h1>
 
+<p>
+  <%= link "Edit", to: Routes.admin_course_path(@conn, :edit, @course) %> |
+  <%= link "Back", to: Routes.admin_course_path(@conn, :index) %>
+</p>
+
 <ul>
 
   <li>
@@ -12,12 +17,6 @@
     <%= @course.start_date %>
   </li>
 
-  <li>
-    <strong>Footer:</strong>
-    <%= @course.footer %>
-  </li>
 
 </ul>
 
-<span><%= link "Edit", to: Routes.admin_course_path(@conn, :edit, @course) %></span>
-<span><%= link "Back", to: Routes.admin_course_path(@conn, :index) %></span>

@@ -24,11 +24,6 @@
   </li>
 
   <li>
-    <strong>Footer:</strong>
-    <%= @course.footer %>
-  </li>
-
-  <li>
     <strong>Solo Teamset ID:</strong>
     <%= @course.solo_teamset_id %>
   </li>
