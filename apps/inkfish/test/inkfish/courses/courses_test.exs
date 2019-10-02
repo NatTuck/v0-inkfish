@@ -57,7 +57,7 @@ defmodule Inkfish.CoursesTest do
     test "delete_course/1 deletes the course" do
       course = insert(:course)
       assert {:ok, %Course{}} = Courses.delete_course(course)
-      assert_raise MatchError, fn -> Courses.get_course!(course.id) end
+      assert_raise Ecto.NoResultsError, fn -> Courses.get_course!(course.id) end
     end
 
     test "change_course/1 returns a course changeset" do
@@ -69,14 +69,6 @@ defmodule Inkfish.CoursesTest do
   describe "buckets" do
     alias Inkfish.Courses.Bucket
     
-    defp drop_assocs(%Bucket{} = bucket) do
-      Map.drop(bucket, [:course])
-    end
-    
-    defp drop_assocs(buckets) do
-      Enum.map(buckets, &drop_assocs/1)
-    end
-
     test "list_buckets/0 returns all buckets" do
       bucket = insert(:bucket)
       assert drop_assocs(Courses.list_buckets()) == drop_assocs([bucket])

@@ -180,6 +180,14 @@ defmodule Inkfish.Subs do
     |> Repo.update()
   end
 
+  def update_sub_ignore_late(%Sub{} = sub, attrs) do
+    {:ok, sub} = sub
+    |> Sub.change_ignore_late(attrs)
+    |> Repo.update()
+    calc_sub_score!(sub.id)
+    sub
+  end
+
   def calc_sub_score!(sub_id) do
     Ecto.Multi.new()
     |> Ecto.Multi.run(:sub0, fn (_,_) ->
@@ -213,7 +221,7 @@ defmodule Inkfish.Subs do
     due = DateTime.from_naive!(sub.assignment.due, tz)
     subed = DateTime.from_naive!(sub.inserted_at, tz)
     seconds_late = DateTime.diff(subed, due)
-    hours_late = (seconds_late + 3599) / 3600
+    hours_late = floor((seconds_late + 3599) / 3600)
     if hours_late > 0 do
       hours_late
     else
@@ -234,15 +242,13 @@ defmodule Inkfish.Subs do
     points_avail = Inkfish.Assignments.Assignment.assignment_total_points(sub.assignment)
     penalty_frac = Decimal.from_float(hours_late(sub) / 100.0)
     penalty = Decimal.mult(points_avail, penalty_frac)
+    if sub.ignore_late_penalty do
+      0
+    else
+      penalty
+    end
   end
 
-  def save_sub_dump!(sub_id, json) do
-    sub = get_sub!(sub_id)
-    base = Inkfish.Uploads.Upload.upload_dir(sub.upload_id)
-    path = Path.join(base, "dump.json")
-    File.write!(path, json)
-    IO.inspect({"Data for sub dumped", sub.id, path})
-  end
 
   @doc """
   Deletes a Sub.
@@ -283,5 +289,20 @@ defmodule Inkfish.Subs do
 
   def read_sub_data(sub_id) do
     read_sub_data(get_sub!(sub_id))
+  end
+
+  def save_sub_dump!(sub_id) do
+    sub = Inkfish.Subs.get_sub!(sub_id)
+    json = Sub.to_map(sub)
+    |> Jason.encode!(pretty: true)
+    Inkfish.Subs.save_sub_dump!(sub.id, json)
+  end
+
+  def save_sub_dump!(sub_id, json) do
+    sub = get_sub!(sub_id)
+    base = Inkfish.Uploads.Upload.upload_dir(sub.upload_id)
+    path = Path.join(base, "dump.json")
+    File.write!(path, json)
+    #IO.inspect({"Data for sub dumped", sub.id, path})
   end
 end

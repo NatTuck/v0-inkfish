@@ -1,72 +1,120 @@
 defmodule Inkfish.GradesTest do
   use Inkfish.DataCase
+  import Inkfish.Factory
 
   alias Inkfish.Grades
 
-  describe "graders" do
-    alias Inkfish.Grades.Grader
+  describe "grades" do
+    alias Inkfish.Grades.Grade
 
-    @valid_attrs %{kind: "some kind", name: "some name", params: "some params", points: "120.5", weight: "120.5"}
-    @update_attrs %{kind: "some updated kind", name: "some updated name", params: "some updated params", points: "456.7", weight: "456.7"}
-    @invalid_attrs %{kind: nil, name: nil, params: nil, points: nil, weight: nil}
-
-    def grader_fixture(attrs \\ %{}) do
-      {:ok, grader} =
-        attrs
-        |> Enum.into(@valid_attrs)
-        |> Grades.create_grader()
-
-      grader
+    def grade_fixture(attrs \\ %{}) do
+      insert(:grade, attrs)
     end
 
-    test "list_graders/0 returns all graders" do
-      grader = grader_fixture()
-      assert Grades.list_graders() == [grader]
+    test "list_grades/0 returns all grades" do
+      grade = grade_fixture()
+      assert drop_assocs(Grades.list_grades()) == drop_assocs([grade])
     end
 
-    test "get_grader!/1 returns the grader with given id" do
-      grader = grader_fixture()
-      assert Grades.get_grader!(grader.id) == grader
+    test "get_grade!/1 returns the grade with given id" do
+      grade = grade_fixture()
+      assert drop_assocs(Grades.get_grade!(grade.id)) == drop_assocs(grade)
     end
 
-    test "create_grader/1 with valid data creates a grader" do
-      assert {:ok, %Grader{} = grader} = Grades.create_grader(@valid_attrs)
-      assert grader.kind == "some kind"
-      assert grader.name == "some name"
-      assert grader.params == "some params"
-      assert grader.points == Decimal.new("120.5")
-      assert grader.weight == Decimal.new("120.5")
+    test "create_grade/1 with valid data creates a grade" do
+      params = params_with_assocs(:grade)
+      assert {:ok, %Grade{} = grade} = Grades.create_grade(params)
+      assert grade.score == Decimal.new("45.7")
     end
 
-    test "create_grader/1 with invalid data returns error changeset" do
-      assert {:error, %Ecto.Changeset{}} = Grades.create_grader(@invalid_attrs)
+    test "create_grade/1 with invalid data returns error changeset" do
+      params = %{}
+      assert {:error, %Ecto.Changeset{}} = Grades.create_grade(params)
     end
 
-    test "update_grader/2 with valid data updates the grader" do
-      grader = grader_fixture()
-      assert {:ok, %Grader{} = grader} = Grades.update_grader(grader, @update_attrs)
-      assert grader.kind == "some updated kind"
-      assert grader.name == "some updated name"
-      assert grader.params == "some updated params"
-      assert grader.points == Decimal.new("456.7")
-      assert grader.weight == Decimal.new("456.7")
+    test "update_grade/2 with valid data updates the grade" do
+      grade = grade_fixture()
+      params = %{score: "25.1"}
+      assert {:ok, %Grade{} = grade} = Grades.update_grade(grade, params)
+      assert grade.score == Decimal.new("25.1")
     end
 
-    test "update_grader/2 with invalid data returns error changeset" do
-      grader = grader_fixture()
-      assert {:error, %Ecto.Changeset{}} = Grades.update_grader(grader, @invalid_attrs)
-      assert grader == Grades.get_grader!(grader.id)
+    test "update_grade/2 with invalid data returns error changeset" do
+      grade = grade_fixture()
+      params = %{score: "", sub_id: ""}
+      assert {:error, %Ecto.Changeset{}} = Grades.update_grade(grade, params)
+      assert drop_assocs(grade) == drop_assocs(Grades.get_grade!(grade.id))
     end
 
-    test "delete_grader/1 deletes the grader" do
-      grader = grader_fixture()
-      assert {:ok, %Grader{}} = Grades.delete_grader(grader)
-      assert_raise Ecto.NoResultsError, fn -> Grades.get_grader!(grader.id) end
+    test "delete_grade/1 deletes the grade" do
+      grade = grade_fixture()
+      assert {:ok, %Grade{}} = Grades.delete_grade(grade)
+      assert_raise Ecto.NoResultsError, fn -> Grades.get_grade!(grade.id) end
     end
 
-    test "change_grader/1 returns a grader changeset" do
-      grader = grader_fixture()
-      assert %Ecto.Changeset{} = Grades.change_grader(grader)
+    test "change_grade/1 returns a grade changeset" do
+      grade = grade_fixture()
+      assert %Ecto.Changeset{} = Grades.change_grade(grade)
+    end
+  end
+
+  describe "grade_columns" do
+    alias Inkfish.Grades.GradeColumn
+
+    def grade_column_fixture(attrs \\ %{}) do
+      insert(:grade_column, attrs)
+    end
+
+    test "list_grade_columns/0 returns all grade_columns" do
+      grade_column = grade_column_fixture()
+      assert drop_assocs(Grades.list_grade_columns()) == drop_assocs([grade_column])
+    end
+
+    test "get_grade_column!/1 returns the grade_column with given id" do
+      grade_column = grade_column_fixture()
+      assert drop_assocs(Grades.get_grade_column!(grade_column.id)) == drop_assocs(grade_column)
+    end
+
+    test "create_grade_column/1 with valid data creates a grade_column" do
+      params = params_with_assocs(:grade_column)
+      assert {:ok, %GradeColumn{} = grade_column} = Grades.create_grade_column(params)
+      assert grade_column.kind == "number"
+      assert grade_column.name == "Number Grade"
+      assert grade_column.points == Decimal.new("50.0")
+      assert grade_column.base == Decimal.new("40.0")
+    end
+
+    test "create_grade_column/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Grades.create_grade_column(%{})
+    end
+
+    test "update_grade_column/2 with valid data updates the grade_column" do
+      grade_column = grade_column_fixture()
+      params = %{ name: "Updated", base: "30.0" }
+      assert {:ok, %GradeColumn{} = gc1} = Grades.update_grade_column(grade_column, params)
+      assert gc1.kind == grade_column.kind
+      assert gc1.name == "Updated"
+      assert gc1.params == grade_column.params
+      assert gc1.points == grade_column.points
+      assert gc1.base == Decimal.new("30.0")
+    end
+
+    test "update_grade_column/2 with invalid data returns error changeset" do
+      grade_column = grade_column_fixture()
+      params = %{points: ""}
+      assert {:error, %Ecto.Changeset{}} = Grades.update_grade_column(grade_column, params)
+      assert drop_assocs(grade_column) == drop_assocs(Grades.get_grade_column!(grade_column.id))
+    end
+
+    test "delete_grade_column/1 deletes the grade_column" do
+      grade_column = grade_column_fixture()
+      assert {:ok, %GradeColumn{}} = Grades.delete_grade_column(grade_column)
+      assert_raise Ecto.NoResultsError, fn -> Grades.get_grade_column!(grade_column.id) end
+    end
+
+    test "change_grade_column/1 returns a grade_column changeset" do
+      grade_column = grade_column_fixture()
+      assert %Ecto.Changeset{} = Grades.change_grade_column(grade_column)
     end
   end
 end

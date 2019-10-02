@@ -77,7 +77,7 @@
         (<%= ts.id %>)
       </td>
       <td>
-        <%= Enum.join(Enum.map(ts.assignments, &(&1.name)), ", ") %>
+        <%= show_teamset_assignments(ts) %>
       </td>
     </tr>
     <% end %>

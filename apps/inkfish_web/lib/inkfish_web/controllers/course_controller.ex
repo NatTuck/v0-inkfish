@@ -2,7 +2,6 @@ defmodule InkfishWeb.CourseController do
   use InkfishWeb, :controller
 
   alias Inkfish.Courses
-  alias Inkfish.Courses.Course
 
   alias InkfishWeb.Plugs
   plug Plugs.FetchItem, [course: "id"]
@@ -18,8 +17,10 @@ defmodule InkfishWeb.CourseController do
   end
 
   def show(conn, %{"id" => id}) do
+    current_reg = conn.assigns[:current_reg]
     course = Courses.get_course_for_student_view!(id)
-    |> Courses.preload_subs_for_student!(conn.assigns[:current_reg].id)
-    render(conn, "show.html", course: course)
+    |> Courses.preload_subs_for_student!(current_reg.id)
+    teams = Courses.get_teams_for_student!(course, current_reg)
+    render(conn, "show.html", course: course, teams: teams)
   end
 end

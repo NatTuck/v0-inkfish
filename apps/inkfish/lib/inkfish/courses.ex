@@ -49,19 +49,22 @@ defmodule Inkfish.Courses do
 
   """
   def get_course!(id) do
-    Repo.get!(Course, id)
-    #%Course{} = get_course(id)
+    course = Repo.get!(Course, id)
+    if course.solo_teamset_id == nil do
+      %Course{} = course
+      ts = Inkfish.Teams.create_solo_teamset!(course)
+      %Course{course | solo_teamset_id: ts.id}
+    else
+      course
+    end
   end
 
   def get_course(id) do
-    Repo.get(Course, id)
-    #if course != nil && course.solo_teamset_id == nil do
-    #  %Course{} = course
-    #  ts = Inkfish.Teams.create_solo_teamset!(course)
-    #  %Course{course | solo_teamset_id: ts.id}
-    #else
-    #  course
-    #end
+    try do
+      get_course!(id)
+    rescue
+      Ecto.NoResultsError -> nil
+    end
   end
 
   def get_course_for_staff_view!(id) do
@@ -73,6 +76,7 @@ defmodule Inkfish.Courses do
       left_join: tas in assoc(teamsets, :assignments),
       left_join: reqs in assoc(cc, :join_reqs),
       left_join: gcols in assoc(bas, :grade_columns),
+      order_by: [asc: buckets.name, desc: bas.due, asc: bas.name],
       preload: [buckets: {buckets, assignments: {bas, grade_columns: gcols}},
                 teamsets: {teamsets, assignments: tas},
                 join_reqs: reqs]
@@ -85,6 +89,7 @@ defmodule Inkfish.Courses do
       left_join: tas in assoc(teamsets, :assignments),
       left_join: buckets in assoc(cc, :buckets),
       left_join: bas in assoc(buckets, :assignments),
+      order_by: [asc: buckets.name, desc: bas.due, asc: bas.name],
       preload: [buckets: {buckets, assignments: bas},
                 teamsets: {teamsets, assignments: tas}]
   end
@@ -106,6 +111,14 @@ defmodule Inkfish.Courses do
   def preload_subs_for_student!(%Assignment{} = asg, reg_id) do
     subs = Inkfish.Assignments.list_subs_for_reg(asg.id, reg_id)
     %{asg | subs: subs}
+  end
+
+  def get_teams_for_student!(%Course{} = course, %Reg{} = reg) do
+    ts = Enum.map course.teamsets, fn (ts) ->
+      team = Inkfish.Teams.get_active_team(ts, reg)
+      {ts.id, team}
+    end
+    Enum.into(ts, %{})
   end
 
   @doc """
@@ -134,7 +147,7 @@ defmodule Inkfish.Courses do
       {:ok, %{course_w_ts: course}} -> {:ok, course}
       {:error, :course, cset, _}  -> {:error, cset}
       {:error, :reg, cset, _} ->
-        cset = Ecto.Changeset.add_error(course, :instructor, "instructor reg failed")
+        cset = Ecto.Changeset.add_error(cset, :instructor, "instructor reg failed")
         {:error, cset}
     end
   end
@@ -188,7 +201,7 @@ defmodule Inkfish.Courses do
       {:ok, %{course: course}} -> {:ok, course}
       {:error, :course, cset, _}  -> {:error, cset}
       {:error, :reg, cset, _} ->
-        cset = Ecto.Changeset.add_error(course, :instructor, "instructor reg failed")
+        cset = Ecto.Changeset.add_error(cset, :instructor, "instructor reg failed")
         {:error, cset}
     end
   end

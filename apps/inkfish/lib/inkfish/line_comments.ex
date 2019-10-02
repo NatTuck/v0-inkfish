@@ -19,8 +19,8 @@ defmodule Inkfish.LineComments do
 
   """
   def list_line_comments do
-    Repo.all(LineComment)
-    |> preload(:user)
+    Repo.all from lc in LineComment,
+      preload: [:user]
   end
 
   @doc """
@@ -38,7 +38,7 @@ defmodule Inkfish.LineComments do
 
   """
   def get_line_comment!(id) do
-    Repo.one from lc in LineComment,
+    Repo.one! from lc in LineComment,
       where: lc.id == ^id,
       preload: [:user]
   end
@@ -104,7 +104,7 @@ defmodule Inkfish.LineComments do
       {:ok, %LineComment{} = lc} ->
         {:ok, grade} = Inkfish.Grades.update_feedback_score(lc.grade_id)
         grade = Grades.get_grade!(grade.id)
-        InkfishWeb.Staff.GradeController.save_sub_dump!(grade.sub.id)
+        Inkfish.Subs.save_sub_dump!(grade.sub.id)
         {:ok, %{lc | grade: grade}}
       other ->
         other

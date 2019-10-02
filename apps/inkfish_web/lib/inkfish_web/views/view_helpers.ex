@@ -31,12 +31,23 @@ defmodule InkfishWeb.ViewHelpers do
     end
   end
 
-  def show_team(%Team{} = team) do
-    members = team.team_members
+  def show_team_members(%Team{} = team) do
+    team.team_members
     |> Enum.map(&(user_display_name(&1.reg.user)))
     |> Enum.join(", ")
+  end
 
+  def show_team(nil) do
+    "(none)"
+  end
+
+  def show_team(%Team{} = team) do
+    members = show_team_members(team)
     "Team ##{team.id} (#{members})"
+  end
+
+  def show_teamset_assignments(ts) do
+    Enum.join(Enum.map(ts.assignments, &(&1.name)), ", ")
   end
 
   def show_score(%Decimal{} = score) do

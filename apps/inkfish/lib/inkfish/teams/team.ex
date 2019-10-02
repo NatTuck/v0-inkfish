@@ -21,6 +21,7 @@ defmodule Inkfish.Teams.Team do
     cset = team
     |> cast(attrs, [:teamset_id, :active])
     |> validate_required([:teamset_id])
+    |> foreign_key_constraint(:teamset_id)
 
     if attrs["regs"] || attrs[:regs] do
       regs = Enum.map (attrs["regs"] || attrs[:regs]), fn (reg) ->

@@ -17,7 +17,6 @@ defmodule InkfishWeb.SearchChannel do
   # by sending replies to requests from the client
   def handle_in("q", payload, socket) do
     result = search(socket.assigns[:topic], payload)
-    IO.inspect(result)
     {:reply, {:ok, %{matches: result}}, socket}
   end
 

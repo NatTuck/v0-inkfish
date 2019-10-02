@@ -22,4 +22,8 @@ defmodule Inkfish.LineComments.LineComment do
     |> cast(attrs, [:path, :line, :points, :text, :grade_id, :user_id])
     |> validate_required([:path, :line, :points, :grade_id, :user_id])
   end
+
+  def to_map(lc) do
+    Map.drop(lc, [:__struct__, :__meta__, :grade, :user])
+  end
 end

@@ -118,8 +118,10 @@ defmodule Inkfish.Uploads do
   end
 
   def clean_uploads() do
-    Task.start fn ->
-      Inkfish.Uploads.Cleanup.cleanup()
+    if Application.get_env(:inkfish, :env) != :test do
+      Task.start fn ->
+        Inkfish.Uploads.Cleanup.cleanup()
+      end
     end
   end
 
