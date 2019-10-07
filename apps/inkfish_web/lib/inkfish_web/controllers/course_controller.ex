@@ -9,6 +9,8 @@ defmodule InkfishWeb.CourseController do
   plug Plugs.RequireReg
     when action not in [:index]
 
+  plug Plugs.RequireUser
+
   def index(conn, _params) do
     courses = Courses.list_courses()
     regs = Inkfish.Users.list_regs_for_user(conn.assigns[:current_user])

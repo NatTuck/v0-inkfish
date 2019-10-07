@@ -51,6 +51,8 @@ Inkfish.Users.update_user(u0, %{is_admin: true})
 u1 = Make.user("bob")
 u2 = Make.user("carol")
 u3 = Make.user("dave")
+_u4 = Make.user("erin")
+_u5 = Make.user("frank")
 
 c0 = Make.course("Data Science of Art History")
 _c1 = Make.course("Machine Learning with Baroque Pottery")

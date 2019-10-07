@@ -24,5 +24,3 @@
 
 </ul>
 
-<span><%= link "Edit", to: Routes.reg_path(@conn, :edit, @reg) %></span>
-<span><%= link "Back", to: Routes.course_reg_path(@conn, :index, @course_id) %></span>

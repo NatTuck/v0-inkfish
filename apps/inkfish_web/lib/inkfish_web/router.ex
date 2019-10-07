@@ -41,11 +41,10 @@ defmodule InkfishWeb.Router do
     resources "/uploads", UploadController, only: [:create, :show]
     get "/uploads/:id/thumb", UploadController, :thumb
     resources "/courses", CourseController, only: [:index, :show] do
-      resources "/regs", RegController, only: [:index, :new, :create]
       resources "/join_reqs", JoinReqController, only: [:new, :create]
       resources "/teams", TeamController, only: [:index, :new, :create]
     end
-    resources "/regs", RegController, except: [:index, :new, :create]
+    resources "/regs", RegController, only: [:show]
     resources "/teams", TeamController, except: [:index, :new, :create]
     resources "/assignments", AssignmentController, only: [:show] do
       resources "/subs", SubController, only: [:new, :create]
@@ -70,7 +69,7 @@ defmodule InkfishWeb.Router do
     post "/join_reqs/:id/accept", JoinReqController, :accept
     resources "/teamsets", TeamsetController, except: [:index, :new, :create]
     resources "/buckets", BucketController, except: [:index, :new, :create] do
-      resources "/assignments", AssignmentController, only: [:index, :new, :create]
+      resources "/assignments", AssignmentController, only: [:new, :create]
     end
     resources "/assignments", AssignmentController, except: [:index, :new, :create] do
       resources "/grade_columns", GradeColumnController, only: [:index, :new, :create]
@@ -87,7 +86,7 @@ defmodule InkfishWeb.Router do
     
     resources "/users", UserController, except: [:new, :create]
     resources "/courses", CourseController
-    resources "/uploads", UploadController
+    resources "/uploads", UploadController, only: [:index]
   end
 
   scope "/ajax", InkfishWeb, as: :ajax do
@@ -105,7 +104,7 @@ defmodule InkfishWeb.Router do
     resources "/grades", GradeController, only: [] do
       resources "/line_comments", LineCommentController, only: [:create]
     end
-    resources "/line_comments", LineCommentController, except: [:new, :edit, :create]
+    resources "/line_comments", LineCommentController, only: [:show, :update, :delete]
     resources "/teamsets", TeamsetController, only: [] do
       resources "/teams", TeamController, only: [:index, :create]
     end

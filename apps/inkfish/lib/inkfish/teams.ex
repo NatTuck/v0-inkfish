@@ -167,8 +167,9 @@ defmodule Inkfish.Teams do
       [%Team{}, ...]
 
   """
-  def list_teams do
-    Repo.all(Team)
+  def list_teams(teamset_id) do
+    Repo.all from team in Team,
+      where: team.teamset_id == ^teamset_id
   end
 
   @doc """

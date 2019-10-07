@@ -9,7 +9,11 @@ defmodule InkfishWeb.ViewHelpers do
   alias Inkfish.Grades.Grade
   alias Inkfish.Assignments.Assignment
   alias Inkfish.Teams.Team
-  
+
+  def user_display_name(nil) do
+    "(none)"
+  end
+
   def user_display_name(%User{} = user) do
     "#{user.given_name} #{user.surname}"
   end

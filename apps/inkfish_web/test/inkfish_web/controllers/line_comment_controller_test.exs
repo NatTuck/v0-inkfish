@@ -1,100 +1,83 @@
 defmodule InkfishWeb.LineCommentControllerTest do
   use InkfishWeb.ConnCase
+  import Inkfish.Factory
 
-  alias Inkfish.LineComments
   alias Inkfish.LineComments.LineComment
 
-  @create_attrs %{
-    line: 42,
-    path: "some path",
-    points: "120.5",
-    text: "some text"
-  }
-  @update_attrs %{
-    line: 43,
-    path: "some updated path",
-    points: "456.7",
-    text: "some updated text"
-  }
-  @invalid_attrs %{line: nil, path: nil, points: nil, text: nil}
-
   def fixture(:line_comment) do
-    {:ok, line_comment} = LineComments.create_line_comment(@create_attrs)
-    line_comment
+    insert(:line_comment)
   end
 
   setup %{conn: conn} do
-    {:ok, conn: put_req_header(conn, "accept", "application/json")}
-  end
+    %{staff: staff, grade: grade} = stock_course()
+    lc = insert(:line_comment, grade: grade, user: staff)
 
-  describe "index" do
-    test "lists all line_comments", %{conn: conn} do
-      conn = get(conn, Routes.line_comment_path(conn, :index))
-      assert json_response(conn, 200)["data"] == []
-    end
+    {:ok, grade: grade, staff: staff, line_comment: lc,
+     conn: put_req_header(conn, "accept", "application/json")}
   end
 
   describe "create line_comment" do
-    test "renders line_comment when data is valid", %{conn: conn} do
-      conn = post(conn, Routes.line_comment_path(conn, :create), line_comment: @create_attrs)
+    test "renders line_comment when data is valid", %{conn: conn, staff: staff, grade: grade} do
+      params = params_for(:line_comment, user: staff, grade: grade)
+
+      conn = conn
+      |> login(staff.login)
+      |> post(Routes.ajax_staff_grade_line_comment_path(conn, :create, grade), line_comment: params)
       assert %{"id" => id} = json_response(conn, 201)["data"]
 
-      conn = get(conn, Routes.line_comment_path(conn, :show, id))
+      conn = get(conn, Routes.ajax_staff_line_comment_path(conn, :show, id))
 
       assert %{
                "id" => id,
-               "line" => 42,
-               "path" => "some path",
-               "points" => "120.5",
-               "text" => "some text"
+               "line" => 10,
+               "path" => "hw03/main.c",
+               "points" => "-5.0",
              } = json_response(conn, 200)["data"]
     end
 
-    test "renders errors when data is invalid", %{conn: conn} do
-      conn = post(conn, Routes.line_comment_path(conn, :create), line_comment: @invalid_attrs)
+    test "renders errors when data is invalid", %{conn: conn, staff: staff, grade: grade} do
+      params = %{points: nil}
+      conn = conn
+      |> login(staff.login)
+      |> post(Routes.ajax_staff_grade_line_comment_path(conn, :create, grade), line_comment: params)
       assert json_response(conn, 422)["errors"] != %{}
     end
   end
 
   describe "update line_comment" do
-    setup [:create_line_comment]
+    test "renders line_comment when data is valid", %{conn: conn, line_comment: %LineComment{id: id} = line_comment, staff: staff} do
+      params = %{points: "7.3"}
 
-    test "renders line_comment when data is valid", %{conn: conn, line_comment: %LineComment{id: id} = line_comment} do
-      conn = put(conn, Routes.line_comment_path(conn, :update, line_comment), line_comment: @update_attrs)
+      conn = conn
+      |> login(staff.login)
+      |> put(Routes.ajax_staff_line_comment_path(conn, :update, line_comment), line_comment: params)
       assert %{"id" => ^id} = json_response(conn, 200)["data"]
 
-      conn = get(conn, Routes.line_comment_path(conn, :show, id))
+      conn = get(conn, Routes.ajax_staff_line_comment_path(conn, :show, id))
 
-      assert %{
-               "id" => id,
-               "line" => 43,
-               "path" => "some updated path",
-               "points" => "456.7",
-               "text" => "some updated text"
-             } = json_response(conn, 200)["data"]
+      assert %{"points" => "7.3"} = json_response(conn, 200)["data"]
     end
 
-    test "renders errors when data is invalid", %{conn: conn, line_comment: line_comment} do
-      conn = put(conn, Routes.line_comment_path(conn, :update, line_comment), line_comment: @invalid_attrs)
+    test "renders errors when data is invalid", %{conn: conn, line_comment: line_comment, staff: staff} do
+      params = %{points: nil}
+
+      conn = conn
+      |> login(staff.login)
+      |> put(Routes.ajax_staff_line_comment_path(conn, :update, line_comment), line_comment: params)
       assert json_response(conn, 422)["errors"] != %{}
     end
   end
 
   describe "delete line_comment" do
-    setup [:create_line_comment]
-
-    test "deletes chosen line_comment", %{conn: conn, line_comment: line_comment} do
-      conn = delete(conn, Routes.line_comment_path(conn, :delete, line_comment))
-      assert response(conn, 204)
+    test "deletes chosen line_comment", %{conn: conn, line_comment: line_comment, staff: staff} do
+      conn = conn
+      |> login(staff.login)
+      |> delete(Routes.ajax_staff_line_comment_path(conn, :delete, line_comment))
+      assert response(conn, 200)
 
       assert_error_sent 404, fn ->
-        get(conn, Routes.line_comment_path(conn, :show, line_comment))
+        get(conn, Routes.ajax_staff_line_comment_path(conn, :show, line_comment))
       end
     end
-  end
-
-  defp create_line_comment(_) do
-    line_comment = fixture(:line_comment)
-    {:ok, line_comment: line_comment}
   end
 end

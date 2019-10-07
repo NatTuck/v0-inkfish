@@ -19,11 +19,6 @@ defmodule InkfishWeb.Staff.AssignmentController do
   alias Inkfish.Assignments
   alias Inkfish.Assignments.Assignment
 
-  def index(conn, _params) do
-    assignments = Assignments.list_assignments()
-    render(conn, "index.html", assignments: assignments)
-  end
-
   def new(conn, params) do
     teamsets = Inkfish.Teams.list_teamsets(conn.assigns[:course])
     today = Inkfish.LocalTime.today()
@@ -87,6 +82,6 @@ defmodule InkfishWeb.Staff.AssignmentController do
 
     conn
     |> put_flash(:info, "Assignment deleted successfully.")
-    |> redirect(to: Routes.staff_assignment_path(conn, :index))
+    |> redirect(to: Routes.staff_course_path(conn, :show, conn.assigns[:course]))
   end
 end

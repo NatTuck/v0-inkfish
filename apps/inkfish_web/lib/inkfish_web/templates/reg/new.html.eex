@@ -1,6 +1,0 @@
-<h1>New Reg</h1>
-
-<%= render("form.html", 
-      Map.put(assigns, :action, Routes.course_reg_path(@conn, :create, @course.id))) %>
-
-<span><%= link "Back", to: Routes.course_reg_path(@conn, :index, @course.id) %></span>

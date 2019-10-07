@@ -251,6 +251,7 @@ defmodule Inkfish.Users do
   def find_reg(%User{} = user, %Course{} = course) do
     reg = Repo.one from reg in Reg,
       where: reg.user_id == ^user.id and reg.course_id == ^course.id
+
     if user.is_admin && is_nil(reg) do
       # Admins are always registered for every course as no role.
       {:ok, reg} = create_reg(%{user_id: user.id, course_id: course.id})
