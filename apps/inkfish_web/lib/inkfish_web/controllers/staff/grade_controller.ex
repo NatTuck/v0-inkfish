@@ -17,16 +17,6 @@ defmodule InkfishWeb.Staff.GradeController do
   plug Breadcrumb, {:show, :staff, :assignment}
   plug Breadcrumb, {:show, :staff, :sub}
 
-  def index(conn, _params) do
-    grades = Grades.list_grades()
-    render(conn, "index.html", grades: grades)
-  end
-
-  def new(conn, _params) do
-    changeset = Grades.change_grade(%Grade{})
-    render(conn, "new.html", changeset: changeset)
-  end
-
   def create(conn, %{"sub_id" => sub_id, "grade" => grade_params}) do
     grade_params = grade_params
     |> Map.put("sub_id", sub_id)
@@ -48,7 +38,7 @@ defmodule InkfishWeb.Staff.GradeController do
       {:error, %Ecto.Changeset{} = changeset} ->
         conn
         |> put_flash(:error, "Failed to create grade.")
-        |> redirect(to: Routes.page_path(@conn, :dashboard))
+        |> redirect(to: Routes.page_path(conn, :dashboard))
     end
   end
 
@@ -100,15 +90,6 @@ defmodule InkfishWeb.Staff.GradeController do
       {:error, %Ecto.Changeset{} = changeset} ->
         render(conn, "edit.html", grade: grade, changeset: changeset)
     end
-  end
-
-  def delete(conn, %{"id" => id}) do
-    grade = Grades.get_grade!(id)
-    {:ok, _grade} = Grades.delete_grade(grade)
-
-    conn
-    |> put_flash(:info, "Grade deleted successfully.")
-    |> redirect(to: Routes.staff_grade_path(conn, :index))
   end
 
   def save_sub_dump!(sub_id) do

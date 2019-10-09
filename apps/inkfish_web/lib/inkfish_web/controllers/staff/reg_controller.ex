@@ -78,6 +78,6 @@ defmodule InkfishWeb.Staff.RegController do
 
     conn
     |> put_flash(:info, "Reg deleted successfully.")
-    |> redirect(to: Routes.staff_course_reg_path(conn, reg.course_id, :index))
+    |> redirect(to: Routes.staff_course_reg_path(conn, :index, reg.course_id))
   end
 end
