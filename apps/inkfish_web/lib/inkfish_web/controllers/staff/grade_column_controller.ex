@@ -77,6 +77,7 @@ defmodule InkfishWeb.Staff.GradeColumnController do
 
     conn
     |> put_flash(:info, "Grade column deleted successfully.")
-    |> redirect(to: Routes.staff_grade_column_path(conn, :index))
+    |> redirect(to: Routes.staff_assignment_grade_column_path(
+          conn, :index, grade_column.assignment_id))
   end
 end

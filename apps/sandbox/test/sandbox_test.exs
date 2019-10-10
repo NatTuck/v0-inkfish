@@ -1,8 +1,7 @@
 defmodule SandboxTest do
   use ExUnit.Case
-  doctest Sandbox
 
-  test "greets the world" do
-    assert Sandbox.hello() == :world
+  test "run a script" do
+    assert Sandbox.Shell.run_script("true") == :ok
   end
 end

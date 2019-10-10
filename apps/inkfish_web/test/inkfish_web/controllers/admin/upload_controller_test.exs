@@ -1,6 +1,5 @@
 defmodule InkfishWeb.Admin.UploadControllerTest do
   use InkfishWeb.ConnCase
-  alias Inkfish.Uploads
 
   describe "index" do
     test "lists all uploads", %{conn: conn} do

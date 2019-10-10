@@ -42,10 +42,9 @@ defmodule InkfishWeb.Router do
     get "/uploads/:id/thumb", UploadController, :thumb
     resources "/courses", CourseController, only: [:index, :show] do
       resources "/join_reqs", JoinReqController, only: [:new, :create]
-      resources "/teams", TeamController, only: [:index, :new, :create]
     end
     resources "/regs", RegController, only: [:show]
-    resources "/teams", TeamController, except: [:index, :new, :create]
+    resources "/teams", TeamController, only: [:show]
     resources "/assignments", AssignmentController, only: [:show] do
       resources "/subs", SubController, only: [:new, :create]
     end

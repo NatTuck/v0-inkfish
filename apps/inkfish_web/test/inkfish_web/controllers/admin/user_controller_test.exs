@@ -2,8 +2,6 @@ defmodule InkfishWeb.Admin.UserControllerTest do
   use InkfishWeb.ConnCase
   import Inkfish.Factory
 
-  alias Inkfish.Users
-
   def fixture(:user) do
     insert(:user)
   end

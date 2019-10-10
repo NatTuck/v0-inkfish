@@ -194,7 +194,7 @@ defmodule Inkfish.Teams do
       left_join: reg in assoc(members, :reg),
       left_join: user in assoc(reg, :user),
       preload: [team_members: {members, reg: {reg, user: user}},
-                teamset: ts]
+                teamset: ts, regs: {reg, user: user}]
   end
 
   def get_team(id) do
@@ -213,7 +213,6 @@ defmodule Inkfish.Teams do
       preload: [teamset: {ts, course: course}]
   end
 
-  # FIXME
   def get_active_team(%Assignment{} = asg, %Reg{} = reg) do
     asg = Repo.preload(asg, :teamset)
     get_active_team(asg.teamset, reg)

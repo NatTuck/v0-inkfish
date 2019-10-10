@@ -2,8 +2,6 @@ defmodule InkfishWeb.RegControllerTest do
   use InkfishWeb.ConnCase
   import Inkfish.Factory
 
-  alias Inkfish.Users
-
   def create_reg(_) do
     user = insert(:user)
     reg = insert(:reg, user: user, is_student: true)

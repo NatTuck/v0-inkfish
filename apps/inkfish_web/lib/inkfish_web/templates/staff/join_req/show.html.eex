@@ -19,5 +19,3 @@
 
 </ul>
 
-<span><%= link "Edit", to: Routes.staff_join_req_path(@conn, :edit, @join_req) %></span>
-<span><%= link "Back", to: Routes.staff_join_req_path(@conn, :index) %></span>

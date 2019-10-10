@@ -1,8 +1,10 @@
 <h1>Show Team</h1>
 
-<ul>
+<p>Members:</p>
 
+<ul>
+  <%= for reg <- @team.regs do %>
+    <li><%= user_display_name(reg.user) %></li>
+  <% end %>
 </ul>
 
-<span><%= link "Edit", to: Routes.team_path(@conn, :edit, @team) %></span>
-<span><%= link "Back", to: Routes.team_path(@conn, :index) %></span>

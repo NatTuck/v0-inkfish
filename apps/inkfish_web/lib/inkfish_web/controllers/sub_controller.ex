@@ -52,7 +52,7 @@ defmodule InkfishWeb.SubController do
         |> redirect(to: Routes.sub_path(conn, :show, sub))
 
       {:error, %Ecto.Changeset{} = changeset} ->
-        render(conn, "new.html", changeset: changeset)
+        render(conn, "new.html", changeset: changeset, team: team)
     end
   end
 

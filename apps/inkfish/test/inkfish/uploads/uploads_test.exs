@@ -34,8 +34,8 @@ defmodule Inkfish.UploadsTest do
     end
 
     def assert_uploads_eq(u1, u2) do
-      u1 = Map.drop(u1, [:upload])
-      u2 = Map.drop(u2, [:upload])
+      u1 = Map.drop(u1, [:upload, :user])
+      u2 = Map.drop(u2, [:upload, :user])
       assert u1 == u2
     end
 

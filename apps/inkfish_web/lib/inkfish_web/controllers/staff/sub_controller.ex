@@ -14,7 +14,6 @@ defmodule InkfishWeb.Staff.SubController do
   plug Breadcrumb, {:show, :staff, :assignment}
 
   alias Inkfish.Subs
-  alias Inkfish.Subs.Sub
   alias Inkfish.Teams
 
   def show(conn, %{"id" => id}) do
@@ -24,7 +23,7 @@ defmodule InkfishWeb.Staff.SubController do
     render(conn, "show.html", sub: sub, sub_data: sub_data)
   end
 
-  def update(conn, %{"id" => id, "sub" => params}) do
+  def update(conn, %{"id" => _id, "sub" => params}) do
     # This can only set a sub active or ignore late penalty.
     sub = conn.assigns[:sub]
 
@@ -38,6 +37,6 @@ defmodule InkfishWeb.Staff.SubController do
 
     conn
     |> put_flash(:info, "Updated sub flags: ##{sub.id}.")
-    |> redirect(to: Routes.staff_reg_path(conn, :show, sub.reg_id))
+    |> redirect(to: Routes.staff_sub_path(conn, :show, sub))
   end
 end

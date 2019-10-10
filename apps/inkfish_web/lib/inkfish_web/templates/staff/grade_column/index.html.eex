@@ -1,11 +1,15 @@
 <h1>Listing Grade_Columns</h1>
 
+<p>
+  <%= link("New Grade_Column",
+    to: Routes.staff_assignment_grade_column_path(@conn, :new, @assignment)) %>
+</p>
+
 <table>
   <thead>
     <tr>
       <th>Name</th>
       <th>Kind</th>
-      <th>Weight</th>
       <th>Points</th>
       <th>Params</th>
 
@@ -17,7 +21,6 @@
     <tr>
       <td><%= grade_column.name %></td>
       <td><%= grade_column.kind %></td>
-      <td><%= grade_column.weight %></td>
       <td><%= grade_column.points %></td>
       <td><%= grade_column.params %></td>
 
@@ -31,4 +34,3 @@
   </tbody>
 </table>
 
-<span><%= link "New Grade_Column", to: Routes.staff_grade_column_path(@conn, :new) %></span>

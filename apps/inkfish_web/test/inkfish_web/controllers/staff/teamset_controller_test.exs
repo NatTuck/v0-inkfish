@@ -1,34 +1,35 @@
 defmodule InkfishWeb.Staff.TeamsetControllerTest do
   use InkfishWeb.ConnCase
+  import Inkfish.Factory
 
-  alias Inkfish.Teams
-
-  @create_attrs %{}
-  @update_attrs %{}
-  @invalid_attrs %{}
-
-  def fixture(:teamset) do
-    {:ok, teamset} = Teams.create_teamset(@create_attrs)
-    teamset
+  setup %{conn: conn} do
+    course = insert(:course)
+    staff = insert(:user)
+    _sr = insert(:reg, course: course, user: staff, is_staff: true)
+    teamset = insert(:teamset, course: course)
+    conn = login(conn, staff.login)
+    {:ok, conn: conn, course: course, teamset: teamset, staff: staff}
   end
 
   describe "index" do
-    test "lists all teamsets", %{conn: conn} do
-      conn = get(conn, Routes.staff_teamset_path(conn, :index))
+    test "lists all teamsets", %{conn: conn, course: course} do
+      conn = get(conn, Routes.staff_course_teamset_path(conn, :index, course))
       assert html_response(conn, 200) =~ "Listing Teamsets"
     end
   end
 
   describe "new teamset" do
-    test "renders form", %{conn: conn} do
-      conn = get(conn, Routes.staff_teamset_path(conn, :new))
+    test "renders form", %{conn: conn, course: course} do
+      conn = get(conn, Routes.staff_course_teamset_path(conn, :new, course))
       assert html_response(conn, 200) =~ "New Teamset"
     end
   end
 
   describe "create teamset" do
-    test "redirects to show when data is valid", %{conn: conn} do
-      conn = post(conn, Routes.staff_teamset_path(conn, :create), teamset: @create_attrs)
+    test "redirects to show when data is valid", %{conn: conn, course: course} do
+      params = params_for(:teamset, course: course)
+      conn = post(conn, Routes.staff_course_teamset_path(conn, :create, course),
+        teamset: params)
 
       assert %{id: id} = redirected_params(conn)
       assert redirected_to(conn) == Routes.staff_teamset_path(conn, :show, id)
@@ -37,15 +38,15 @@ defmodule InkfishWeb.Staff.TeamsetControllerTest do
       assert html_response(conn, 200) =~ "Show Teamset"
     end
 
-    test "renders errors when data is invalid", %{conn: conn} do
-      conn = post(conn, Routes.staff_teamset_path(conn, :create), teamset: @invalid_attrs)
+    test "renders errors when data is invalid", %{conn: conn, course: course} do
+      params = %{name: ""}
+      conn = post(conn, Routes.staff_course_teamset_path(conn, :create, course),
+        teamset: params)
       assert html_response(conn, 200) =~ "New Teamset"
     end
   end
 
   describe "edit teamset" do
-    setup [:create_teamset]
-
     test "renders form for editing chosen teamset", %{conn: conn, teamset: teamset} do
       conn = get(conn, Routes.staff_teamset_path(conn, :edit, teamset))
       assert html_response(conn, 200) =~ "Edit Teamset"
@@ -53,36 +54,32 @@ defmodule InkfishWeb.Staff.TeamsetControllerTest do
   end
 
   describe "update teamset" do
-    setup [:create_teamset]
-
     test "redirects when data is valid", %{conn: conn, teamset: teamset} do
-      conn = put(conn, Routes.staff_teamset_path(conn, :update, teamset), teamset: @update_attrs)
+      params = %{name: "new name"}
+      conn = put(conn, Routes.staff_teamset_path(conn, :update, teamset),
+        teamset: params)
       assert redirected_to(conn) == Routes.staff_teamset_path(conn, :show, teamset)
 
       conn = get(conn, Routes.staff_teamset_path(conn, :show, teamset))
-      assert html_response(conn, 200)
+      assert html_response(conn, 200) =~ "new name"
     end
 
     test "renders errors when data is invalid", %{conn: conn, teamset: teamset} do
-      conn = put(conn, Routes.staff_teamset_path(conn, :update, teamset), teamset: @invalid_attrs)
+      params = %{name: ""}
+      conn = put(conn, Routes.staff_teamset_path(conn, :update, teamset),
+        teamset: params)
       assert html_response(conn, 200) =~ "Edit Teamset"
     end
   end
 
   describe "delete teamset" do
-    setup [:create_teamset]
-
     test "deletes chosen teamset", %{conn: conn, teamset: teamset} do
       conn = delete(conn, Routes.staff_teamset_path(conn, :delete, teamset))
-      assert redirected_to(conn) == Routes.staff_teamset_path(conn, :index)
+      assert redirected_to(conn) == Routes.staff_course_teamset_path(
+        conn, :index, teamset.course_id)
       assert_error_sent 404, fn ->
         get(conn, Routes.staff_teamset_path(conn, :show, teamset))
       end
     end
-  end
-
-  defp create_teamset(_) do
-    teamset = fixture(:teamset)
-    {:ok, teamset: teamset}
   end
 end

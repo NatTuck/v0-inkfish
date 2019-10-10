@@ -11,7 +11,6 @@ defmodule InkfishWeb.UserController do
     id = conn.params["id"]
     {id, _} = Integer.parse(id)
     user = conn.assigns[:current_user]
-    IO.inspect {user, id}
     if !user.is_admin && user.id != id do
       conn
       |> put_flash(:error, "Access denied.")

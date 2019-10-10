@@ -2,7 +2,6 @@ defmodule InkfishWeb.Staff.JoinReqController do
   use InkfishWeb, :controller
 
   alias Inkfish.JoinReqs
-  alias Inkfish.JoinReqs.JoinReq
   alias Inkfish.Users
 
   alias InkfishWeb.Plugs
@@ -24,12 +23,12 @@ defmodule InkfishWeb.Staff.JoinReqController do
     render(conn, "index.html", join_reqs: join_reqs)
   end
 
-  def show(conn, %{"id" => id}) do
+  def show(conn, %{"id" => _id}) do
     join_req = conn.assigns[:join_req]
     render(conn, "show.html", join_req: join_req)
   end
 
-  def accept(conn, %{"id" => id}) do
+  def accept(conn, %{"id" => _id}) do
     req = conn.assigns[:join_req]
 
     attrs = %{
@@ -48,8 +47,8 @@ defmodule InkfishWeb.Staff.JoinReqController do
     |> redirect(to: Routes.staff_course_join_req_path(conn, :index, conn.assigns[:course]))
   end
 
-  def delete(conn, %{"id" => id}) do
-    join_req = JoinReqs.get_join_req!(id)
+  def delete(conn, %{"id" => _id}) do
+    join_req = conn.assigns[:join_req]
     {:ok, _join_req} = JoinReqs.delete_join_req(join_req)
 
     conn

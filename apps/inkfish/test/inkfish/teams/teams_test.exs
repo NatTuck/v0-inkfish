@@ -12,8 +12,9 @@ defmodule Inkfish.TeamsTest do
     end
 
     test "list_teams/0 returns all teams" do
-      team = team_fixture()
-      assert drop_assocs(Teams.list_teams()) == drop_assocs([team])
+      ts = insert(:teamset)
+      t1 = insert(:team, teamset: ts)
+      assert drop_assocs(Teams.list_teams(ts.id)) == drop_assocs([t1])
     end
 
     test "get_team!/1 returns the team with given id" do
