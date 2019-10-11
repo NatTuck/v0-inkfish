@@ -2,8 +2,7 @@ defmodule InkfishWeb.UserController do
   use InkfishWeb, :controller
   
   alias Inkfish.Users
-  alias Inkfish.Users.User
-  
+
   plug InkfishWeb.Plugs.RequireUser
   plug :user_check_permission
 

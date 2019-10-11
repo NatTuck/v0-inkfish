@@ -1,6 +1,5 @@
 defmodule InkfishWeb.Plugs.Breadcrumb do
   use InkfishWeb, :controller
-  import Phoenix.HTML
 
   def init(args), do: args
   

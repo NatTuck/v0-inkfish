@@ -2,7 +2,6 @@ defmodule InkfishWeb.RegController do
   use InkfishWeb, :controller
 
   alias Inkfish.Users
-  alias Inkfish.Users.Reg
 
   alias InkfishWeb.Plugs
   plug Plugs.FetchItem, [course: "course_id"]

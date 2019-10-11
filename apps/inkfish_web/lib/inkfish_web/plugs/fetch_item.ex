@@ -1,8 +1,6 @@
 defmodule InkfishWeb.Plugs.FetchItem do
   use InkfishWeb, :controller
 
-  alias Inkfish.Repo
-  
   def init(args), do: args
  
   def call(conn, [{target, param}]) do

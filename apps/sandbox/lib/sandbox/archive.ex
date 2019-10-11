@@ -48,11 +48,10 @@ defmodule Sandbox.Archive do
   end
 
   def tar(src, archive) do
-    dir  = Path.dir(src)
-    base = Path.base(src)
-    File.mkdir_p!(Path.dir(archive))
+    dir = Path.dirname(src)
+    File.mkdir_p!(Path.dirname(archive))
     Shell.run_script """
-    cd "#{base}" && tar czvf "#{archive}"
+    cd "#{dir}" && tar czvf "#{archive}"
     """
   end
 end

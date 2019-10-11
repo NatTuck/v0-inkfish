@@ -50,7 +50,7 @@ defmodule Inkfish.Uploads.Data do
     |> read_text(base, rel)
   end
 
-  def read_item(base, rel, info) do
+  def read_item(_base, _rel, info) do
     info
   end
 

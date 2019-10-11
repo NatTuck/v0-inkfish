@@ -2,7 +2,6 @@ defmodule InkfishWeb.Staff.GradeController do
   use InkfishWeb, :controller
 
   alias Inkfish.Grades
-  alias Inkfish.Grades.Grade
 
   plug InkfishWeb.Plugs.FetchItem, [grade: "id"]
     when action not in [:index, :new, :create]
@@ -35,7 +34,7 @@ defmodule InkfishWeb.Staff.GradeController do
         Inkfish.Subs.calc_sub_score!(grade.sub_id)
         save_sub_dump!(grade.sub_id)
         redirect(conn, to: Routes.staff_grade_path(conn, :edit, grade))
-      {:error, %Ecto.Changeset{} = changeset} ->
+      {:error, %Ecto.Changeset{} = _changeset} ->
         conn
         |> put_flash(:error, "Failed to create grade.")
         |> redirect(to: Routes.page_path(conn, :dashboard))

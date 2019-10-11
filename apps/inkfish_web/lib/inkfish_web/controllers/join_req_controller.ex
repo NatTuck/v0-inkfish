@@ -22,7 +22,7 @@ defmodule InkfishWeb.JoinReqController do
     |> Map.put("course_id", conn.assigns[:course].id)
 
     case JoinReqs.create_join_req(params) do
-      {:ok, join_req} ->
+      {:ok, _join_req} ->
         conn
         |> put_flash(:info, "Join req created successfully.")
         |> redirect(to: Routes.course_path(conn, :index))

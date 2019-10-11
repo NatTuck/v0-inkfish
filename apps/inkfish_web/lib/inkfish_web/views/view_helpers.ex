@@ -67,7 +67,7 @@ defmodule InkfishWeb.ViewHelpers do
     "∅"
   end
 
-  def show_score(conn, nil) do
+  def show_score(_conn, nil) do
     show_score(nil)
   end
 
@@ -86,7 +86,7 @@ defmodule InkfishWeb.ViewHelpers do
     show_score(conn, asgn, sub && sub.score)
   end
 
-  def show_score(conn, %Assignment{} = _a, nil) do
+  def show_score(_conn, %Assignment{} = _a, nil) do
     show_score(nil)
   end
 
@@ -97,11 +97,6 @@ defmodule InkfishWeb.ViewHelpers do
     if is_staff?(reg, user) do
       show_score(score)
     else
-      course = conn.assigns[:course]
-
-      grade_hide_secs = 86400 * course.grade_hide_days
-      show_at = NaiveDateTime.add(asgn.due, grade_hide_secs)
-
       if grade_hidden?(conn, asgn) do
         # Hourglass with Flowing Sand
         raw "&#9203;"
@@ -131,7 +126,7 @@ defmodule InkfishWeb.ViewHelpers do
     case Earmark.as_html(code) do
       {:ok, html, []} ->
         raw html
-      {:error, html, msgs} ->
+      {:error, _html, _msgs} ->
         raw "error rendering markdown"
     end
   end
@@ -142,7 +137,7 @@ defmodule InkfishWeb.ViewHelpers do
     case Earmark.as_html(code) do
       {:ok, html, []} ->
         raw HtmlSanitizeEx.basic_html(html)
-      {:error, html, msgs} ->
+      {:error, _html, _msgs} ->
         raw "error rendering markdown"
     end
   end

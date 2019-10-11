@@ -2,7 +2,6 @@ defmodule InkfishWeb.Admin.UploadController do
   use InkfishWeb, :controller
 
   alias Inkfish.Uploads
-  alias Inkfish.Uploads.Upload
 
   plug InkfishWeb.Plugs.RequireUser, admin: true
 

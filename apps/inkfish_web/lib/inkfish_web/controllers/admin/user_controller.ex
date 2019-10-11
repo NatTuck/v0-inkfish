@@ -2,7 +2,6 @@ defmodule InkfishWeb.Admin.UserController do
   use InkfishWeb, :controller
 
   alias Inkfish.Users
-  alias Inkfish.Users.User
 
   plug InkfishWeb.Plugs.RequireUser, admin: true
 

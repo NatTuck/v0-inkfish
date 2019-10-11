@@ -4,7 +4,6 @@ defmodule InkfishWeb.Staff.TeamController do
   alias Inkfish.Teams
   alias Inkfish.Teams.Team
   alias Inkfish.Users
-  alias Inkfish.Users.Reg
 
   action_fallback InkfishWeb.FallbackController
 
