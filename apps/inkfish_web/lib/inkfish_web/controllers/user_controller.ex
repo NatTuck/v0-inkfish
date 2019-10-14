@@ -2,8 +2,7 @@ defmodule InkfishWeb.UserController do
   use InkfishWeb, :controller
   
   alias Inkfish.Users
-  alias Inkfish.Users.User
-  
+
   plug InkfishWeb.Plugs.RequireUser
   plug :user_check_permission
 
@@ -11,7 +10,6 @@ defmodule InkfishWeb.UserController do
     id = conn.params["id"]
     {id, _} = Integer.parse(id)
     user = conn.assigns[:current_user]
-    IO.inspect {user, id}
     if !user.is_admin && user.id != id do
       conn
       |> put_flash(:error, "Access denied.")

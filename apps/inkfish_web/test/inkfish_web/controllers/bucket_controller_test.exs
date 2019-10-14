@@ -2,8 +2,6 @@ defmodule InkfishWeb.BucketControllerTest do
   use InkfishWeb.ConnCase
   import Inkfish.Factory
 
-  alias Inkfish.Courses
-
   describe "index" do
     setup [:create_cs101]
 
@@ -101,9 +99,9 @@ defmodule InkfishWeb.BucketControllerTest do
     bob = Inkfish.Users.get_user_by_login!("bob")
     dave = Inkfish.Users.get_user_by_login!("dave")
     course = insert(:course, name: "CS101" )
-    bob_reg = insert(:reg, course: course,
+    _bob_reg = insert(:reg, course: course,
       user: bob, is_prof: true)
-    dave_reg = insert(:reg, course: course,
+    _dave_reg = insert(:reg, course: course,
       user: dave, is_student: true)
 
     bucket = insert(:bucket, course: course)

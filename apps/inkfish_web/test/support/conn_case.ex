@@ -37,7 +37,6 @@ defmodule InkfishWeb.ConnCase do
     {:ok, conn: Phoenix.ConnTest.build_conn()}
   end
   
-  import Plug.Conn
   import Plug.Test
  
   def login(conn, login) do

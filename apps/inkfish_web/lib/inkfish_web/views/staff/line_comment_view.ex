@@ -2,16 +2,16 @@ defmodule InkfishWeb.Staff.LineCommentView do
   use InkfishWeb, :view
   alias InkfishWeb.Staff.LineCommentView
 
+  def render_list(line_comments) do
+    render_many(line_comments, LineCommentView, "line_comment.json")
+  end
+
   def render("index.json", %{line_comments: line_comments}) do
     %{data: render_many(line_comments, LineCommentView, "line_comment.json")}
   end
 
   def render("show.json", %{line_comment: line_comment}) do
     %{data: render_one(line_comment, LineCommentView, "line_comment.json")}
-  end
-
-  def render_list(line_comments) do
-    render_many(line_comments, LineCommentView, "line_comment.json")
   end
 
   def render("line_comment.json", %{line_comment: line_comment}) do

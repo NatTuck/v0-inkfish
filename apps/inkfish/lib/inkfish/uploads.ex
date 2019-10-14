@@ -19,6 +19,7 @@ defmodule Inkfish.Uploads do
   """
   def list_uploads do
     Repo.all(Upload)
+    |> Repo.preload(:user)
   end
 
   @doc """

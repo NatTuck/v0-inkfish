@@ -23,7 +23,13 @@
         <%= link "Staff", to: Routes.staff_course_path(@conn, :show, course) %>
       </td>
       <td><%= course.start_date %></td>
-      <td><%= link(user_display_name(prof), to: Routes.admin_user_path(@conn, :show, prof.id)) %></td>
+      <td>
+        <%= if prof do %>
+          <%= link(user_display_name(prof), to: Routes.admin_user_path(@conn, :show, prof)) %>
+        <% else %>
+          (none)
+        <% end %>
+      </td>
 
       <td>
         <%= link "Edit", to: Routes.admin_course_path(@conn, :edit, course) %>

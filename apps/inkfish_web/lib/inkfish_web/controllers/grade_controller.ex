@@ -2,7 +2,6 @@ defmodule InkfishWeb.GradeController do
   use InkfishWeb, :controller
 
   alias Inkfish.Grades
-  alias Inkfish.Grades.Grade
 
   alias InkfishWeb.Plugs
   plug Plugs.FetchItem, [grade: "id"]

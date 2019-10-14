@@ -23,6 +23,13 @@ defmodule Inkfish.LineComments do
       preload: [:user]
   end
 
+  def list_line_comments(grade_id) do
+    Repo.all from lc in LineComment,
+      where: lc.grade_id == ^grade_id,
+      preload: [:user]
+  end
+
+
   @doc """
   Gets a single line_comment.
 

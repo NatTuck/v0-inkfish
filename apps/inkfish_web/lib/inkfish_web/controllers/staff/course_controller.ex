@@ -10,7 +10,6 @@ defmodule InkfishWeb.Staff.CourseController do
 
   alias Inkfish.Courses
   alias Inkfish.Courses.Course
-  alias Inkfish.Teams
 
   def index(conn, _params) do
     courses = Courses.list_courses()
@@ -39,13 +38,13 @@ defmodule InkfishWeb.Staff.CourseController do
     render(conn, "show.html", course: course)
   end
 
-  def edit(conn, %{"id" => id}) do
+  def edit(conn, %{"id" => _id}) do
     course = conn.assigns[:course]
     changeset = Courses.change_course(course)
     render(conn, "edit.html", course: course, changeset: changeset)
   end
 
-  def update(conn, %{"id" => id, "course" => course_params}) do
+  def update(conn, %{"id" => _id, "course" => course_params}) do
     course = conn.assigns[:course]
 
     case Courses.update_course(course, course_params) do
@@ -59,7 +58,7 @@ defmodule InkfishWeb.Staff.CourseController do
     end
   end
 
-  def delete(conn, %{"id" => id}) do
+  def delete(conn, %{"id" => _id}) do
     course = conn.assigns[:course]
     {:ok, _course} = Courses.delete_course(course)
 

@@ -26,6 +26,8 @@ defmodule Inkfish.Umbrella.MixProject do
     [
       {:jason, "~> 1.1"},
       {:distillery, "~> 2.1"},
+      {:phoenix_integration, "~> 0.6", only: :test},
+      {:hound, "~> 1.0", only: :test},
     ]
   end
 

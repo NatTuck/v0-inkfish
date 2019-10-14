@@ -4,7 +4,6 @@ defmodule InkfishWeb.Staff.TeamController do
   alias Inkfish.Teams
   alias Inkfish.Teams.Team
   alias Inkfish.Users
-  alias Inkfish.Users.Reg
 
   action_fallback InkfishWeb.FallbackController
 
@@ -21,7 +20,7 @@ defmodule InkfishWeb.Staff.TeamController do
   end
 
   def create(conn, %{"teamset_id" => teamset_id, "team" => team_params}) do
-    regs = Enum.map team_params["reg_ids"], fn (reg_id) ->
+    regs = Enum.map (team_params["reg_ids"] || []), fn (reg_id) ->
       Users.get_reg!(reg_id)
     end
 

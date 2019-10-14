@@ -16,6 +16,39 @@ defmodule Inkfish.Factory do
   alias Inkfish.Grades.Grade
   alias Inkfish.LineComments.LineComment
 
+  def stock_course do
+    course_params = %{params_for(:course) | instructor: "bob", name: "Stock Course"}
+    {:ok, course} = Inkfish.Courses.create_course(course_params)
+    bucket = insert(:bucket, course: course)
+    asgn = insert(
+      :assignment,
+      teamset: course.solo_teamset,
+      teamset_id: course.solo_teamset_id,
+      bucket: bucket)
+    grade_column = insert(:grade_column, assignment: asgn)
+    staff = Inkfish.Users.get_user_by_login!("carol")
+    staff_reg = insert(:reg, course: course, user: staff, is_staff: true)
+    student = Inkfish.Users.get_user_by_login!("dave")
+    student_reg = insert(:reg, course: course, user: student, is_student: true)
+    team = Inkfish.Teams.get_active_team(asgn, student_reg)
+    sub = insert(:sub, assignment: asgn, reg: student_reg, team: team)
+    grade = insert(:grade, grade_column: grade_column, sub: sub, score: Decimal.new("25.0"))
+
+    %{
+      course: course,
+      bucket: bucket,
+      assignment: asgn,
+      grade_column: grade_column,
+      student: student,
+      student_reg: student_reg,
+      staff: staff,
+      staff_reg: staff_reg,
+      team: team,
+      sub: sub,
+      grade: grade
+    }
+  end
+
   def user_factory do
     login = sequence(:login, &"sam#{&1}")
     
@@ -34,6 +67,7 @@ defmodule Inkfish.Factory do
       footer: "",
       name: sequence(:user_name, &"CS #{&1}"),
       start_date: Date.utc_today(),
+      instructor: "bob",
     }
   end
   

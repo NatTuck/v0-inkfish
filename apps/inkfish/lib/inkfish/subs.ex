@@ -8,7 +8,6 @@ defmodule Inkfish.Subs do
 
   alias Inkfish.Subs.Sub
   alias Inkfish.Users.Reg
-  alias Inkfish.Grades
   alias Inkfish.Teams
   alias Inkfish.Teams.Team
 
@@ -136,7 +135,6 @@ defmodule Inkfish.Subs do
   end
 
   def set_sub_active!(new_sub) do
-    reg_id = new_sub.reg_id
     asg_id = new_sub.assignment_id
     team_id = new_sub.team_id
     team = Teams.get_team!(team_id)

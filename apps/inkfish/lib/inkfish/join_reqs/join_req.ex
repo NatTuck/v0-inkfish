@@ -17,6 +17,8 @@ defmodule Inkfish.JoinReqs.JoinReq do
   def changeset(join_req, attrs) do
     join_req
     |> cast(attrs, [:course_id, :user_id, :note, :staff_req])
+    |> foreign_key_constraint(:course_id)
+    |> foreign_key_constraint(:user_id)
     |> validate_required([:course_id, :user_id])
   end
 end

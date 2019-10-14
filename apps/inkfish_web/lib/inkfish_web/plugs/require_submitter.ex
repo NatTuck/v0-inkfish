@@ -8,7 +8,7 @@ defmodule InkfishWeb.Plugs.RequireSubmitter do
 
   def init(args), do: args
 
-  def call(conn, args \\ []) do
+  def call(conn, _args \\ []) do
     user = conn.assigns[:current_user]
     reg  = conn.assigns[:current_reg]
     sub  = conn.assigns[:sub]

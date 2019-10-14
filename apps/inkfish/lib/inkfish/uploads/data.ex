@@ -50,7 +50,7 @@ defmodule Inkfish.Uploads.Data do
     |> read_text(base, rel)
   end
 
-  def read_item(base, rel, info) do
+  def read_item(_base, _rel, info) do
     info
   end
 
@@ -79,7 +79,7 @@ defmodule Inkfish.Uploads.Data do
   end
 
   def text_file?(path) do
-    {type, 0} = System.cmd("file", [path])
-    type =~ ~r/text/i
+    {type, 0} = System.cmd("file", ["-ib", path])
+    type =~ ~r/^text/i
   end
 end

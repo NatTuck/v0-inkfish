@@ -31,12 +31,12 @@ defmodule InkfishWeb.Staff.LineCommentController do
     end
   end
 
-  def show(conn, %{"id" => id}) do
+  def show(conn, %{"id" => _id}) do
     line_comment = conn.assigns[:line_comment]
     render(conn, "show.json", line_comment: line_comment)
   end
 
-  def update(conn, %{"id" => id, "line_comment" => line_comment_params}) do
+  def update(conn, %{"id" => _id, "line_comment" => line_comment_params}) do
     line_comment = conn.assigns[:line_comment]
 
     with {:ok, %LineComment{} = line_comment} <- LineComments.update_line_comment(line_comment, line_comment_params) do
@@ -44,7 +44,7 @@ defmodule InkfishWeb.Staff.LineCommentController do
     end
   end
 
-  def delete(conn, %{"id" => id}) do
+  def delete(conn, %{"id" => _id}) do
     line_comment = conn.assigns[:line_comment]
 
     with {:ok, %LineComment{}} <- LineComments.delete_line_comment(line_comment) do
