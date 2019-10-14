@@ -79,7 +79,7 @@ defmodule Inkfish.Uploads.Data do
   end
 
   def text_file?(path) do
-    {type, 0} = System.cmd("file", [path])
-    type =~ ~r/text/i
+    {type, 0} = System.cmd("file", ["-ib", path])
+    type =~ ~r/^text/i
   end
 end
