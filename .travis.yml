@@ -10,6 +10,5 @@ before_install:
   - sudo apt-get install ldap-utils slapd
 
 before_script:
-  - psql -U postgres -c "create user inkfish with password 'oobeiGait3ie'"
-  - psql -U postgres -c "alter user inkfish createdb"
+  - psql -U postgres -c "create user inkfish with password 'oobeiGait3ie' createdb"
   - bash test/setup.sh
