@@ -8,6 +8,9 @@ services:
 
 before_install:
   - sudo apt-get install ldap-utils slapd
+  - curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --default-toolchain stable -y
+  - (cd support/tmptmpfs && cargo build)
+  - (cd support/tmptmpfs && sudo ./install.sh)
 
 before_script:
   - psql -U postgres -c "create user inkfish with password 'oobeiGait3ie' createdb"
