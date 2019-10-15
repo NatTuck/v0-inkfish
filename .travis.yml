@@ -3,3 +3,9 @@ language: elixir
 elixir: '1.9.1'
 otp_release: '22.1'
 
+services:
+  - postgresql
+
+before_script:
+  - psql -U postgres -c "create user inkfish with password 'oobeiGait3ie'"
+  - MIX_ENV=test mix ecto.create
