@@ -6,6 +6,9 @@ otp_release: '22.1'
 services:
   - postgresql
 
+before_install:
+  - sudo apt-get install ldap-utils slapd
+
 before_script:
   - psql -U postgres -c "create user inkfish with password 'oobeiGait3ie'"
-  - MIX_ENV=test mix ecto.create
+  - bash test/setup.sh
