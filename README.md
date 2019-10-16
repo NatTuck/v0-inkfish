@@ -1,7 +1,14 @@
 
-# Inkfish.Umbrella
+# Inkfish
 
-TODO:
+![inkfish logo](https://raw.githubusercontent.com/NatTuck/inkfish/master/apps/inkfish_web/assets/static/images/inkfish.png)
+
+![build status](https://api.travis-ci.org/NatTuck/inkfish.svg?branch=master)
+
+Inkfish is a web-based tool for managing college courses focused on computer
+programming.
+
+## TODO
 
  - Add grade summary to student course/show
  - Add grade summary to reg/show, with links for staff to view student status.
