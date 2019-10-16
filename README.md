@@ -3,7 +3,8 @@
 
 ![inkfish logo](https://raw.githubusercontent.com/NatTuck/inkfish/master/apps/inkfish_web/assets/static/images/inkfish.png)
 
-![build status](https://api.travis-ci.org/NatTuck/inkfish.svg?branch=master)
+[![Build
+Status](https://travis-ci.com/NatTuck/inkfish.svg?branch=master)](https://travis-ci.com/NatTuck/inkfish)
 
 Inkfish is a web-based tool for managing college courses focused on computer
 programming.
