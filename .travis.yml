@@ -22,8 +22,11 @@ matrix:
       dist: bionic
       nodejs: 'stable'
 
+      before_install:
+        - cd assets
+
       install:
-        - cd assets && npm install
+        - npm install
 
       script:
-        - cd assets && npm test
+        - npm test
