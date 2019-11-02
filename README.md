@@ -26,7 +26,6 @@ programming.
 
  - graphicsmagick
 
-
 ## Testing
 
 Inkfish relies on LDAP for user info and authenication. This means that we

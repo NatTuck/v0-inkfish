@@ -1,17 +1,26 @@
-dist: bionic
-language: elixir
-elixir: '1.9.1'
-otp_release: '22.1'
+matrix:
+  include:
+    - language: elixir
+      dist: bionic
 
-services:
-  - postgresql
+      elixir: '1.9.1'
+      otp_release: '22.1'
 
-before_install:
-  - sudo apt-get install ldap-utils slapd
-  - curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --default-toolchain stable -y
-  - (source $HOME/.cargo/env; cd support/tmptmpfs; cargo build)
-  - (source $HOME/.cargo/env; cd support/tmptmpfs; sudo ./install.sh)
+      services:
+        - postgresql
 
-before_script:
-  - psql -U postgres -c "create user inkfish with password 'oobeiGait3ie' createdb"
-  - bash test/setup.sh
+      before_install:
+        - sudo apt-get install ldap-utils slapd
+        - curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --default-toolchain stable -y
+        - (source $HOME/.cargo/env; cd support/tmptmpfs; cargo build)
+        - (source $HOME/.cargo/env; cd support/tmptmpfs; sudo ./install.sh)
+
+      before_script:
+        - psql -U postgres -c "create user inkfish with password 'oobeiGait3ie' createdb"
+        - bash test/setup.sh
+    - language: nodejs
+      dist: bionic
+      nodejs: 'stable'
+
+      before_script:
+        - cd assets
