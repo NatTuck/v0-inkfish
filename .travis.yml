@@ -18,15 +18,12 @@ matrix:
       before_script:
         - psql -U postgres -c "create user inkfish with password 'oobeiGait3ie' createdb"
         - bash test/setup.sh
-    - language: nodejs
+    - language: node_js
       dist: bionic
       nodejs: 'stable'
 
-      before_script:
-        - cd assets
-
       install:
-        - npm install
+        - cd assets && npm install
 
       script:
-        - npm test
+        - cd assets && npm test
