@@ -24,3 +24,7 @@ matrix:
 
       before_script:
         - cd assets
+        - npm install
+
+      script:
+        - npm test
