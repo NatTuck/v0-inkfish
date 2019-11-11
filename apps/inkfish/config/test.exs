@@ -21,3 +21,5 @@ config :paddle, Paddle,
   ssl: false,
   port: 13389
 
+config :phoenix_integration,
+  endpoint: InkfishWeb.Endpoint
