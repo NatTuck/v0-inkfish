@@ -20,6 +20,7 @@ defmodule InkfishWeb.RequestRegTest do
       }
     )
     |> assert_response(status: 200, html: "Join req created successfully")
+    |> assert_response(html: "Waiting for approval")
     |> follow_link("Logout", method: :delete)
     |> follow_form(
       %{
