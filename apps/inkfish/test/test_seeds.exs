@@ -16,6 +16,7 @@ alias Inkfish.Users.User
 alias Inkfish.Users.Reg
 alias Inkfish.Courses.Course
 alias Inkfish.Courses.Bucket
+alias Inkfish.Assignments.Assignment
 
 defmodule Make do
   def user(name, admin \\ false) do
@@ -43,6 +44,13 @@ defmodule Make do
 
   def bucket(course, name, weight) do
     %Bucket{course_id: course.id, name: name, weight: weight}
+    |> Repo.insert!()
+  end
+
+  def assignment(bucket, name) do
+    course = Inkfish.Courses.get_course!(bucket.course_id)
+    %Assignment{bucket_id: bucket.id, name: name, teamset_id: course.solo_teamset_id}
+    |> Repo.insert!()
   end
 end
 
@@ -61,4 +69,5 @@ Make.reg(u1, c0, is_prof: true)
 Make.reg(u2, c0, is_staff: true)
 Make.reg(u3, c0, is_student: true)
 
-
+b0 = Make.bucket(c0, "Homework", Decimal.new("1.0"))
+_a1 = Make.assignment(b0, "HW01")

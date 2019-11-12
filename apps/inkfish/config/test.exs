@@ -23,3 +23,8 @@ config :paddle, Paddle,
 
 config :phoenix_integration,
   endpoint: InkfishWeb.Endpoint
+
+config :hound,
+  driver: "selenium",
+  browser: "firefox",
+  port: 4444
