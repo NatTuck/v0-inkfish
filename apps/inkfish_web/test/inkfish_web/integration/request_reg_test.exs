@@ -12,6 +12,7 @@ defmodule InkfishWeb.RequestRegTest do
     |> assert_response(status: 200, html: "Logged in as gail@example.com")
     |> follow_link("List All Courses")
     |> follow_link("Request to Join")
+    |> assert_response(status: 200, html: "Data Science of Art History")
     |> follow_form(
       %{
         join_req: %{
