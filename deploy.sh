@@ -3,6 +3,8 @@
 export MIX_ENV=prod
 export PORT=4080
 
+sudo service inkfish stop
+
 echo "Building..."
 
 mkdir -p ~/.config
@@ -31,4 +33,6 @@ mix distillery.release
 
 echo "Starting app..."
 
-_build/prod/rel/inkfish/bin/inkfish foreground
+#_build/prod/rel/inkfish/bin/inkfish foreground
+
+sudo service inkfish start

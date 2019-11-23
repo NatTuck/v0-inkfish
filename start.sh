@@ -10,5 +10,5 @@ export PORT=4080
 
 echo "Starting app..."
 
-# Foreground for testin and systemd
-_build/prod/rel/inkfish/bin/inkfish foreground
+# Foreground for testing and systemd
+_build/prod/rel/inkfish/bin/inkfish foreground | tee /home/inkfish/logs/prod.log
