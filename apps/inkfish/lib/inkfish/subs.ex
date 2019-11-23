@@ -30,8 +30,10 @@ defmodule Inkfish.Subs do
 
   def list_subs_for_reg(reg_id) do
     Repo.all from sub in Sub,
-      where: sub.reg_id == ^reg_id,
-      order_by: [desc: :inserted_at]
+      inner_join: team in assoc(sub, :team),
+      inner_join: tregs in assoc(team, :regs),
+      where: tregs.id == ^reg_id,
+      order_by: [desc: sub.inserted_at]
   end
 
   def active_sub_for_reg(asg_id, %Reg{} = reg) do

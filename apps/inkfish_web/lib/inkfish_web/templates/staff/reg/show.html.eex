@@ -49,7 +49,7 @@
           <td colspan="3"><strong><%= as.name %></strong></td>
         </tr>
 
-        <%= Enum.map (@subs[as.id] || []), fn sub -> %>
+        <%= Enum.map Enum.reverse((@subs[as.id] || [])), fn sub -> %>
           <tr>
             <td><%= if sub.active, do: "✓" %></td>
             <td><%= link(sub.inserted_at,
