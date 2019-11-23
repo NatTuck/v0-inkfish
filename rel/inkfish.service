@@ -10,7 +10,7 @@ Environment=MIX_ENV=prod "PORT=4080"
 Environment=LANG=en_US.UTF-8
 
 WorkingDirectory=/home/inkfish/inkfish
-ExecStart=bash /home/inkfish/inkfish/start.sh
+ExecStart=bash /home/inkfish/inkfish/scripts/start.sh
 
 [Install]
 WantedBy=multi-user.target
