@@ -63,7 +63,7 @@ _u4 = Make.user("erin")
 _u5 = Make.user("frank")
 
 c0 = Make.course("Data Science of Art History")
-_c1 = Make.course("Machine Learning with Baroque Pottery")
+#_c1 = Make.course("Machine Learning with Baroque Pottery")
 
 Make.reg(u1, c0, is_prof: true)
 Make.reg(u2, c0, is_staff: true)
