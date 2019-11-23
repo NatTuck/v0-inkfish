@@ -153,3 +153,20 @@ displayName: Hank Anderson
 userPassword: {SSHA}AIzygLSXlArhAMzddUriXQxf7UlkqopP
 # userpassword: {CLEARTEXT}test
 
+dn: uid=ntuck,ou=people,dc=example,dc=com
+uid: ntuck
+cn: ntuck
+objectClass: inetOrgPerson
+objectClass: posixAccount
+objectClass: top
+loginShell: /bin/bash
+uidNumber: 508
+gidNumber: 120
+homeDirectory: /home/ntuck
+gecos: Nat Tuck,,,,
+mail: ntuck@ccs.neu.edu
+givenName: Nat
+sn: Tuck
+displayName: Nat Tuck
+userPassword: {SSHA}AIzygLSXlArhAMzddUriXQxf7UlkqopP
+# userpassword: {CLEARTEXT}test
