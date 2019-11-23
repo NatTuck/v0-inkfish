@@ -10,5 +10,5 @@ if [[ $# -ne 1 ]]; then
     exit 1
 fi
 
-CMD=`mix db.consol e | tail -n 1`
+CMD=`mix db.console | tail -n 1`
 bash -c "$CMD -f $1"
