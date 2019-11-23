@@ -24,7 +24,8 @@ defmodule Inkfish.Courses do
 
   """
   def list_courses do
-    Repo.all(Course)
+    Repo.all from cc in Course,
+      order_by: [asc: cc.name]
   end
 
   def list_courses_for_user(user) do
