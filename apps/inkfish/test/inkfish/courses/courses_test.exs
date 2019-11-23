@@ -71,7 +71,7 @@ defmodule Inkfish.CoursesTest do
     
     test "list_buckets/0 returns all buckets" do
       bucket = insert(:bucket)
-      assert drop_assocs(Courses.list_buckets()) == drop_assocs([bucket])
+      assert Enum.member?(drop_assocs(Courses.list_buckets()), drop_assocs(bucket))
     end
 
     test "get_bucket!/1 returns the bucket with given id" do

@@ -13,7 +13,7 @@ defmodule Inkfish.AssignmentsTest do
 
     test "list_assignments/0 returns all assignments" do
       assignment = assignment_fixture()
-      assert drop_assocs(Assignments.list_assignments()) == drop_assocs([assignment])
+      assert Enum.member?(drop_assocs(Assignments.list_assignments()), drop_assocs(assignment))
     end
 
     test "get_assignment!/1 returns the assignment with given id" do

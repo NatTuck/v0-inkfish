@@ -44,7 +44,7 @@ defmodule InkfishWeb.SubmitTest do
     click({:link_text, text})
   end
 
-  #@tag :skip
+  @tag :skip
   test "load main page" do
     navigate_to("http://localhost:4001/")
     assert page_title() =~ ~r/Inkfish/
