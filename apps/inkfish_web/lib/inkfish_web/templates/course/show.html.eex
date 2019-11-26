@@ -36,9 +36,15 @@
           <td><%= link as.name, to: Routes.assignment_path(@conn, :show, as) %></td>
           <td><%= as.due %></td>
           <td><%= as.weight %></td>
-          <td><%= show_score(@conn, as) %></td>
+          <td><%= show_score(@conn, as) %> / <%= as.points %></td>
         </tr>
       <% end %>
+      <tr>
+        <td>&nbsp;</td>
+        <td>weight = <%= bucket.weight %></td>
+        <td>Total:</td>
+        <td><%= show_score(@totals[bucket.id]) %>%</td>
+      </tr>
     </tbody>
   </table>
 <% end %>
@@ -54,7 +60,7 @@
     </tr>
   </thead>
   <tbody>
-    <%= for ts <- @course.teamsets do %>
+    <%= for ts <- Enum.sort_by(@course.teamsets, &(&1.inserted_at)) do %>
       <tr>
         <td><%= ts.name %></td>
         <%= if team = @teams[ts.id] do %>

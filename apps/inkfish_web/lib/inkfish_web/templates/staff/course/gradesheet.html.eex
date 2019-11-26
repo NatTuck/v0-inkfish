@@ -1,0 +1,58 @@
+<h1>Gradesheet</h1>
+
+<p>Course: <%= @course.name %></p>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>&nbsp;</th>
+      <th>&nbsp;</th>
+      <%= for bucket <- Enum.sort_by(@course.buckets, &(&1.name)) do %>
+        <th colspan="<%= length(bucket.assignments) %>">
+          <%= bucket.name %>
+        </th>
+      <th>&nbsp;</th>
+      <% end %>
+      <th>&nbsp;</th>
+    </tr>
+    <tr>
+      <th>Student</th>
+      <th>Course Total</th>
+      <%= for bucket <- Enum.sort_by(@course.buckets, &(&1.name)) do %>
+        <%= for as <- Enum.sort_by(bucket.assignments, &(&1.name)) do %>
+          <th><%= as.name %></th>
+        <% end %>
+        <th><%= bucket.name %> Total</th>
+      <% end %>
+    </tr>
+  </thead>
+  <tbody>
+    <%= for stat <- [:median, :mean, :min, :max] do %>
+      <tr>
+        <td><%= stat %></td>
+        <td><%= show_pct(@sheet.stats.total[stat]) %></td>
+        <%= for bucket <- Enum.sort_by(@course.buckets, &(&1.name)) do %>
+          <% bb = @sheet.stats.buckets[bucket.id] %>
+          <%= for as <- Enum.sort_by(bucket.assignments, &(&1.name)) do %>
+            <td><%= show_pct(bb.scores[as.id][stat]) %></td>
+          <% end %>
+          <td><%= show_pct(bb.total[stat]) %></td>
+        <% end %>
+      </tr>
+    <% end %>
+    <%= for reg <- @course.regs do %>
+      <% student = @sheet.students[reg.id] %>
+      <tr>
+        <td><%= user_display_name(reg.user) %></td>
+        <td><%= show_pct(student.total) %></td>
+        <%= for bucket <- Enum.sort_by(@course.buckets, &(&1.name)) do %>
+          <% bs = student.buckets[bucket.id] %>
+          <%= for as <- Enum.sort_by(bucket.assignments, &(&1.name)) do %>
+            <td><%= show_pct(bs.scores[as.id]) %></td>
+          <% end %>
+          <td><%= show_pct(bs.total) %></td>
+        <% end %>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

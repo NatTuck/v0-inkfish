@@ -26,7 +26,10 @@
       <td>
         <%= link "Show", to: Routes.admin_user_path(@conn, :show, user) %>&nbsp;
         <%= link "Edit", to: Routes.admin_user_path(@conn, :edit, user) %>&nbsp;
-        <%= link "Delete", to: Routes.admin_user_path(@conn, :delete, user), method: :delete, data: [confirm: "Are you sure?"] %>
+        <%= link("Delete", to: Routes.admin_user_path(@conn, :delete, user),
+          method: :delete, data: [confirm: "Are you sure?"]) %>&nbsp;
+        <%= link("Impersonate", to: Routes.admin_user_path(@conn, :impersonate, user),
+          method: :post) %>
       </td>
     </tr>
 <% end %>

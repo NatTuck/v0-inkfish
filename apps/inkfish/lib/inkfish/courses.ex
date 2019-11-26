@@ -83,6 +83,20 @@ defmodule Inkfish.Courses do
                 join_reqs: reqs]
   end
 
+  def get_course_for_gradesheet!(id) do
+    Repo.one! from cc in Course,
+      left_join: buckets in assoc(cc, :buckets),
+      left_join: asgs in assoc(buckets, :assignments),
+      left_join: regs in assoc(cc, :regs),
+      where: regs.is_student,
+      left_join: student in assoc(regs, :user),
+      left_join: teams in assoc(regs, :teams),
+      left_join: subs in assoc(teams, :subs),
+      where: subs.active,
+      preload: [regs: {regs, user: student, teams: {teams, subs: subs}},
+                buckets: {buckets, assignments: asgs}]
+  end
+
   def get_course_for_student_view!(id) do
      Repo.one! from cc in Course,
       where: cc.id == ^id,
@@ -90,8 +104,9 @@ defmodule Inkfish.Courses do
       left_join: tas in assoc(teamsets, :assignments),
       left_join: buckets in assoc(cc, :buckets),
       left_join: bas in assoc(buckets, :assignments),
+      left_join: gcols in assoc(bas, :grade_columns),
       order_by: [asc: buckets.name, desc: bas.due, asc: bas.name],
-      preload: [buckets: {buckets, assignments: bas},
+      preload: [buckets: {buckets, assignments: {bas, grade_columns: gcols}},
                 teamsets: {teamsets, assignments: tas}]
   end
 

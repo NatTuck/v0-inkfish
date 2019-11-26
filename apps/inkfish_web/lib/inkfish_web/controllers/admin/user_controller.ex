@@ -50,4 +50,13 @@ defmodule InkfishWeb.Admin.UserController do
         |> redirect(to: Routes.admin_user_path(conn, :index))
     end
   end
+
+  def impersonate(conn, %{"id" => id}) do
+    user = Users.get_user!(id)
+    conn
+    |> put_flash(:info, "Impersonating #{user.login}")
+    |> put_session(:real_uid, conn.assigns[:current_user].id)
+    |> put_session(:user_id, user.id)
+    |> redirect(to: Routes.page_path(conn, :index))
+  end
 end

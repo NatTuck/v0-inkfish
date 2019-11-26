@@ -11,6 +11,14 @@ defmodule Inkfish.Subs do
   alias Inkfish.Teams
   alias Inkfish.Teams.Team
 
+  def make_zero_sub(as) do
+    %Sub{
+      active: true,
+      assignment: as,
+      score: Decimal.new("0.0"),
+    }
+  end
+
   @doc """
   Returns the list of subs.
 

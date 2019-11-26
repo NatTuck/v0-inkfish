@@ -10,6 +10,7 @@ defmodule InkfishWeb.Staff.CourseController do
 
   alias Inkfish.Courses
   alias Inkfish.Courses.Course
+  alias Inkfish.Grades.Gradesheet
 
   def index(conn, _params) do
     courses = Courses.list_courses()
@@ -65,5 +66,12 @@ defmodule InkfishWeb.Staff.CourseController do
     conn
     |> put_flash(:info, "Course deleted successfully.")
     |> redirect(to: Routes.staff_course_path(conn, :index))
+  end
+
+  def gradesheet(conn, %{"id" => id}) do
+    course = Courses.get_course_for_gradesheet!(id)
+    sheet = Gradesheet.from_course(course)
+    render(conn, "gradesheet.html", fluid_grid: true,
+      course: course, sheet: sheet)
   end
 end

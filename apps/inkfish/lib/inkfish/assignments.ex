@@ -142,6 +142,28 @@ defmodule Inkfish.Assignments do
     |> Repo.update()
   end
 
+  def update_assignment_points!(%Assignment{} = as) do
+    update_assignment_points!(as.id)
+  end
+
+  def update_assignment_points!(as_id) do
+    Ecto.Multi.new()
+    |> Ecto.Multi.run(:as0, fn (_,_) ->
+      as = Repo.one from as in Assignment,
+        where: as.id == ^as_id,
+        left_join: gcs in assoc(as, :grade_columns),
+        preload: [grade_columns: gcs]
+      {:ok, as}
+    end)
+    |> Ecto.Multi.update(:as1, fn %{as0: as} ->
+      points = Enum.reduce as.grade_columns, Decimal.new("0.0"), fn (gc, acc) ->
+        Decimal.add(acc, gc.points)
+      end
+      Ecto.Changeset.change(as, points: points)
+    end)
+    |> Repo.transaction()
+  end
+
   @doc """
   Deletes a Assignment.
 
