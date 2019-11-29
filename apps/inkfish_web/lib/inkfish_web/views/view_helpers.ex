@@ -54,6 +54,19 @@ defmodule InkfishWeb.ViewHelpers do
     Enum.join(Enum.map(ts.assignments, &(&1.name)), ", ")
   end
 
+  def show_pct(nil) do
+    "∅"
+  end
+
+  def show_pct(%Decimal{} = score) do
+    ctx = %Decimal.Context{Decimal.get_context | precision: 3}
+    Decimal.with_context ctx, fn ->
+      score
+      |> Decimal.add(Decimal.new("0"))
+      |> Decimal.to_string(:normal)
+    end
+  end
+
   def show_score(%Decimal{} = score) do
     ctx = %Decimal.Context{Decimal.get_context | precision: 3}
     Decimal.with_context ctx, fn ->

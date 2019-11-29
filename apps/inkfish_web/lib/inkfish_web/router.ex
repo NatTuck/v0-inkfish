@@ -37,6 +37,7 @@ defmodule InkfishWeb.Router do
     get "/", PageController, :index
     get "/dashboard", PageController, :dashboard
     resources "/session", SessionController, only: [:create, :delete], singleton: true
+    post "/session/resume", SessionController, :resume
     resources "/users", UserController, only: [:show, :edit, :update]
     resources "/uploads", UploadController, only: [:create, :show]
     get "/uploads/:id/thumb", UploadController, :thumb
@@ -63,6 +64,7 @@ defmodule InkfishWeb.Router do
       resources "/teamsets", TeamsetController, only: [:index, :new, :create]
       resources "/buckets", BucketController, only: [:index, :new, :create]
     end
+    get "/courses/:id/gradesheet", CourseController, :gradesheet
     resources "/regs", RegController, except: [:index, :new, :create]
     resources "/join_reqs", JoinReqController, only: [:show, :delete]
     post "/join_reqs/:id/accept", JoinReqController, :accept
@@ -84,6 +86,7 @@ defmodule InkfishWeb.Router do
     pipe_through [:browser, :admin]
     
     resources "/users", UserController, except: [:new, :create]
+    post "/users/:id/impersonate", UserController, :impersonate
     resources "/courses", CourseController
     resources "/uploads", UploadController, only: [:index]
   end

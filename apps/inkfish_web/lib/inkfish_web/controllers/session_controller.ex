@@ -23,4 +23,13 @@ defmodule InkfishWeb.SessionController do
     |> put_flash(:info, "Logged out.")
     |> redirect(to: Routes.page_path(conn, :index))
   end
+
+  def resume(conn, _params) do
+    user = Users.get_user!(get_session(conn, :real_uid))
+    conn
+    |> delete_session(:real_uid)
+    |> put_session(:user_id, user.id)
+    |> put_flash(:info, "No longer impersonating anyone.")
+    |> redirect(to: Routes.page_path(conn, :index))
+  end
 end

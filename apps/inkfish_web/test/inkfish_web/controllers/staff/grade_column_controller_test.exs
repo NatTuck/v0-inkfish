@@ -74,8 +74,8 @@ defmodule InkfishWeb.Staff.GradeColumnControllerTest do
   describe "delete grade_column" do
     test "deletes chosen grade_column", %{conn: conn, grade_column: grade_column} do
       conn = delete(conn, Routes.staff_grade_column_path(conn, :delete, grade_column))
-      assert redirected_to(conn) == Routes.staff_assignment_grade_column_path(
-        conn, :index, grade_column.assignment_id)
+      assert redirected_to(conn) == Routes.staff_assignment_path(
+        conn, :show, grade_column.assignment_id)
       assert_error_sent 404, fn ->
         get(conn, Routes.staff_grade_column_path(conn, :show, grade_column))
       end

@@ -8,7 +8,8 @@ defmodule Inkfish.AssignmentsTest do
     alias Inkfish.Assignments.Assignment
 
     def assignment_fixture(attrs \\ %{}) do
-      insert(:assignment, attrs)
+      as = insert(:assignment, attrs)
+      Assignments.get_assignment!(as.id)
     end
 
     test "list_assignments/0 returns all assignments" do
@@ -43,7 +44,7 @@ defmodule Inkfish.AssignmentsTest do
       attrs = %{ params_for(:assignment) | name: "Updated name" }
       assert {:ok, %Assignment{} = a1} = Assignments.update_assignment(assignment, attrs)
       assert a1.desc == assignment.desc
-      assert a1.due == assignment.due
+      assert a1.due == attrs[:due]
       assert a1.name == "Updated name"
       assert a1.weight == assignment.weight
     end

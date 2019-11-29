@@ -9,6 +9,7 @@ defmodule Inkfish.Assignments.Assignment do
     field :due, :naive_datetime
     field :name, :string
     field :weight, :decimal
+    field :points, :decimal
     field :allow_git, :boolean, default: true
     field :allow_upload, :boolean, default: true
 

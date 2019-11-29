@@ -33,8 +33,13 @@
             <%= if @current_user do %>
               User: <%= @current_user.email %> |
               <%= link("Profile", to: Routes.user_path(@conn, :show, @current_user)) %> |
-              <%= link("Logout", to: Routes.session_path(@conn, :delete),
-                       method: :delete) %>
+              <%= if @current_ruid do %>
+                <%= link("Resume", to: Routes.session_path(@conn, :resume),
+                  method: :post) %>
+              <% else %>
+                <%= link("Logout", to: Routes.session_path(@conn, :delete),
+                  method: :delete) %>
+              <% end %>
             <% else %>
               <p>no session</p>
             <% end %>
@@ -53,14 +58,20 @@
       <%= if get_flash(@conn, :error) do %>
         <p class="alert alert-danger" role="alert"><%= get_flash(@conn, :error) %></p>
       <% end %>
-      <main>
-        <%= render @view_module, @view_template, assigns %>
+    </div>
 
+    <div class="<%= if assigns[:fluid_grid] do "container-fluid" else "container" end %>">
+      <div class="inkfish-main">
+        <%= render @view_module, @view_template, assigns %>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="course-footer">
         <%= if assigns[:course] do %>
           <%= render InkfishWeb.LayoutView, "course_footer.html", assigns %>
         <% end %>
-      </main>
-
+      </div>
       <div class="inkfish-footer">
         <p>Inkfish copyright &copy; 2018-2019 Nat Tuck. Licensed under the GNU AGPLv3. No
           warranty, this code will probably eat your dog. Source code at

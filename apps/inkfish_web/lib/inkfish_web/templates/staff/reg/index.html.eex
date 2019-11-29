@@ -28,7 +28,9 @@
 
     <td>
       <%= link "Edit", to: Routes.staff_reg_path(@conn, :edit, reg) %>
-      <%= link "Delete", to: Routes.staff_reg_path(@conn, :delete, reg), method: :delete, data: [confirm: "Are you sure?"] %>
+      &nbsp;
+      <%= link("Delete", to: Routes.staff_reg_path(@conn, :delete, reg),
+        method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger btn-sm") %>
     </td>
   </tr>
 <% end %>

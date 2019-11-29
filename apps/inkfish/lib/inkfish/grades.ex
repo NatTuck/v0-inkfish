@@ -52,6 +52,19 @@ defmodule Inkfish.Grades do
   end
 
   @doc """
+  If this is an {:ok, gc} pair, update the score
+  in the associated assignment.
+  """
+  def gc_update_assignment_points({:ok, gc}) do
+    Inkfish.Assignments.update_assignment_points!(gc.assignment_id)
+    {:ok, gc}
+  end
+
+  def gc_update_assignment_points(error) do
+    error
+  end
+
+  @doc """
   Creates a grade_column.
 
   ## Examples
@@ -67,6 +80,7 @@ defmodule Inkfish.Grades do
     %GradeColumn{}
     |> GradeColumn.changeset(attrs)
     |> Repo.insert()
+    |> gc_update_assignment_points()
   end
 
   @doc """
@@ -85,6 +99,7 @@ defmodule Inkfish.Grades do
     grade_column
     |> GradeColumn.changeset(attrs)
     |> Repo.update()
+    |> gc_update_assignment_points()
   end
 
   @doc """
@@ -101,6 +116,7 @@ defmodule Inkfish.Grades do
   """
   def delete_grade_column(%GradeColumn{} = grade_column) do
     Repo.delete(grade_column)
+    |> gc_update_assignment_points()
   end
 
   @doc """
