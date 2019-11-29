@@ -8,7 +8,8 @@ defmodule Inkfish.AssignmentsTest do
     alias Inkfish.Assignments.Assignment
 
     def assignment_fixture(attrs \\ %{}) do
-      insert(:assignment, attrs)
+      as = insert(:assignment, attrs)
+      Assignments.get_assignment!(as.id)
     end
 
     test "list_assignments/0 returns all assignments" do

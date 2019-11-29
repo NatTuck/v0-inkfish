@@ -1,5 +1,4 @@
 defmodule Inkfish.Grades.Gradesheet do
-  alias Inkfish.Subs
   alias Inkfish.Subs.Sub
 
   def from_course(course) do

@@ -77,7 +77,7 @@ defmodule Inkfish.Grades do
 
   """
   def create_grade_column(attrs \\ %{}) do
-    rv = %GradeColumn{}
+    %GradeColumn{}
     |> GradeColumn.changeset(attrs)
     |> Repo.insert()
     |> gc_update_assignment_points()

@@ -35,14 +35,24 @@ defmodule InkfishWeb.CourseController do
         zero_sub = Subs.make_zero_sub(as)
         sub = Enum.find as.subs, zero_sub, &(&1.active)
         score = sub.score || Decimal.new("0.0")
-        { Decimal.add(s, Decimal.mult(as.weight, score)),
-          Decimal.add(p, Decimal.mult(as.weight, as.points)) }
+        weight = fix_weight(as.weight)
+        { Decimal.add(s, Decimal.mult(weight, score)),
+          Decimal.add(p, Decimal.mult(weight, as.points)) }
       end
 
+      p = fix_weight(p)
       pct = Decimal.mult(Decimal.div(s, p), Decimal.new("100.0"))
 
       {bucket.id, pct}
     end
     |> Enum.into(%{})
+  end
+
+  defp fix_weight(ww) do
+    if Decimal.cmp(ww, Decimal.new(0)) == :gt do
+      ww
+    else
+      Decimal.new(1)
+    end
   end
 end

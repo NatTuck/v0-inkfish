@@ -49,7 +49,12 @@ defmodule Make do
 
   def assignment(bucket, name) do
     course = Inkfish.Courses.get_course!(bucket.course_id)
-    %Assignment{bucket_id: bucket.id, name: name, teamset_id: course.solo_teamset_id}
+    %Assignment{
+      bucket_id: bucket.id,
+      name: name,
+      teamset_id: course.solo_teamset_id,
+      weight: Decimal.new(1),
+    }
     |> Repo.insert!()
   end
 end

@@ -26,6 +26,15 @@ defmodule InkfishWeb.Staff.CourseControllerTest do
     end
   end
 
+  describe "gradesheet" do
+    setup [:create_course]
+
+    test "renders", %{conn: conn, course: course} do
+      conn = get(conn, Routes.staff_course_path(conn, :gradesheet, course))
+      assert html_response(conn, 200) =~ "Gradesheet"
+    end
+  end
+
   describe "create course" do
     test "redirects to show when data is valid", %{conn: conn} do
       conn = post(conn, Routes.staff_course_path(conn, :create), course: @create_attrs)

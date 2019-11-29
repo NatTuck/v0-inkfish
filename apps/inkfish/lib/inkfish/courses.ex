@@ -85,14 +85,15 @@ defmodule Inkfish.Courses do
 
   def get_course_for_gradesheet!(id) do
     Repo.one! from cc in Course,
+      where: cc.id == ^id,
       left_join: buckets in assoc(cc, :buckets),
       left_join: asgs in assoc(buckets, :assignments),
       left_join: regs in assoc(cc, :regs),
-      where: regs.is_student,
+      where: regs.is_student or is_nil(regs.is_student),
       left_join: student in assoc(regs, :user),
       left_join: teams in assoc(regs, :teams),
       left_join: subs in assoc(teams, :subs),
-      where: subs.active,
+      where: subs.active or is_nil(subs.active),
       preload: [regs: {regs, user: student, teams: {teams, subs: subs}},
                 buckets: {buckets, assignments: asgs}]
   end
