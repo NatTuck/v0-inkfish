@@ -126,6 +126,13 @@ defmodule Inkfish.Users do
     |> Repo.update()
   end
 
+  def add_secret(%User{secret: nil} = user) do
+    user
+    |> User.secret_changeset()
+    |> Repo.update()
+  end
+  def add_secret(user), do: {:ok, user}
+
   @doc """
   Deletes a User.
 

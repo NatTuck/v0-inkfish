@@ -24,6 +24,7 @@ defmodule Inkfish.Umbrella.MixProject do
   # and cannot be accessed from applications inside the apps folder
   defp deps do
     [
+      {:decimal, "~> 1.8"},
       {:jason, "~> 1.1"},
       {:distillery, "~> 2.1"},
       {:phoenix_integration, "~> 0.6", only: :test},

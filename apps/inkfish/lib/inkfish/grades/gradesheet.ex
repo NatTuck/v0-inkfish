@@ -106,7 +106,7 @@ defmodule Inkfish.Grades.Gradesheet do
         Decimal.add(sum, as.weight)
       end
 
-      total = Decimal.div(score, weight)
+      total = safe_div(score, weight)
 
       {bucket.id, %{scores: scores, total: total}}
     end
@@ -136,5 +136,13 @@ defmodule Inkfish.Grades.Gradesheet do
       Decimal.new("100.0"),
       Decimal.div(score, points)
     )
+  end
+
+  defp safe_div(nn, dd) do
+    if Decimal.eq?(dd, 0) do
+      Decimal.new(0)
+    else
+      Decimal.div(nn, dd)
+    end
   end
 end

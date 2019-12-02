@@ -11,6 +11,7 @@ defmodule Inkfish.Users.User do
     field :surname, :string
     field :nickname, :string, default: ""
     field :is_admin, :boolean, default: false
+    field :secret, :string
     belongs_to :photo_upload, Inkfish.Uploads.Upload, type: :binary_id
     has_many :regs, Inkfish.Users.Reg
 
@@ -33,5 +34,10 @@ defmodule Inkfish.Users.User do
 
   def normalize_login(text) do
     String.replace(text || "", ~r/\s+\(.*\)$/, "")
+  end
+
+  def secret_changeset(user) do
+    secret = :crypto.strong_rand_bytes(16) |> Base.encode16
+    cast(user, %{secret: secret}, [:secret])
   end
 end
