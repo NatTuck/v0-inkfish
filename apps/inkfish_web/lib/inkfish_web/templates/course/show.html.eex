@@ -73,3 +73,5 @@
     <% end %>
   </tbody>
 </table>
+
+<p>Your user secret is: <%= @current_user.secret %></p>
