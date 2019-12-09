@@ -10,6 +10,7 @@ defmodule Inkfish.Subs do
   alias Inkfish.Users.Reg
   alias Inkfish.Teams
   alias Inkfish.Teams.Team
+  alias Inkfish.LocalTime
 
   def make_zero_sub(as) do
     %Sub{
@@ -225,9 +226,8 @@ defmodule Inkfish.Subs do
   end
 
   def hours_late(sub) do
-    tz = Application.get_env(:inkfish, :time_zone)
-    due = DateTime.from_naive!(sub.assignment.due, tz)
-    subed = DateTime.from_naive!(sub.inserted_at, tz)
+    due = LocalTime.from_naive!(sub.assignment.due)
+    subed = LocalTime.from_naive!(sub.inserted_at)
     seconds_late = DateTime.diff(subed, due)
     hours_late = floor((seconds_late + 3599) / 3600)
     if hours_late > 0 do
