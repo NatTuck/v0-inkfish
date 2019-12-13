@@ -68,7 +68,10 @@ defmodule Inkfish.Users do
         {:ok, data} = Paddle.get(filter: [uid: login])
         {:ok, user} = create_or_update_from_ldap_data(login, hd(data))
         user
+      {:error, :invalidCredentials} ->
+        nil
       {:error, _} ->
+        {:ok, :connected} = Paddle.reconnect()
         nil
     end
   end

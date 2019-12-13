@@ -15,6 +15,7 @@ config :paddle, Paddle,
   account_subdn: "ou=people",
   ssl: true,
   port: 636,
+  timeout: 5000,
   sslopts: [
     versions: [:'tlsv1.1'],
     ciphers: :ssl.cipher_suites(:all, :'tlsv1.2'),
