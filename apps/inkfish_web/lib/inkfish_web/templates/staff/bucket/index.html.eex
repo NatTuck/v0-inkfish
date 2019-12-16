@@ -21,7 +21,8 @@
 
       <td>
         <%= link "Edit", to: Routes.staff_bucket_path(@conn, :edit, bucket) %>
-        <%= link "Delete", to: Routes.staff_bucket_path(@conn, :delete, bucket), method: :delete, data: [confirm: "Are you sure?"] %>
+        <%= link("Delete", to: Routes.staff_bucket_path(@conn, :delete, bucket),
+          method: :delete, data: [confirm: "Are you sure?"]) %>
       </td>
     </tr>
 <% end %>

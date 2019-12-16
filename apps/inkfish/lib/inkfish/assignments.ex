@@ -201,4 +201,25 @@ defmodule Inkfish.Assignments do
       where: as.due > fragment("now()::timestamp"),
       limit: 1
   end
+
+  @doc """
+  Creates a fake sub for each team in the associated teamset,
+  containing a single text file for grading.
+  """
+  def create_fake_subs!(as, owner) do
+    {:ok, upload} = Inkfish.Uploads.create_fake_upload(owner)
+    teams = Inkfish.Teams.list_teams(as.teamset_id)
+
+    Enum.each teams, fn team ->
+      submitter = hd(team.regs)
+      attrs = %{
+        assignment_id: as.id,
+        reg_id: submitter.id,
+        team_id: team.id,
+        upload_id: upload.id,
+        hours_spent: "0.0",
+      }
+      {:ok, _sub} = Inkfish.Subs.create_sub(attrs)
+    end
+  end
 end

@@ -94,6 +94,7 @@ defmodule Inkfish.Courses do
       left_join: teams in assoc(regs, :teams),
       left_join: subs in assoc(teams, :subs),
       where: subs.active or is_nil(subs.active),
+      order_by: student.surname,
       preload: [regs: {regs, user: student, teams: {teams, subs: subs}},
                 buckets: {buckets, assignments: asgs}]
   end

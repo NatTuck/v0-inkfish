@@ -30,7 +30,10 @@
     <%= for stat <- [:median, :mean, :min, :max] do %>
       <tr>
         <td><%= stat %></td>
-        <td><%= show_pct(@sheet.stats.total[stat]) %></td>
+        <td>
+          <%= show_pct(@sheet.stats.total[stat])%>&nbsp;(<%=
+              show_letter_grade(@course, @sheet.stats.total[stat]) %>)
+        </td>
         <%= for bucket <- Enum.sort_by(@course.buckets, &(&1.name)) do %>
           <% bb = @sheet.stats.buckets[bucket.id] %>
           <%= for as <- Enum.sort_by(bucket.assignments, &(&1.name)) do %>
@@ -44,7 +47,10 @@
       <% student = @sheet.students[reg.id] %>
       <tr>
         <td><%= user_display_name(reg.user) %></td>
-        <td><%= show_pct(student.total) %></td>
+        <td>
+          <%= show_pct(student.total) %>&nbsp;(<%=
+              show_letter_grade(@course, student.total) %>)
+        </td>
         <%= for bucket <- Enum.sort_by(@course.buckets, &(&1.name)) do %>
           <% bs = student.buckets[bucket.id] %>
           <%= for as <- Enum.sort_by(bucket.assignments, &(&1.name)) do %>

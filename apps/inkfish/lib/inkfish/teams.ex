@@ -169,7 +169,10 @@ defmodule Inkfish.Teams do
   """
   def list_teams(teamset_id) do
     Repo.all from team in Team,
-      where: team.teamset_id == ^teamset_id
+      where: team.teamset_id == ^teamset_id,
+      left_join: members in assoc(team, :team_members),
+      left_join: regs in assoc(team, :regs),
+      preload: [team_members: members, regs: regs]
   end
 
   @doc """
