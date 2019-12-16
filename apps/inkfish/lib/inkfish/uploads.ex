@@ -77,6 +77,23 @@ defmodule Inkfish.Uploads do
     end
   end
 
+  def create_fake_upload(owner) do
+    attrs = %{
+      "user_id" => owner.id,
+      "kind" => "sub",
+      "name" => "fake-upload.tar.gz",
+    }
+    cset = Upload.fake_changeset(%Upload{}, attrs)
+    case Repo.insert(cset) do
+      {:ok, upload}  ->
+        Upload.save_upload_file!(cset, upload, :fake)
+        Upload.unpack(upload)
+        {:ok, upload}
+      error ->
+        error
+    end
+  end
+
   @doc """
   Updates a upload.
 

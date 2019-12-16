@@ -271,7 +271,8 @@ defmodule Inkfish.Subs do
 
   """
   def delete_sub(%Sub{} = sub) do
-    Repo.delete(sub)
+    #Repo.delete(sub)
+    {:error, "We don't delete subs"}
   end
 
   @doc """

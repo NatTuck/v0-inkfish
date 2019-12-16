@@ -5,6 +5,7 @@ defmodule InkfishWeb.ViewHelpers do
 
   alias Inkfish.Users.User
   alias Inkfish.Users.Reg
+  alias Inkfish.Courses.Course
   alias Inkfish.Subs.Sub
   alias Inkfish.Grades.Grade
   alias Inkfish.Assignments.Assignment
@@ -64,6 +65,28 @@ defmodule InkfishWeb.ViewHelpers do
       score
       |> Decimal.add(Decimal.new("0"))
       |> Decimal.to_string(:normal)
+    end
+  end
+
+  def show_letter_grade(%Course{} = course, %Decimal{} = score) do
+    num = score
+    |> Decimal.mult(Decimal.new(100))
+    |> Decimal.round()
+    |> Decimal.to_integer
+
+    num = num + 220
+
+    cond do
+      num >= 9500 -> "A"
+      num >= 9000 -> "A-"
+      num >= 8500 -> "B+"
+      num >= 8000 -> "B"
+      num >= 7500 -> "B-"
+      num >= 7000 -> "C+"
+      num >= 6500 -> "C"
+      num >= 6000 -> "C-"
+      num >= 5000 -> "D"
+      true -> "F"
     end
   end
 

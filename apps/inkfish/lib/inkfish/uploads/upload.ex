@@ -20,7 +20,7 @@ defmodule Inkfish.Uploads.Upload do
       foreign_key: :starter_upload_id
     has_one :solution_assignment, Inkfish.Assignments.Assignment,
       foreign_key: :solution_upload_id
-    has_one :sub, Inkfish.Subs.Sub
+    has_many :subs, Inkfish.Subs.Sub
 
     field :upload, :any, virtual: true
 
@@ -39,6 +39,14 @@ defmodule Inkfish.Uploads.Upload do
   end
 
   def git_changeset(upload, attrs) do
+    # Uploads are immutable, so all changesets are new inserts.
+    upload
+    |> cast(attrs, [:kind, :user_id, :name])
+    |> validate_required([:kind, :user_id, :name])
+    |> validate_kind()
+  end
+
+  def fake_changeset(upload, attrs) do
     # Uploads are immutable, so all changesets are new inserts.
     upload
     |> cast(attrs, [:kind, :user_id, :name])
@@ -91,6 +99,11 @@ defmodule Inkfish.Uploads.Upload do
   def save_upload_file!(cset, upload) do
     up = get_field(cset, :upload)
     File.copy!(up.path, upload_path(upload))
+  end
+
+  def save_upload_file!(_cset, upload, :fake) do
+    path = Path.join(:code.priv_dir(:inkfish), "data/fake-upload.tar.gz")
+    File.copy!(path, upload_path(upload))
   end
 
   def upload_path(upload) do

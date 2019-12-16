@@ -42,6 +42,12 @@ defmodule Inkfish.Users do
       left_join: photo in assoc(uu, :photo_upload),
       preload: [photo_upload: photo]
   end
+
+  def get_an_admin! do
+    Repo.one! from uu in User,
+      where: uu.is_admin,
+      limit: 1
+  end
  
   @doc """
   Gets a single user by id
