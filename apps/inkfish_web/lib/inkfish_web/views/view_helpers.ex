@@ -68,6 +68,8 @@ defmodule InkfishWeb.ViewHelpers do
     end
   end
 
+  def show_letter_grade(%Course{} = _course, nil), do: "∅"
+
   def show_letter_grade(%Course{} = course, %Decimal{} = score) do
     num = score
     |> Decimal.mult(Decimal.new(100))

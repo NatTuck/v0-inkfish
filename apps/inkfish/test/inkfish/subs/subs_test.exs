@@ -48,12 +48,6 @@ defmodule Inkfish.SubsTest do
       assert drop_assocs(sub) == drop_assocs(Subs.get_sub!(sub.id))
     end
 
-    test "delete_sub/1 deletes the sub" do
-      sub = sub_fixture()
-      assert {:ok, %Sub{}} = Subs.delete_sub(sub)
-      assert_raise Ecto.NoResultsError, fn -> Subs.get_sub!(sub.id) end
-    end
-
     test "change_sub/1 returns a sub changeset" do
       sub = sub_fixture()
       assert %Ecto.Changeset{} = Subs.change_sub(sub)
