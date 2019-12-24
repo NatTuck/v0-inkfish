@@ -30,6 +30,7 @@ defmodule Sandbox.MixProject do
       # {:dep_from_git, git: "https://github.com/elixir-lang/my_dep.git", tag: "0.1.0"},
       # {:sibling_app_in_umbrella, in_umbrella: true}
       {:temp, "~> 0.4.0"},
+      {:erlexec, "~> 1.10"},
     ]
   end
 end

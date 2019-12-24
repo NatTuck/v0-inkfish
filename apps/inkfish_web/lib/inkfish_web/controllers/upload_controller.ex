@@ -57,6 +57,21 @@ defmodule InkfishWeb.UploadController do
     end
   end
 
+  def download(conn, %{"id" => id, "name" => name}) do
+    upload = Uploads.get_upload!(id)
+    if name == upload.name do
+      path = Upload.upload_path(upload)
+
+      conn
+      |> put_resp_header("content-type", "application/octet-stream")
+      |> put_resp_header("content-disposition", "attachment; filename=\"#{upload.name}\"")
+      |> send_resp(200, File.read!(path))
+    else
+      conn
+      |> redirect(to: Routes.upload_path(conn, :download, upload, upload.name))
+    end
+  end
+
   def show(conn, %{"id" => id}) do
     show(conn, %{"id" => id, "show" => false})
   end

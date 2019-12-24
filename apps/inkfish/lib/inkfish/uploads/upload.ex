@@ -144,4 +144,13 @@ defmodule Inkfish.Uploads.Upload do
   def unpack(upload) do
     Sandbox.extract_archive(upload_path(upload), unpacked_path(upload))
   end
+
+  def upload_url(upload) do
+    host = Application.get_env(:inkfish, :download_host)
+    upload_url(host, upload)
+  end
+
+  def upload_url(host, upload) do
+    "#{host}/uploads/#{upload.id}/#{upload.name}"
+  end
 end

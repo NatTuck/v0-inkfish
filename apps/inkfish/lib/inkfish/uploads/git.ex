@@ -1,6 +1,9 @@
 defmodule Inkfish.Uploads.Git do
   use GenServer
 
+  # TODO:
+  #  - Abstract this to also handle running sandboxes.
+
   def start_clone(url, channel, user_id) do
     state0 = %{url: url, channel: channel, user_id: user_id}
     GenServer.start_link(__MODULE__, state0)

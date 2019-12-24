@@ -13,15 +13,10 @@
   <tbody>
 <%= for upload <- @uploads do %>
     <tr>
-      <td><%= upload.name %></td>
+      <td><%= link(upload.name,
+          to: Routes.upload_path(@conn, :download, upload.id, upload.name)) %></td>
       <td><%= upload.kind %></td>
       <td><%= user_display_name(upload.user) %></td>
-
-      <td>
-        <%= link "Show", to: Routes.admin_upload_path(@conn, :show, upload) %>
-        <%= link "Edit", to: Routes.admin_upload_path(@conn, :edit, upload) %>
-        <%= link "Delete", to: Routes.admin_upload_path(@conn, :delete, upload), method: :delete, data: [confirm: "Are you sure?"] %>
-      </td>
     </tr>
 <% end %>
   </tbody>

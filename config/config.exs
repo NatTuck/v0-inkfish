@@ -15,6 +15,9 @@ import_config "../apps/*/config/config.exs"
 config :inkfish,
   email_domains: ["husky.neu.edu", "neu.edu"]
 
+config :inkfish,
+  download_host: "https://inkfish.ccs.neu.edu"
+
 # Configures Elixir's Logger
 config :logger, :console,
   format: "$time $metadata[$level] $message\n",
