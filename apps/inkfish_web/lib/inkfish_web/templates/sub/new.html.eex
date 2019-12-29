@@ -82,6 +82,10 @@
     </div>
   </div>
 
+  <div id="upload-root">
+    React component loading...
+  </div>
+
   <div>
     <%= submit "Submit", class: "btn btn-primary" %>
   </div>

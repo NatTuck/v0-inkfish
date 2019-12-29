@@ -6,7 +6,7 @@ defmodule Inkfish.Itty.Server do
   @linger_seconds 60
 
   def start_link(uuid, cmd, env) do
-    GenServer.start_link(__MODULE__, {cmd, env}, name: reg(uuid))
+    GenServer.start_link(__MODULE__, {uuid, cmd, env}, name: reg(uuid))
   end
 
   def reg(uuid) do
@@ -42,18 +42,26 @@ defmodule Inkfish.Itty.Server do
 
   @doc """
   Unsubscribes from this tty.
+
+  Returns {:ok, result_text}
   """
   def close(uuid, rpid) do
     GenServer.call(reg(uuid), {:close, rpid})
   end
 
   @impl true
-  def init({cmd, env}) do
+  def init({cookie, cmd, env}) do
+    env = [{"COOKIE", cookie} | env]
+    |> Enum.map(fn {kk, vv} ->
+      {to_charlist(to_string(kk)), to_charlist(vv)} end
+    )
+
     cmd
     |> to_charlist()
     |> :exec.run([{:env, env}, {:stdout, self()}, {:stderr, self()}, :monitor])
 
     state0 = %{
+      cookie: cookie,
       stdout: [],
       stderr: [],
       exit: nil,
@@ -65,14 +73,19 @@ defmodule Inkfish.Itty.Server do
 
   @impl true
   def handle_call({:open, rpid}, _from, state0) do
-    resp = Map.take(state0, [:stdout, :stderr, :exit])
+    resp = %{
+      stdout: state0.stdout |> Enum.reverse |> Enum.join(""),
+      stderr: state0.stderr |> Enum.reverse |> Enum.join(""),
+      exit: state0.exit,
+    }
     state1 = Map.update! state0, :subs, &(MapSet.put(&1, rpid))
-    {:reply, resp, state1}
+    {:reply, {:ok, resp}, state1}
   end
 
   def handle_call({:close, rpid}, _from, state0) do
     state1 = Map.update! state0, :subs, &(MapSet.delete(&1, rpid))
-    {:reply, :ok, state1}
+    result = get_output(state1.stdout, state1.cookie)
+    {:reply, {:ok, result}, state1}
   end
 
   def handle_info({:stdout, _, text}, state0) do
@@ -102,6 +115,18 @@ defmodule Inkfish.Itty.Server do
   def broadcast(pids, msg) do
     Enum.each pids, fn pid ->
       send pid, msg
+    end
+  end
+
+  def get_output(lines, cookie) do
+    splits = lines
+    |> Enum.reverse
+    |> Enum.join("")
+    |> String.split("\n#{cookie}\n", parts: 2, trim: true)
+
+    case splits do
+      [_, outp] -> outp
+      _ -> ""
     end
   end
 end
