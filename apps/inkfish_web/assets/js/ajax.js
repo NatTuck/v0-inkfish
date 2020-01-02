@@ -28,9 +28,9 @@ export async function post(path, body) {
   return resp.json();
 }
 
-export async function upload_file(file, kind) {
+export async function upload_file(file, token) {
   let body = new FormData();
-  body.append("upload[kind]", kind);
+  body.append("upload[token]", token);
   body.append("upload[upload]", file);
   let resp = await fetch('/ajax/uploads', {
     method: 'post',

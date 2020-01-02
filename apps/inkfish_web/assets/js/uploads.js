@@ -8,7 +8,7 @@ import socket from "./socket";
 
 function setup() {
   if (window.current_page == 'sub/new') {
-    setup_cloner();
+    //setup_cloner();
   }
 
   if ($('.upload-drop-area')) {

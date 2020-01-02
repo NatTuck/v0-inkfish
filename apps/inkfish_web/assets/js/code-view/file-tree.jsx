@@ -2,7 +2,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import TreeMenu, {defaultChildren} from 'react-simple-tree-menu';
-import {ListGroup, ListGroupItem, Input} from 'reactstrap';
+import { ListGroup, ListGroupItem, Input } from 'reactstrap';
 import _ from 'lodash';
 import deepFreeze from 'deep-freeze';
 import viewer from './code-viewer';

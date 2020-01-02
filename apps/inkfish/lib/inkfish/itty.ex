@@ -5,11 +5,19 @@ defmodule Inkfish.Itty do
   Returns {:ok, uuid}
   """
   def start(cmd) do
-    Server.start(cmd, [])
+    Server.start(cmd, [], &null_fn/1)
   end
 
   def start(cmd, env) do
-    Server.start(cmd, env)
+    Server.start(cmd, env, &null_fn/1)
+  end
+
+  def start(cmd, env, on_exit) do
+    Server.start(cmd, env, on_exit)
+  end
+
+  defp null_fn(_) do
+    :ok
   end
 
   @doc """

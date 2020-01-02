@@ -31,7 +31,7 @@ import "./grades/number-input";
 import "./code-view/init";
 import init_dates from "./human-date";
 import init_teams from "./teams/team-manager";
-import init_upload from "./upload";
+import init_upload from "./uploads/upload";
 
 $(() => {
   init_upload('upload-root', 'sub_upload_id');
