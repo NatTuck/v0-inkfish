@@ -24,10 +24,13 @@ defmodule InkfishWeb.SubController do
     asg = conn.assigns[:assignment]
     reg = conn.assigns[:current_reg]
     team = Teams.get_active_team(asg, reg)
+    nonce = Base.encode16(:crypto.strong_rand_bytes(32))
+    token = Phoenix.Token.sign(conn, "upload", %{kind: "sub", nonce: nonce})
 
     if team do
       changeset = Subs.change_sub(%Sub{})
-      render(conn, "new.html", changeset: changeset, team: team)
+      render(conn, "new.html", changeset: changeset,
+        team: team, nonce: nonce, token: token)
     else
       conn
       |> put_flash(:error, "You need a team to submit.")
@@ -52,7 +55,11 @@ defmodule InkfishWeb.SubController do
         |> redirect(to: Routes.sub_path(conn, :show, sub))
 
       {:error, %Ecto.Changeset{} = changeset} ->
-        render(conn, "new.html", changeset: changeset, team: team)
+        nonce = Base.encode16(:crypto.strong_rand_bytes(32))
+        token = Phoenix.Token.sign(conn, "upload", %{kind: "sub", nonce: nonce})
+
+        render(conn, "new.html", changeset: changeset, team: team,
+          nonce: nonce, token: token)
     end
   end
 

@@ -10,6 +10,7 @@ import css from "../css/app.scss";
 //
 // Import dependencies
 
+import "regenerator-runtime/runtime";
 import "phoenix_html";
 import jQuery from 'jquery';
 window.$ = jQuery;
@@ -30,8 +31,11 @@ import "./grades/number-input";
 import "./code-view/init";
 import init_dates from "./human-date";
 import init_teams from "./teams/team-manager";
+import init_upload from "./uploads/upload";
 
 $(() => {
+  init_upload('upload-root', 'sub_upload_id');
+
   init_dates();
   init_date_time_pickers();
   init_teams();

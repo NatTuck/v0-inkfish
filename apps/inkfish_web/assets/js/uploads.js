@@ -8,7 +8,7 @@ import socket from "./socket";
 
 function setup() {
   if (window.current_page == 'sub/new') {
-    setup_cloner();
+    //setup_cloner();
   }
 
   if ($('.upload-drop-area')) {
@@ -36,7 +36,8 @@ function setup_cloner() {
   let channel = join_channel(ch_id);
   console.log("joined channel: clone:" + ch_id);
 
-  channel.on("print", ({msg}) => {
+  channel.on("print", ({text}) => {
+    let msg = text;
     msg = msg.replace(/\r$/, "\n");
     $('#git-output-log').append(msg);
     let scroll_fn = () => {

@@ -16,4 +16,8 @@ defmodule Sandbox.Shell do
       {:error, text}
     end
   end
+
+  def run_script!(text) do
+    :ok = run_script(text)
+  end
 end

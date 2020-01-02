@@ -40,7 +40,8 @@ defmodule InkfishWeb.Router do
     post "/session/resume", SessionController, :resume
     resources "/users", UserController, only: [:show, :edit, :update]
     resources "/uploads", UploadController, only: [:create, :show]
-    get "/uploads/:id/thumb", UploadController, :thumb
+    get "/uploads/:id/_meta/thumb", UploadController, :thumb
+    get "/uploads/:id/:name", UploadController, :download
     resources "/courses", CourseController, only: [:index, :show] do
       resources "/join_reqs", JoinReqController, only: [:new, :create]
     end

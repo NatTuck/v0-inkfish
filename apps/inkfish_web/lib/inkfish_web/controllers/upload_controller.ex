@@ -3,8 +3,21 @@ defmodule InkfishWeb.UploadController do
 
   alias Inkfish.Uploads
   alias Inkfish.Uploads.Upload
+  alias Inkfish.Uploads.Git
+
+  defp check_token(conn, params = %{"token" => token}) do
+    case Phoenix.Token.verify(conn, "upload", token, max_age: 86400) do
+      {:ok, %{kind: kind}} ->
+        Map.put(params, "kind", kind)
+      _else ->
+        params
+    end
+  end
+  defp check_token(_conn, params), do: params
 
   def create(conn, %{"upload" => upload_params}) do
+    upload_params = check_token(conn, upload_params)
+
     upload_params = Map.put(upload_params, "user_id", conn.assigns[:current_user].id)
     mode = conn.assigns[:client_mode]
     case {mode, Uploads.create_upload(upload_params)} do
@@ -20,6 +33,7 @@ defmodule InkfishWeb.UploadController do
         resp = %{
           status: "created",
           kind: upload.kind,
+          name: upload.name,
           path: Routes.upload_path(conn, :show, upload),
           id: upload.id,
         }
@@ -54,6 +68,21 @@ defmodule InkfishWeb.UploadController do
         |> put_resp_header("content-type", "application/octet-stream")
         |> put_resp_header("content-disposition", "attachment; filename=\"#{upload.name}\"")
         |> send_resp(200, File.read!(path))
+    end
+  end
+
+  def download(conn, %{"id" => id, "name" => name}) do
+    upload = Uploads.get_upload!(id)
+    if name == upload.name do
+      path = Upload.upload_path(upload)
+
+      conn
+      |> put_resp_header("content-type", "application/octet-stream")
+      |> put_resp_header("content-disposition", "attachment; filename=\"#{upload.name}\"")
+      |> send_resp(200, File.read!(path))
+    else
+      conn
+      |> redirect(to: Routes.upload_path(conn, :download, upload, upload.name))
     end
   end
 

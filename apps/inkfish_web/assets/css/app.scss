@@ -6,6 +6,9 @@
 @import "~codemirror/lib/codemirror";
 @import "~jquery-datetimepicker/jquery.datetimepicker";
 
+@import "./dropzone";
+@import "./console";
+
 .header-logo { 
     width: 64px; 
     height: 64px;
