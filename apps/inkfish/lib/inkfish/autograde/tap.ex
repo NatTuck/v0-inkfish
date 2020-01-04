@@ -10,8 +10,8 @@ defmodule Inkfish.Autograde.Tap do
     try do
       score!(text)
     rescue
-      err ->
-        IO.inspect({__MODULE__, err})
+      _err ->
+        #IO.inspect({__MODULE__, _err})
         {:ok, {0, 1}}
     end
   end

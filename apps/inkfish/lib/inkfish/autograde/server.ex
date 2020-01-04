@@ -5,6 +5,7 @@ defmodule Inkfish.Autograde.Server do
   alias Inkfish.Grades
   alias Inkfish.Grades.Grade
   alias Inkfish.Uploads.Upload
+  alias Inkfish.Autograde.Tap
 
   def start_link(grade_id) do
     GenServer.start_link(__MODULE__, grade_id)
@@ -85,11 +86,18 @@ defmodule Inkfish.Autograde.Server do
       log: log,
     }
     json = Jason.encode!(data)
-    path = Grades.get_grade_for_autograding!(state.grade_id)
-    |> Grade.log_path()
-
-    IO.puts("Would write data to path: #{path}")
+    grade = Grades.get_grade_for_autograding!(state.grade_id)
+    path = Grade.log_path(grade)
     File.write!(path, json)
+
+    if status == :normal do
+      {:ok, {passed, total}} = Tap.score(result)
+      score = passed
+      |> Decimal.div(total)
+      |> Decimal.mult(grade.grade_column.points)
+      {:ok, _} = Grades.update_grade(grade, %{score: score})
+    end
+
     {:stop, :normal, state}
   end
 end
