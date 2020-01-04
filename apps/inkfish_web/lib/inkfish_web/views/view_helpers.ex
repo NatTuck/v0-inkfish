@@ -209,6 +209,14 @@ defmodule InkfishWeb.ViewHelpers do
     |> raw
   end
 
+  def render_autograde_log(items) do
+    items
+    |> Enum.map(fn item ->
+      item["text"]
+    end)
+    |> Enum.join("")
+  end
+
   def get_assoc(item, field) do
     data = Map.get(item, field)
     if Ecto.assoc_loaded?(data) do

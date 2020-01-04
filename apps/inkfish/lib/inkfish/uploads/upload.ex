@@ -124,6 +124,13 @@ defmodule Inkfish.Uploads.Upload do
     full
   end
 
+  def logs_path(upload) do
+    base = upload_dir(upload.id)
+    full = Path.join(base, "logs")
+    File.mkdir_p!(full)
+    full
+  end
+
   # Would be nicer to pattern match %Upload{...}, but...
   def upload_dir(%{id: id}) do
     upload_dir(id)

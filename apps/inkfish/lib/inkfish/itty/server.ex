@@ -135,11 +135,12 @@ defmodule Inkfish.Itty.Server do
     |> Enum.sort_by(fn {serial, _, _} -> serial end)
     |> Enum.map(fn {_, _, text} -> text end)
     |> Enum.join("")
-    |> String.split("\n#{cookie}\n", parts: 2, trim: true)
+    |> String.split("\n#{cookie}\n", trim: true)
 
-    case splits do
-      [_, outp] -> outp
-      _ -> ""
+    if length(splits) > 1 do
+      Enum.at(splits, 1)
+    else
+      ""
     end
   end
 end

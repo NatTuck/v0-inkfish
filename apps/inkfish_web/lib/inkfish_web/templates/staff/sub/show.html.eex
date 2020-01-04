@@ -101,12 +101,9 @@
   <% end %>
 </table>
 
-<!--
-
-<h2>Data Dump</h2>
-
-<pre>
-  <%= raw Jason.encode!(@sub_data, pretty: true) %>
-</pre>
-
--->
+<%= unless Enum.empty?(@autogrades) do %>
+  <h2>Autograding Output</h2>
+  <%= Enum.map @autogrades, fn {grade, log} -> %>
+    <p><strong><%= grade.grade_column.name %></strong></p>
+  <% end %>
+<% end %>

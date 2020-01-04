@@ -32,7 +32,9 @@
     <div id="upload-root"
          data-upload-field="sub_upload_id"
          data-nonce="<%= @nonce %>"
-         data-token="<%= @token %>">
+         data-token="<%= @token %>"
+         data-allow-git="<%= @assignment.allow_git %>"
+         data-allow-upload="<%= @assignment.allow_upload %>">
       React component loading...
     </div>
   </div>

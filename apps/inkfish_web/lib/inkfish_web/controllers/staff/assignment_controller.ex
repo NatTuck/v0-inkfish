@@ -28,6 +28,7 @@ defmodule InkfishWeb.Staff.AssignmentController do
       teamset_id: hd(teamsets).id,
       weight: Decimal.new("1.0"),
       due: due,
+      allow_git: false,
     }
     changeset = Assignments.change_assignment(as)
     render(conn, "new.html", changeset: changeset, teamsets: teamsets)

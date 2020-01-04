@@ -15,12 +15,22 @@ defmodule InkfishWeb.Staff.SubController do
 
   alias Inkfish.Subs
   alias Inkfish.Teams
+  alias Inkfish.Grades.Grade
 
   def show(conn, %{"id" => id}) do
     sub = Subs.get_sub!(id)
     sub = %{sub | team: Teams.get_team!(sub.team_id)}
     sub_data = InkfishWeb.Staff.SubView.render("sub.json", sub: sub)
-    render(conn, "show.html", sub: sub, sub_data: sub_data)
+
+    autogrades = sub.grades
+    |> Enum.filter(&(!is_nil(&1.log_uuid)))
+    |> Enum.map(fn grade ->
+      grade = %{grade | sub: sub}
+      log = Grade.get_log(grade)
+      {grade, log}
+    end)
+
+    render(conn, "show.html", sub: sub, sub_data: sub_data, autogrades: autogrades)
   end
 
   def update(conn, %{"id" => _id, "sub" => params}) do

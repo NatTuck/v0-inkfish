@@ -76,7 +76,6 @@ defmodule InkfishWeb.CloneChannel do
 
   def handle_info({:exit, status}, socket) do
     got_exit(status, socket)
-    # {:ok, upload_id} = Git.create_upload(results, kind)
     {:noreply, socket}
   end
 end

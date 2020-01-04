@@ -194,6 +194,18 @@ defmodule Inkfish.Grades do
                 grade_column: gc]
   end
 
+  def get_grade_for_autograding!(id) do
+    Repo.one! from grade in Grade,
+      where: grade.id == ^id,
+      inner_join: sub in assoc(grade, :sub),
+      inner_join: up in assoc(sub, :upload),
+      inner_join: as in assoc(sub, :assignment),
+      inner_join: gc in assoc(grade, :grade_column),
+      left_join: gc_up in assoc(gc, :upload),
+      preload: [sub: {sub, assignment: as, upload: up},
+                grade_column: {gc, upload: gc_up}]
+  end
+
   @doc """
   Creates a grade.
 
