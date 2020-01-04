@@ -2,21 +2,18 @@ defmodule InkfishWeb.AutogradeChannelTest do
   use InkfishWeb.ChannelCase
 
   setup do
+    user = Inkfish.Users.get_user_by_login!("bob")
+    nonce = Base.encode16(:crypto.strong_rand_bytes(32))
+    token = Phoenix.Token.sign(InkfishWeb.Endpoint, "autograde", %{uuid: nonce})
+
     {:ok, _, socket} =
-      socket(InkfishWeb.UserSocket, "user_id", %{some: :assign})
-      |> subscribe_and_join(InkfishWeb.AutogradeChannel, "autograde:lobby")
-
+      socket(InkfishWeb.UserSocket, nil, %{user_id: user.id})
+      |> subscribe_and_join(
+           InkfishWeb.AutogradeChannel,
+           "autograde:" <> nonce,
+           %{"token" => token}
+      )
     {:ok, socket: socket}
-  end
-
-  test "ping replies with status ok", %{socket: socket} do
-    ref = push socket, "ping", %{"hello" => "there"}
-    assert_reply ref, :ok, %{"hello" => "there"}
-  end
-
-  test "shout broadcasts to autograde:lobby", %{socket: socket} do
-    push socket, "shout", %{"hello" => "all"}
-    assert_broadcast "shout", %{"hello" => "all"}
   end
 
   test "broadcasts are pushed to the client", %{socket: socket} do
