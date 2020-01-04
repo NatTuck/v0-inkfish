@@ -15,6 +15,7 @@ defmodule InkfishWeb.Staff.SubController do
 
   alias Inkfish.Subs
   alias Inkfish.Teams
+  alias Inkfish.Grades.Grade
 
   def show(conn, %{"id" => id}) do
     sub = Subs.get_sub!(id)
