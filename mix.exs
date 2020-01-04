@@ -7,6 +7,16 @@ defmodule Inkfish.Umbrella.MixProject do
       start_permanent: Mix.env() == :prod,
       deps: deps(),
       aliases: aliases(),
+      version: "0.1.0",
+      releases: [
+        inkfish: [
+          applications: [
+            sandbox: :permanent,
+            inkfish: :permanent,
+            inkfish_web: :permanent,
+          ],
+        ]
+      ],
     ]
   end
 
@@ -26,7 +36,6 @@ defmodule Inkfish.Umbrella.MixProject do
     [
       {:decimal, "~> 1.8"},
       {:jason, "~> 1.1"},
-      {:distillery, "~> 2.1"},
       {:phoenix_integration, "~> 0.6", only: :test},
       {:hound, "~> 1.0", only: :test},
     ]
