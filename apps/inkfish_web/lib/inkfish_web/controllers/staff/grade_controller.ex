@@ -33,7 +33,7 @@ defmodule InkfishWeb.Staff.GradeController do
       {:ok, grade} ->
         Inkfish.Subs.calc_sub_score!(grade.sub_id)
         save_sub_dump!(grade.sub_id)
-        redirect(conn, to: Routes.staff_grade_path(conn, :edit, grade))
+        redirect(conn, to: Routes.staff_grade_path(conn, :edit, grade.id))
       {:error, %Ecto.Changeset{} = _changeset} ->
         conn
         |> put_flash(:error, "Failed to create grade.")
@@ -93,5 +93,21 @@ defmodule InkfishWeb.Staff.GradeController do
 
   def save_sub_dump!(sub_id) do
     Inkfish.Subs.save_sub_dump!(sub_id)
+  end
+
+  def rerun_script(conn, %{"id" => id}) do
+    grade = conn.assigns[:grade]
+    if grade.grade_column.kind == "script" do
+      {:ok, _} = Grades.delete_grade(grade)
+      {:ok, grade} = Grades.create_autograde(grade.sub_id, grade.grade_column_id)
+
+      conn
+      |> put_flash(:info, "Rerunning grading script")
+      |> redirect(to: Routes.staff_sub_path(conn, :show, grade.sub_id))
+    else
+      conn
+      |> put_flash(:error, "Can't rerun non-script grade.")
+      |> redirect(to: Routes.staff_sub_path(conn, :show, grade.sub_id))
+    end
   end
 end

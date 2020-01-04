@@ -102,8 +102,28 @@
 </table>
 
 <%= unless Enum.empty?(@autogrades) do %>
-  <h2>Autograding Output</h2>
+  <h2>Grading Script Output</h2>
   <%= Enum.map @autogrades, fn {grade, log} -> %>
-    <p><strong><%= grade.grade_column.name %></strong></p>
+    <% cset = Inkfish.Grades.change_grade(grade) %>
+    <% path = Routes.staff_grade_path(@conn, :rerun_script, grade) %>
+    <%= form_for cset, path, [method: :post], fn f -> %>
+      <h3>
+        <%= grade.grade_column.name %> &nbsp;
+        <%= if log do %>
+          <%= submit "Rerun Script", class: "btn btn-secondary" %>
+        <% end %>
+      </h3>
+    <% end %>
+    <%= if log do %>
+      <p><strong>Sandbox Exit Status</strong></p>
+      <pre><%= log["status"] %></pre>
+      <p><strong>Test Output</strong></p>
+      <pre><%= log["result"] %></pre>
+      <p><strong>Full Log</strong></p>
+      <pre><%= render_autograde_log(log["log"]) %></pre>
+    <% else %>
+      <p>TODO: Live Grading Log</p>
+      <p>Reload in about a minute to get your results.</p>
+    <% end %>
   <% end %>
 <% end %>

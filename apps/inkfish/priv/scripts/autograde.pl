@@ -40,7 +40,7 @@ close($dockerfile);
 chdir($builddir);
 
 system(qq{docker build . -t "systems:sb-$grade_id"});
-system(qq{time docker run --rm "systems:sb-$grade_id" } .
+system(qq{docker run --rm "systems:sb-$grade_id" } .
        qq{perl /var/tmp/$DRV| tee "$builddir/output.log"});
 system(qq{docker image rm "systems:sb-$grade_id"});
 

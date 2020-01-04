@@ -7,6 +7,7 @@ defmodule Inkfish.Grades do
   alias Inkfish.Repo
 
   alias Inkfish.Grades.GradeColumn
+  alias Inkfish.Autograde
 
   @doc """
   Returns the list of grade_columns.
@@ -242,17 +243,27 @@ defmodule Inkfish.Grades do
     create_grade(attrs)
   end
 
+  def create_autograde(sub_id, gcol_id) do
+    attrs = %{
+      grade_column_id: gcol_id,
+      sub_id: sub_id,
+    }
+    {:ok, grade} = create_grade(attrs)
+    {:ok, uuid} = Autograde.start(grade.id)
+    update_grade(grade, %{log_uuid: uuid})
+  end
+
 
   @doc """
   Updates a grade.
 
   ## Examples
 
-      iex> update_grade(grade, %{field: new_value})
-      {:ok, %Grade{}}
+  iex> update_grade(grade, %{field: new_value})
+  {:ok, %Grade{}}
 
-      iex> update_grade(grade, %{field: bad_value})
-      {:error, %Ecto.Changeset{}}
+  iex> update_grade(grade, %{field: bad_value})
+  {:error, %Ecto.Changeset{}}
 
   """
   def update_grade(%Grade{} = grade, attrs) do
@@ -266,11 +277,11 @@ defmodule Inkfish.Grades do
 
   ## Examples
 
-      iex> delete_grade(grade)
-      {:ok, %Grade{}}
+  iex> delete_grade(grade)
+  {:ok, %Grade{}}
 
-      iex> delete_grade(grade)
-      {:error, %Ecto.Changeset{}}
+  iex> delete_grade(grade)
+  {:error, %Ecto.Changeset{}}
 
   """
   def delete_grade(%Grade{} = grade) do
