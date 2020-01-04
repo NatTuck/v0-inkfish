@@ -19,6 +19,7 @@ defmodule InkfishWeb.SubController do
   alias Inkfish.Subs
   alias Inkfish.Subs.Sub
   alias Inkfish.Teams
+  alias Inkfish.Grades.Grade
 
   def new(conn, _params) do
     asg = conn.assigns[:assignment]
@@ -66,7 +67,16 @@ defmodule InkfishWeb.SubController do
   def show(conn, %{"id" => id}) do
     sub = Subs.get_sub!(id)
     sub = %{sub | team: Teams.get_team!(sub.team_id)}
-    render(conn, "show.html", sub: sub)
+
+    autogrades = sub.grades
+    |> Enum.filter(&(!is_nil(&1.log_uuid)))
+    |> Enum.map(fn grade ->
+      grade = %{grade | sub: sub}
+      log = Grade.get_log(grade)
+      {grade, log}
+    end)
+
+    render(conn, "show.html", sub: sub, autogrades: autogrades)
   end
 
   def files(conn, %{"id" => id}) do

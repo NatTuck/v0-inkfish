@@ -12,6 +12,9 @@ defmodule Inkfish.Subs do
   alias Inkfish.Teams.Team
   alias Inkfish.LocalTime
 
+  alias Inkfish.Autograde
+  alias Inkfish.Grades
+
   def make_zero_sub(as) do
     %Sub{
       active: true,
@@ -129,9 +132,26 @@ defmodule Inkfish.Subs do
     case result do
       {:ok, sub} ->
         set_one_sub_active!(sub)
+        autograde!(sub)
         {:ok, sub}
       error ->
         error
+    end
+  end
+
+  def autograde!(sub) do
+    asg = Inkfish.Assignments.get_assignment!(sub.assignment_id)
+
+    Enum.each asg.grade_columns, fn gcol ->
+      if gcol.kind == "script" do
+        attrs = %{
+          grade_column_id: gcol.id,
+          sub_id: sub.id,
+        }
+        {:ok, grade} = Grades.create_grade(attrs)
+        {:ok, uuid} = Autograde.start(grade.id)
+        {:ok, _grade} = Grades.update_grade(grade, %{log_uuid: uuid})
+      end
     end
   end
 

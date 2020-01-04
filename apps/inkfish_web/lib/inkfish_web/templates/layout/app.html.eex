@@ -73,7 +73,7 @@
         <% end %>
       </div>
       <div class="inkfish-footer">
-        <p>Inkfish copyright &copy; 2018-2019 Nat Tuck. Licensed under the GNU AGPLv3. No
+        <p>Inkfish copyright &copy; 2018-2020 Nat Tuck. Licensed under the GNU AGPLv3. No
           warranty, this code will probably eat your dog. Source code at
           <a href="https://github.com/NatTuck/inkfish">http://github.com/NatTuck/inkfish</a>.
         </p>

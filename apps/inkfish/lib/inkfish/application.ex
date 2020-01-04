@@ -9,6 +9,7 @@ defmodule Inkfish.Application do
     children = [
       Inkfish.Repo,
       Inkfish.Itty.Sup,
+      Inkfish.Autograde.Sup,
     ]
 
     Supervisor.start_link(children, strategy: :one_for_one, name: Inkfish.Supervisor)

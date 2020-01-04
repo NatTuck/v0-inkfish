@@ -86,3 +86,21 @@
     <td><%= show_score(@conn, @sub) %> / <%= assignment_total_points(@assignment) %></td>
   </tr>
 </table>
+
+<%= unless Enum.empty?(@autogrades) do %>
+  <h2>Grading Script Output</h2>
+  <%= Enum.map @autogrades, fn {grade, log} -> %>
+    <h3><%= grade.grade_column.name %></h3>
+    <%= if log do %>
+      <p><strong>Sandbox Exit Status</strong></p>
+      <pre><%= log["status"] %></pre>
+      <p><strong>Test Output</strong></p>
+      <pre><%= log["result"] %></pre>
+      <p><strong>Full Log</strong></p>
+      <pre><%= render_autograde_log(log["log"]) %></pre>
+    <% else %>
+      <p>TODO: Live Grading Log</p>
+      <p>Reload in about a minute to get your results.</p>
+    <% end %>
+  <% end %>
+<% end %>

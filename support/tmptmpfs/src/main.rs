@@ -122,7 +122,9 @@ fn clean_mounts() -> io::Result<()> {
 
                 if ms.contains(&pstr) {
                     match unmount(path.clone()) {
-                        Ok(_) => std::fs::remove_dir(path)?,
+                        Ok(_) => {
+                            let _ = std::fs::remove_dir(path);
+                        },
                         Err(ee) => println!("unmount error: {:?}\n{:?}", &path, ee),
                     }
                 }
@@ -204,7 +206,7 @@ fn unmount(path: PathBuf) -> io::Result<()> {
     println!("{:?}", &cmd);
     let status = cmd.status()?;
     if status.success() {
-        std::fs::remove_dir(&path)?;
+        std::fs::remove_dir(&path).expect("rmdir");
         Ok(())
     }
     else {

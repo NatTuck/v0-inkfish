@@ -14,22 +14,23 @@ export default function init_upload(root_id) {
     let topic = "clone:" + root.dataset.nonce;
     history.join(topic, root.dataset.token);
 
+    let {uploadField, allowGit, allowUpload, token, nonce} = root.dataset;
+    allowGit = (allowGit == "true");
+    allowUpload = (allowUpload == "true");
+
     function gotUploadId(uuid) {
-      let input = document.getElementById(root.dataset.uploadField);
+      let input = document.getElementById(uploadField);
       input.value = uuid;
     }
 
-    ReactDOM.render(<Upload allowGit={true} allowFile={true}
-                            token={root.dataset.token} nonce={root.dataset.nonce}
+    ReactDOM.render(<Upload allowGit={allowGit} allowFile={allowUpload}
+                            token={token} nonce={nonce}
                             gotUploadId={gotUploadId} />, root);
   }
 }
 
 function Upload({allowGit, allowFile, gotUploadId, token, nonce}) {
   let useTabs = allowGit && allowFile;
-  if (!useTabs && allowGit) {
-    state0 = 'git';
-  }
   const [upload, setUpload] = useState(null);
 
   function gotUpload(upload) {
@@ -45,8 +46,8 @@ function Upload({allowGit, allowFile, gotUploadId, token, nonce}) {
   return (
     <div>
       <UploadInfo upload={upload} clearUpload={clearUpload} />
-      <UploadForms useTabs={useTabs} upload={upload} gotUpload={gotUpload}
-                   token={token} nonce={nonce} />
+      <UploadForms useTabs={useTabs} allowGit={allowGit} upload={upload}
+                   gotUpload={gotUpload} token={token} nonce={nonce} />
     </div>
   );
 }
@@ -73,12 +74,15 @@ function UploadInfo({upload, clearUpload}) {
   );
 }
 
-function UploadForms({useTabs, upload, gotUpload, token, nonce}) {
+function UploadForms({useTabs, allowGit, upload, gotUpload, token, nonce}) {
   if (upload) {
     return <div/>;
   }
 
   let tab0 = 'file';
+  if (!useTabs && allowGit) {
+    tab0 = 'git';
+  }
   const [tab, setTab] = useState(tab0);
 
   return (
