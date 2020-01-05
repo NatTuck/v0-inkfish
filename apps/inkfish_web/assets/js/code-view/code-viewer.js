@@ -44,7 +44,10 @@ function init() {
 
 function set_file(info) {
   current_path = info.path;
-  $('#viewer-file-path').text(current_path);
+  let path = window.upload_unpacked_base + "/" + current_path;
+  let icon = feather.icons["download"].toSvg();
+  let link = `${current_path} <a href="${path}">${icon}</a>`;
+  $('#viewer-file-path').html(link);
   mirror.setValue(info.text || "");
   mirror.setOption("mode", info.mode);
 

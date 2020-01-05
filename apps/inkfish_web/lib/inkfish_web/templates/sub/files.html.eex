@@ -22,4 +22,7 @@
  window.code_view_data = JSON.parse(
    "<%= raw(javascript_escape(Jason.encode!(@data))) %>"
  );
+ window.upload_unpacked_base = (
+   "<%= Routes.upload_path(@conn, :show, @sub.upload) <> "/_meta/unpacked" %>"
+ );
 </script>

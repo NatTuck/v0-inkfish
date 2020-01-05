@@ -3,7 +3,6 @@ defmodule InkfishWeb.UploadController do
 
   alias Inkfish.Uploads
   alias Inkfish.Uploads.Upload
-  alias Inkfish.Uploads.Git
 
   defp check_token(conn, params = %{"token" => token}) do
     case Phoenix.Token.verify(conn, "upload", token, max_age: 86400) do
@@ -48,7 +47,7 @@ defmodule InkfishWeb.UploadController do
     end
   end
 
-  def show(conn, %{"id" => id, "show" => show}) do
+ def show(conn, %{"id" => id, "show" => show}) do
     upload = Uploads.get_upload!(id)
     path = Upload.upload_path(upload)
 
@@ -71,6 +70,10 @@ defmodule InkfishWeb.UploadController do
     end
   end
 
+  def show(conn, %{"id" => id}) do
+    show(conn, %{"id" => id, "show" => false})
+  end
+ 
   def download(conn, %{"id" => id, "name" => name}) do
     upload = Uploads.get_upload!(id)
     if name == upload.name do
@@ -86,9 +89,6 @@ defmodule InkfishWeb.UploadController do
     end
   end
 
-  def show(conn, %{"id" => id}) do
-    show(conn, %{"id" => id, "show" => false})
-  end
 
   def thumb(conn, %{"id" => id}) do
     upload = Uploads.get_upload!(id)
@@ -104,6 +104,36 @@ defmodule InkfishWeb.UploadController do
         conn
         |> put_resp_header("content-type", "text/plain")
         |> send_resp(500, "Not a photo, no thumbnail.")
+    end
+  end
+
+  def unpacked(conn, %{"id" => id, "path" => parts}) do
+    rel_path = parts
+    |> Enum.join("/")
+    |> :filename.safe_relative_path()
+
+    if rel_path == :unsafe do
+      conn
+      |> put_resp_header("content-type", "text/plain")
+      |> send_resp(500, "Bad path")
+    else
+      upload = Uploads.get_upload!(id)
+      base = Upload.unpacked_path(upload)
+      path = Path.join(base, rel_path)
+      name = Path.basename(path)
+
+      ctype = (
+        if name =~ ~r/\.jpg/ do
+          "image/jpeg"
+        else
+          "application/octet-stream"
+        end
+      )
+
+      conn
+      |> put_resp_header("content-type", ctype)
+      |> put_resp_header("content-disposition", "attachment; filename=\"#{name}\"")
+      |> send_resp(200, File.read!(path))
     end
   end
 end

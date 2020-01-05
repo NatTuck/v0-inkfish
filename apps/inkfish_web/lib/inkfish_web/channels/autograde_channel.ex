@@ -3,7 +3,7 @@ defmodule InkfishWeb.AutogradeChannel do
 
   def join("autograde:" <> uuid, %{"token" => token}, socket) do
     case Phoenix.Token.verify(InkfishWeb.Endpoint, "autograde", token, max_age: 8640) do
-      {:ok, %{uuid: uuid}} ->
+      {:ok, %{uuid: ^uuid}} ->
         socket = socket
         |> assign(:uuid, uuid)
         {:ok, socket}

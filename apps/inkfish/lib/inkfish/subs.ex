@@ -12,7 +12,6 @@ defmodule Inkfish.Subs do
   alias Inkfish.Teams.Team
   alias Inkfish.LocalTime
 
-  alias Inkfish.Autograde
   alias Inkfish.Grades
 
   def make_zero_sub(as) do
@@ -284,7 +283,7 @@ defmodule Inkfish.Subs do
       {:error, %Ecto.Changeset{}}
 
   """
-  def delete_sub(%Sub{} = sub) do
+  def delete_sub(%Sub{} = _sub) do
     #Repo.delete(sub)
     {:error, "We don't delete subs"}
   end

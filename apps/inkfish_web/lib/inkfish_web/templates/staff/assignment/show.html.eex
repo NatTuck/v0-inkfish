@@ -100,7 +100,7 @@
 <%= unless @assignment.allow_git || @assignment.allow_upload do %>
 <div>
   <% path = Routes.staff_assignment_path(@conn, :create_fake_subs, @assignment) %>
-  <%= form_for @conn, path, fn f -> %>
+  <%= form_for @conn, path, fn _f -> %>
     <%= submit("Create Fake Subs", class: "btn btn-secondary",
       data: [confirm: "Are you sure?"]) %>
   <% end %>

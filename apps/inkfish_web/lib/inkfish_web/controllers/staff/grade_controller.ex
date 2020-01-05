@@ -70,7 +70,8 @@ defmodule InkfishWeb.Staff.GradeController do
     |> Map.put(:edit, true)
     |> Map.put(:grade_id, id)
     |> Map.put(:grade, grade_json)
-    render(conn, "edit.html", grade: grade, changeset: changeset,
+    sub = Inkfish.Subs.get_sub!(grade.sub_id)
+    render(conn, "edit.html", grade: grade, sub: sub, changeset: changeset,
       data: data, rubric: rubric)
   end
 
@@ -95,7 +96,7 @@ defmodule InkfishWeb.Staff.GradeController do
     Inkfish.Subs.save_sub_dump!(sub_id)
   end
 
-  def rerun_script(conn, %{"id" => id}) do
+  def rerun_script(conn, %{"id" => _id}) do
     grade = conn.assigns[:grade]
     if grade.grade_column.kind == "script" do
       {:ok, _} = Grades.delete_grade(grade)

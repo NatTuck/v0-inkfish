@@ -70,13 +70,15 @@ defmodule InkfishWeb.ViewHelpers do
 
   def show_letter_grade(%Course{} = _course, nil), do: "∅"
 
-  def show_letter_grade(%Course{} = course, %Decimal{} = score) do
+  def show_letter_grade(%Course{} = _course, %Decimal{} = score) do
     num = score
     |> Decimal.mult(Decimal.new(100))
     |> Decimal.round()
     |> Decimal.to_integer
 
-    num = num + 220
+    # FIXME: Global scale. Should be per course.
+    # Scale for 5610 Fall 2019 was 2.2%.
+    num = num + 0
 
     cond do
       num >= 9500 -> "A"
