@@ -107,7 +107,7 @@
   <%= Enum.map @autogrades, fn {grade, log} -> %>
     <% cset = Inkfish.Grades.change_grade(grade) %>
     <% path = Routes.staff_grade_path(@conn, :rerun_script, grade) %>
-    <%= form_for cset, path, [method: :post], fn f -> %>
+    <%= form_for cset, path, [method: :post], fn _f -> %>
       <h3>
         <%= grade.grade_column.name %> &nbsp;
         <%= if log do %>

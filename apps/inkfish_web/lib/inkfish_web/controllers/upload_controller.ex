@@ -3,7 +3,6 @@ defmodule InkfishWeb.UploadController do
 
   alias Inkfish.Uploads
   alias Inkfish.Uploads.Upload
-  alias Inkfish.Uploads.Git
 
   defp check_token(conn, params = %{"token" => token}) do
     case Phoenix.Token.verify(conn, "upload", token, max_age: 86400) do
@@ -48,7 +47,7 @@ defmodule InkfishWeb.UploadController do
     end
   end
 
-  def show(conn, %{"id" => id, "show" => show}) do
+ def show(conn, %{"id" => id, "show" => show}) do
     upload = Uploads.get_upload!(id)
     path = Upload.upload_path(upload)
 
@@ -71,6 +70,10 @@ defmodule InkfishWeb.UploadController do
     end
   end
 
+  def show(conn, %{"id" => id}) do
+    show(conn, %{"id" => id, "show" => false})
+  end
+ 
   def download(conn, %{"id" => id, "name" => name}) do
     upload = Uploads.get_upload!(id)
     if name == upload.name do
@@ -86,9 +89,6 @@ defmodule InkfishWeb.UploadController do
     end
   end
 
-  def show(conn, %{"id" => id}) do
-    show(conn, %{"id" => id, "show" => false})
-  end
 
   def thumb(conn, %{"id" => id}) do
     upload = Uploads.get_upload!(id)
@@ -135,9 +135,5 @@ defmodule InkfishWeb.UploadController do
       |> put_resp_header("content-disposition", "attachment; filename=\"#{name}\"")
       |> send_resp(200, File.read!(path))
     end
-  end
-
-  defp sanitize(path) do
-    path
   end
 end
