@@ -26,7 +26,7 @@ mix phx.digest
 cd ../../
 
 echo "Generating release..."
-mix release
+mix release --overwrite
 
 #echo "Stopping old copy of app, if any..."
 #_build/prod/rel/draw/bin/practice stop || true

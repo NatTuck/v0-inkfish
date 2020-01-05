@@ -86,7 +86,7 @@ defmodule InkfishWeb.Staff.AssignmentController do
     |> redirect(to: Routes.staff_course_path(conn, :show, conn.assigns[:course]))
   end
 
-  def create_fake_subs(conn, %{"id" => id}) do
+  def create_fake_subs(conn, %{"id" => _id}) do
     assignment = conn.assigns[:assignment]
 
     Assignments.create_fake_subs!(assignment, conn.assigns[:current_user])

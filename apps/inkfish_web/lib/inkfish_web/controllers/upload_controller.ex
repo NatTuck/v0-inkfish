@@ -106,4 +106,38 @@ defmodule InkfishWeb.UploadController do
         |> send_resp(500, "Not a photo, no thumbnail.")
     end
   end
+
+  def unpacked(conn, %{"id" => id, "path" => parts}) do
+    rel_path = parts
+    |> Enum.join("/")
+    |> :filename.safe_relative_path()
+
+    if rel_path == :unsafe do
+      conn
+      |> put_resp_header("content-type", "text/plain")
+      |> send_resp(500, "Bad path")
+    else
+      upload = Uploads.get_upload!(id)
+      base = Upload.unpacked_path(upload)
+      path = Path.join(base, rel_path)
+      name = Path.basename(path)
+
+      ctype = (
+        if name =~ ~r/\.jpg/ do
+          "image/jpeg"
+        else
+          "application/octet-stream"
+        end
+      )
+
+      conn
+      |> put_resp_header("content-type", ctype)
+      |> put_resp_header("content-disposition", "attachment; filename=\"#{name}\"")
+      |> send_resp(200, File.read!(path))
+    end
+  end
+
+  defp sanitize(path) do
+    path
+  end
 end

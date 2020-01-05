@@ -57,6 +57,8 @@ defmodule Inkfish.Uploads.Data do
   def set_mode(info, base, rel) do
     name = Path.basename(rel)
     cond do
+      info.size > 4096 ->
+        info
       name =~ ~r/\.ex$/i ->
         Map.put(info, :mode, "elixir")
       name =~ ~r/\.c$/i ->
@@ -64,7 +66,7 @@ defmodule Inkfish.Uploads.Data do
       text_file?(Path.join(base, rel)) ->
         Map.put(info, :mode, "null")
       true ->
-          info
+        info
     end
   end
 

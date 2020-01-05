@@ -41,6 +41,7 @@ defmodule InkfishWeb.Router do
     resources "/users", UserController, only: [:show, :edit, :update]
     resources "/uploads", UploadController, only: [:create, :show]
     get "/uploads/:id/_meta/thumb", UploadController, :thumb
+    get "/uploads/:id/_meta/unpacked/*path", UploadController, :unpacked
     get "/uploads/:id/:name", UploadController, :download
     resources "/courses", CourseController, only: [:index, :show] do
       resources "/join_reqs", JoinReqController, only: [:new, :create]

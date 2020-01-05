@@ -33,6 +33,9 @@
  window.code_view_data = JSON.parse(
    "<%= raw(javascript_escape(Jason.encode!(@data))) %>"
  );
+ window.upload_unpacked_base = (
+   "<%= Routes.upload_path(@conn, :show, @sub.upload) <> "/_meta/unpacked" %>"
+ );
  window.line_comment_paths = {
    create: "<%= Routes.ajax_staff_grade_line_comment_path(@conn, :create, @grade) %>",
    update: "<%= Routes.ajax_staff_line_comment_path(@conn, :update, :ID) %>",
