@@ -1,9 +1,12 @@
 #!/bin/bash
 
+CMD=`mix db.dump | tail -n 1`
+FILE=/tmp/dump-`date +%Y%m%d-%s`.sql
+
 if [[ $# -ne 1 ]]; then
-    echo "Usage: $0 output.dump"
-    exit 1
+    bash -c "$CMD" > $FILE
+    echo "Dumped to: $FILE"
+else
+    bash -c "$CMD" > $1
 fi
 
-CMD=`mix db.dump | tail -n 1`
-bash -c "$CMD" > $1
