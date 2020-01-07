@@ -207,6 +207,13 @@ defmodule Inkfish.Grades do
                 grade_column: {gc, upload: gc_up}]
   end
 
+  def get_grade_by_log_uuid(uuid) do
+    Repo.one from grade in Grade,
+      where: grade.log_uuid == ^uuid,
+      inner_join: gc in assoc(grade, :grade_column),
+      preload: [grade_column: gc]
+  end
+
   @doc """
   Creates a grade.
 

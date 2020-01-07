@@ -104,7 +104,7 @@
 
 <%= unless Enum.empty?(@autogrades) do %>
   <h2>Grading Script Output</h2>
-  <%= Enum.map @autogrades, fn {grade, log} -> %>
+  <%= Enum.map @autogrades, fn {grade, token, log} -> %>
     <% cset = Inkfish.Grades.change_grade(grade) %>
     <% path = Routes.staff_grade_path(@conn, :rerun_script, grade) %>
     <%= form_for cset, path, [method: :post], fn _f -> %>
@@ -123,8 +123,12 @@
       <p><strong>Full Log</strong></p>
       <pre><%= render_autograde_log(log["log"]) %></pre>
     <% else %>
-      <p>TODO: Live Grading Log</p>
-      <p>Reload in about a minute to get your results.</p>
+      <div class="autograde-log"
+           data-topic="<%= "autograde:" <> grade.log_uuid %>"
+           data-token="<%= token %>">
+        <!-- React component in js/autograde.jsx -->
+        [react]
+      </div>
     <% end %>
   <% end %>
 <% end %>

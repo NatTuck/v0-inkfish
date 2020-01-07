@@ -32,9 +32,11 @@ import "./code-view/init";
 import init_dates from "./human-date";
 import init_teams from "./teams/team-manager";
 import init_upload from "./uploads/upload";
+import init_autograde from './autograde';
 
 $(() => {
   init_upload('upload-root', 'sub_upload_id');
+  init_autograde();
 
   init_dates();
   init_date_time_pickers();

@@ -27,7 +27,8 @@ defmodule InkfishWeb.Staff.SubController do
     |> Enum.map(fn grade ->
       grade = %{grade | sub: sub}
       log = Grade.get_log(grade)
-      {grade, log}
+      token = Phoenix.Token.sign(conn, "autograde", %{uuid: grade.log_uuid})
+      {grade, token, log}
     end)
 
     render(conn, "show.html", sub: sub, sub_data: sub_data, autogrades: autogrades)

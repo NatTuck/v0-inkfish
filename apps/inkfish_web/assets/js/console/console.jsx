@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
+import classnames from 'classnames';
 
 import * as history from './history';
 
@@ -12,7 +13,7 @@ function scroll_down(elem) {
   elem.scrollTop = elem.scrollHeight - elem.clientHeight;
 }
 
-export default function Console({topic}) {
+export default function Console({topic, className}) {
   // Normalize data to remove stray carriage returns.
   const [posn, setPosn] = useState(0);
   const [elem_id, _] = useState("console-" + (console_count++));
@@ -31,7 +32,7 @@ export default function Console({topic}) {
   let text = data.join("").replace(/[^\n]*\r(?!\n)/g, "");
 
   return (
-    <pre className="console" id={elem_id}>
+    <pre className={classnames(className, 'console')} id={elem_id}>
       {text}
     </pre>
   );
