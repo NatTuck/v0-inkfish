@@ -35,7 +35,7 @@ export default function GitTab({gotUpload, token, nonce}) {
         </Col>
       </Row>
       <Row>
-        <Console topic={topic} />
+        <Console topic={topic} className="clone-console" />
       </Row>
     </Card>
   );

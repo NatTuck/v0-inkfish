@@ -16,6 +16,9 @@ defmodule InkfishWeb.AutogradeChannelTest do
     {:ok, socket: socket}
   end
 
+  # TODO: Probably fake an autograding process to test this
+  # and maybe the git channel with a dummy script.
+  @tag :skip
   test "broadcasts are pushed to the client", %{socket: socket} do
     broadcast_from! socket, "broadcast", %{"some" => "data"}
     assert_push "broadcast", %{"some" => "data"}

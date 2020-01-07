@@ -89,7 +89,7 @@
 
 <%= unless Enum.empty?(@autogrades) do %>
   <h2>Grading Script Output</h2>
-  <%= Enum.map @autogrades, fn {grade, log} -> %>
+  <%= Enum.map @autogrades, fn {grade, token, log} -> %>
     <h3><%= grade.grade_column.name %></h3>
     <%= if log do %>
       <p><strong>Sandbox Exit Status</strong></p>
@@ -99,8 +99,12 @@
       <p><strong>Full Log</strong></p>
       <pre><%= render_autograde_log(log["log"]) %></pre>
     <% else %>
-      <p>TODO: Live Grading Log</p>
-      <p>Reload in about a minute to get your results.</p>
+      <div class="autograde-log"
+           data-topic="<%= "autograde:" <> grade.log_uuid %>"
+           data-token="<%= token %>">
+        <!-- React component in js/autograde.jsx -->
+        [react]
+      </div>
     <% end %>
   <% end %>
 <% end %>
