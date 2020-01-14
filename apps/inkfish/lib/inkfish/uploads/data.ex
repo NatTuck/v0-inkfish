@@ -31,9 +31,33 @@ defmodule Inkfish.Uploads.Data do
   end
 
   def read_list(base, rel, items) do
-    Enum.map items, fn item ->
+    Enum.map(items, fn item ->
       relp = Path.join(rel, item)
       read_tree(base, relp)
+    end)
+  end
+
+  def add_xtra_file(nodes, rel) do
+    if rel == "" do
+      name = "Ω_grading_extra.txt"
+      text = """
+      Bonus file for extra grading space.
+      - one
+      - two
+      - green
+      - lemon
+      """
+      xtra = %{
+        key: name,
+        path: name,
+        label: name,
+        type: "text/plain",
+        size: String.length(text),
+        text: text,
+      }
+      [xtra | nodes]
+    else
+      nodes
     end
   end
 
@@ -41,6 +65,8 @@ defmodule Inkfish.Uploads.Data do
     path = Path.join(base, rel)
     items = File.ls!(path)
     nodes = read_list(base, rel, items)
+    |> add_xtra_file(rel)
+    |> Enum.sort_by(&(&1.path))
     Map.put(info, :nodes, nodes)
   end
 
