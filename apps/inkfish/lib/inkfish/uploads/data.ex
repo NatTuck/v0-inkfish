@@ -82,8 +82,13 @@ defmodule Inkfish.Uploads.Data do
 
   def set_mode(info, base, rel) do
     name = Path.basename(rel)
+
+
+
     cond do
       info.size > 4096 ->
+        info
+      name =~ ~r/^\./ ->
         info
       name =~ ~r/\.ex$/i ->
         Map.put(info, :mode, "elixir")
@@ -98,7 +103,7 @@ defmodule Inkfish.Uploads.Data do
 
   def read_text(info, base, rel) do
     path = Path.join(base, rel)
-    if info[:mode] do
+    if info[:mode] && text_file?(path) do
       text = File.read!(path)
       Map.put(info, :text, text)
     else
