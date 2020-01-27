@@ -86,7 +86,7 @@ defmodule Inkfish.Uploads.Data do
 
 
     cond do
-      info.size > 4096 ->
+      info.size > 8192 ->
         info
       name =~ ~r/^\./ ->
         info
@@ -113,6 +113,6 @@ defmodule Inkfish.Uploads.Data do
 
   def text_file?(path) do
     {type, 0} = System.cmd("file", ["-ib", path])
-    type =~ ~r/^text/i
+    type =~ ~r/^text/i || type =~ ~r/ASCII/
   end
 end
