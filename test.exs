@@ -1,7 +1,4 @@
 
-alias Inkfish.Courses
-alias Inkfish.Grades.Gradesheet
-
-course = Courses.get_course_for_gradesheet!(1)
-sheet = Gradesheet.from_course(course)
-IO.inspect(sheet.stats)
+as = Inkfish.Assignments.get_assignment_path!(21)
+Inkfish.Assignments.GradingTasks.clear_grading_tasks(as)
+Inkfish.Assignments.GradingTasks.assign_grading_tasks(as)

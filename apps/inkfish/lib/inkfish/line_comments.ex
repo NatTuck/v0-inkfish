@@ -130,8 +130,15 @@ defmodule Inkfish.LineComments do
       {:error, %Ecto.Changeset{}}
 
   """
-  def delete_line_comment(%LineComment{} = line_comment) do
-    Repo.delete(line_comment)
+  def delete_line_comment(%LineComment{} = lc) do
+    case Repo.delete(lc) do
+      {:ok, lc} ->
+        {:ok, grade} = Inkfish.Grades.update_feedback_score(lc.grade_id)
+        Inkfish.Subs.save_sub_dump!(grade.sub.id)
+        {:ok, %{lc | grade: grade}}
+      other ->
+        other
+    end
   end
 
   @doc """

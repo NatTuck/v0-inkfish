@@ -12,6 +12,8 @@ defmodule Inkfish.Users.Reg do
     belongs_to :user, Inkfish.Users.User
     belongs_to :course, Inkfish.Courses.Course
     many_to_many :teams, Inkfish.Teams.Team, join_through: "team_members"
+    has_many :assigned_grading_subs, Inkfish.Subs.Sub,
+      foreign_key: :assigned_grader_reg_id
 
     field :user_login, :string, virtual: true
 
@@ -30,8 +32,9 @@ defmodule Inkfish.Users.Reg do
   def validate_not_student_and_staff(cset) do
     sp = get_field(cset, :is_student) && get_field(cset, :is_prof)
     ss = get_field(cset, :is_student) && get_field(cset, :is_staff)
+    sg = get_field(cset, :is_student) && get_field(cset, :is_grader)
     
-    if sp || ss do
+    if sp || ss || sg do
       add_error(cset, :is_student, "Students can't be staff")
     else
       cset

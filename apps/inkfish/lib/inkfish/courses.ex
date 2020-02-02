@@ -261,6 +261,19 @@ defmodule Inkfish.Courses do
       limit: 1
   end
 
+  def list_course_graders(%Course{} = course) do
+    list_course_graders(course.id)
+  end
+
+  def list_course_graders(course_id) do
+    regs = Repo.all from reg in Reg,
+      inner_join: user in assoc(reg, :user),
+      where: reg.course_id == ^course_id,
+      where: reg.is_grader,
+      preload: [user: user]
+    Enum.map regs, &(&1.user)
+  end
+
   @doc """
   Returns the list of buckets.
 
