@@ -4,7 +4,9 @@
   <%= link("Student View",
     to: Routes.assignment_path(@conn, :show, @assignment)) %> |
   <%= link("Edit Assignment",
-    to: Routes.staff_assignment_path(@conn, :edit, @assignment)) %>
+    to: Routes.staff_assignment_path(@conn, :edit, @assignment)) %> |
+  <%= link("Grading Tasks",
+    to: Routes.staff_assignment_grading_task_path(@conn, :show, @assignment)) %>
 </p>
 
 <ul>

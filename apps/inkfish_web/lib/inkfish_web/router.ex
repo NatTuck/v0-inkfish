@@ -76,6 +76,8 @@ defmodule InkfishWeb.Router do
     end
     resources "/assignments", AssignmentController, except: [:index, :new, :create] do
       resources "/grade_columns", GradeColumnController, only: [:index, :new, :create]
+      resources "/grading_tasks", GradingTaskController,
+        except: [:new, :delete], singleton: true
     end
     post "/assignments/:id/create_fake_subs", AssignmentController, :create_fake_subs
     resources "/grade_columns", GradeColumnController, except: [:index, :new, :create]
