@@ -89,7 +89,7 @@ defmodule Inkfish.Itty.Server do
   end
 
   def send_output(stream, text, state0) do
-    item = {state0.serial, stream, text}
+    item = {state0.serial, stream, sanitize_utf8(text)}
     broadcast(state0.subs, {:output, item})
     state0
     |> Map.update!(:output, &([item | &1]))
@@ -142,5 +142,12 @@ defmodule Inkfish.Itty.Server do
     else
       ""
     end
+  end
+
+  def sanitize_utf8(text) do
+    text
+    |> String.codepoints
+    |> Enum.filter(&String.valid?/1)
+    |> Enum.join("")
   end
 end

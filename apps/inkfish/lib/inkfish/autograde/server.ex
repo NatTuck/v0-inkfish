@@ -76,7 +76,7 @@ defmodule Inkfish.Autograde.Server do
       %{
         serial: serial,
         stream: stream,
-        text: text
+        text: sanitize_utf8(text),
       }
     end)
 
@@ -96,8 +96,16 @@ defmodule Inkfish.Autograde.Server do
       |> Decimal.div(total)
       |> Decimal.mult(grade.grade_column.points)
       {:ok, _} = Grades.update_grade(grade, %{score: score})
+      {:ok, _} = Inkfish.Subs.calc_sub_score!(grade.sub_id)
     end
 
     {:stop, :normal, state}
+  end
+
+  def sanitize_utf8(text) do
+    text
+    |> String.codepoints
+    |> Enum.filter(&String.valid?/1)
+    |> Enum.join("")
   end
 end

@@ -150,8 +150,8 @@ defmodule Inkfish.Subs do
 
   def set_one_sub_active!(new_sub) do
     prev = active_sub_for_team(new_sub.assignment_id, new_sub.team_id)
-    # If the active sub has been graded, we keep it.
-    if prev && prev.score do
+    # If the active sub has been graded or late penalty ignored, we keep it.
+    if prev && (prev.score || prev.ignore_late_penalty)  do
       set_sub_active!(prev)
     else
       set_sub_active!(new_sub)
@@ -206,6 +206,9 @@ defmodule Inkfish.Subs do
     {:ok, sub} = sub
     |> Sub.change_ignore_late(attrs)
     |> Repo.update()
+    if sub.ignore_late_penalty do
+      set_sub_active!(sub)
+    end
     calc_sub_score!(sub.id)
     sub
   end

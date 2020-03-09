@@ -7,7 +7,7 @@ RUN apt-get -y update && \
 RUN apt-get -y install apt-utils debian-goodies util-linux \
     ruby python3 perl-doc libarchive-zip-perl libipc-run-perl \
     build-essential clang clang-tools valgrind gcc-multilib \
-    fuse libfuse-dev pkg-config \
+    fuse libfuse-dev pkg-config time \
     wamerican libbsd-dev libgmp-dev \
     libexpect-perl qemu-system-x86 qemu-utils
 

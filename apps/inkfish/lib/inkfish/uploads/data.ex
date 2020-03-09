@@ -11,15 +11,27 @@ defmodule Inkfish.Uploads.Data do
 
   def read_tree(base, rel) do
     path = Path.join(base, rel)
-    {:ok, stat} = File.stat(path)
-    info = %{
-      key: rel,
-      path: rel,
-      label: label(rel),
-      type: to_string(stat.type),
-      size: stat.size,
-    }
-    read_item(base, rel, info)
+    case File.stat(path) do
+      {:ok, stat} ->
+        info = %{
+          key: rel,
+          path: rel,
+          label: label(rel),
+          type: to_string(stat.type),
+          size: stat.size,
+        }
+        read_item(base, rel, info)
+      other ->
+        msg = inspect(other)
+        %{
+          key: rel,
+          path: rel,
+          label: label(rel),
+          type: "text/plain",
+          size: String.length(msg),
+	  text: msg, 
+        }
+    end
   end
 
   def label(path) do
@@ -82,11 +94,9 @@ defmodule Inkfish.Uploads.Data do
 
   def set_mode(info, base, rel) do
     name = Path.basename(rel)
-
-
-
+    
     cond do
-      info.size > 8192 ->
+      info.size > 32768 ->
         info
       name =~ ~r/^\./ ->
         info
@@ -105,7 +115,7 @@ defmodule Inkfish.Uploads.Data do
     path = Path.join(base, rel)
     if info[:mode] && text_file?(path) do
       text = File.read!(path)
-      Map.put(info, :text, text)
+      Map.put(info, :text, sanitize_utf8(text))
     else
       info
     end
@@ -114,5 +124,12 @@ defmodule Inkfish.Uploads.Data do
   def text_file?(path) do
     {type, 0} = System.cmd("file", ["-ib", path])
     type =~ ~r/^text/i || type =~ ~r/ASCII/
+  end
+
+  def sanitize_utf8(text) do
+    text
+    |> String.codepoints
+    |> Enum.filter(&String.valid?/1)
+    |> Enum.join("")
   end
 end
