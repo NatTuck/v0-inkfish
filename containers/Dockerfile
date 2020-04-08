@@ -12,3 +12,4 @@ RUN apt-get -y install apt-utils debian-goodies util-linux \
     libexpect-perl qemu-system-x86 qemu-utils
 
 RUN adduser student --disabled-password --gecos "Student,,,,"
+RUN su - student -c "curl https://sh.rustup.rs -sSf | sh -s -- -y"
