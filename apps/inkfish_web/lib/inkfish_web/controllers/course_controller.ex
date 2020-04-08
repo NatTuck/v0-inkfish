@@ -3,6 +3,8 @@ defmodule InkfishWeb.CourseController do
 
   alias Inkfish.Courses
   alias Inkfish.Subs
+  alias Inkfish.Users
+  alias Inkfish.Assignments.Assignment
 
   alias InkfishWeb.Plugs
   plug Plugs.FetchItem, [course: "id"]
@@ -21,6 +23,7 @@ defmodule InkfishWeb.CourseController do
 
   def show(conn, %{"id" => id}) do
     current_reg = conn.assigns[:current_reg]
+    |> Users.preload_reg_teams!()
     course = Courses.get_course_for_student_view!(id)
     |> Courses.preload_subs_for_student!(current_reg.id)
     teams = Courses.get_teams_for_student!(course, current_reg)
@@ -36,8 +39,10 @@ defmodule InkfishWeb.CourseController do
         sub = Enum.find as.subs, zero_sub, &(&1.active)
         score = sub.score || Decimal.new("0.0")
         weight = fix_weight(as.weight)
-        { Decimal.add(s, Decimal.mult(weight, score)),
-          Decimal.add(p, Decimal.mult(weight, as.points)) }
+        points = Assignment.assignment_total_points(as)
+        frac = Decimal.div(Decimal.mult(weight, score), fix_weight(points))
+        { Decimal.add(s, frac),
+          Decimal.add(p, weight) }
       end
 
       p = fix_weight(p)

@@ -134,6 +134,7 @@ defmodule Inkfish.Courses do
   def get_teams_for_student!(%Course{} = course, %Reg{} = reg) do
     ts = Enum.map course.teamsets, fn (ts) ->
       team = Inkfish.Teams.get_active_team(ts, reg)
+      |> Repo.preload(:subs)
       {ts.id, team}
     end
     Enum.into(ts, %{})
