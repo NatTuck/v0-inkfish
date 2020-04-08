@@ -277,6 +277,10 @@ defmodule Inkfish.Users do
     end
   end
 
+  def preload_reg_teams!(%Reg{} = reg) do
+    Repo.preload(reg, [teams: :subs])
+  end
+
   @doc """
   Creates a reg.
 
