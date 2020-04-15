@@ -40,7 +40,7 @@ defmodule Sandbox.Archive do
           File.rm!(path)
         end
       _readlink_failed ->
-        IO.puts("removing invalid link: '#{path}' => '#{targ}'")
+        IO.puts("removing invalid link: '#{path}'")
         File.rm!(path)
     end
   end
