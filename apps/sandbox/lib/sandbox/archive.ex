@@ -31,12 +31,17 @@ defmodule Sandbox.Archive do
   end
 
   def sanitize_link!(path, base) do
-    {targ, 0} = System.cmd("readlink", ["-f", path])
-    targ = String.trim(targ)
-    pref = String.slice(targ, 0, String.length(base))
-    if pref != base do
-      IO.puts("removing unsafe link: '#{path}' => '#{targ}'")
-      File.rm!(path)
+    case System.cmd("readlink", ["-f", path]) do
+      {targ, 0} ->
+        targ = String.trim(targ)
+        pref = String.slice(targ, 0, String.length(base))
+        if pref != base do
+          IO.puts("removing unsafe link: '#{path}' => '#{targ}'")
+          File.rm!(path)
+        end
+      _readlink_failed ->
+        IO.puts("removing invalid link: '#{path}'")
+        File.rm!(path)
     end
   end
 

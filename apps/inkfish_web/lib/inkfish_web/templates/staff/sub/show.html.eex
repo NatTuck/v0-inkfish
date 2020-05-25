@@ -110,9 +110,7 @@
     <%= form_for cset, path, [method: :post], fn _f -> %>
       <h3>
         <%= grade.grade_column.name %> &nbsp;
-        <%= if log do %>
-          <%= submit "Rerun Script", class: "btn btn-secondary" %>
-        <% end %>
+	<%= submit "Rerun Script", class: "btn btn-secondary" %>
       </h3>
     <% end %>
     <%= if log do %>
