@@ -33,6 +33,7 @@ import init_dates from "./human-date";
 import init_teams from "./teams/team-manager";
 import init_upload from "./uploads/upload";
 import init_autograde from './autograde';
+import init_gradesheet from './gradesheet/gradesheet';
 
 $(() => {
   init_upload('upload-root', 'sub_upload_id');
@@ -43,6 +44,8 @@ $(() => {
   init_teams();
   $('.toggle').bootstrapToggle();
   feather.replace();
+
+  init_gradesheet('gradesheet-root');
 });
 
 function init_date_time_pickers() {

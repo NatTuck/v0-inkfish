@@ -1,6 +1,16 @@
 defmodule Inkfish.Grades.Gradesheet do
   alias Inkfish.Subs.Sub
 
+  def list_grades(sheet) do
+    Enum.flat_map sheet.students, fn {reg_id, rgss} ->
+      Enum.flat_map rgss.buckets, fn {bucket_id, data} ->
+        Enum.map data.scores, fn {as_id, grade} ->
+          %{reg_id: reg_id, bucket_id: bucket_id, as_id: as_id, grade: grade}
+        end
+      end
+    end
+  end
+
   def from_course(course) do
     student_scores = for reg <- course.regs do
       scores = student_scores(course, reg)

@@ -2,6 +2,20 @@
 
 <p>Course: <%= @course.name %></p>
 
+<script>
+ window.gradesheet = {
+   students: <%= raw Jason.encode!(@students) %>,
+   buckets: <%= raw Jason.encode!(@buckets) %>,
+   grades: <%= raw Jason.encode!(@grades) %>,
+ };
+</script>
+
+<div id="gradesheet-root">
+  React component loading...
+</div>
+
+<h2>Old Static Version</h2>
+
 <table class="table table-striped">
   <thead>
     <tr>

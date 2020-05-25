@@ -11,6 +11,7 @@ defmodule InkfishWeb.Staff.CourseController do
   alias Inkfish.Courses
   alias Inkfish.Courses.Course
   alias Inkfish.Grades.Gradesheet
+  alias InkfishWeb.ViewHelpers
 
   def index(conn, _params) do
     courses = Courses.list_courses()
@@ -71,7 +72,22 @@ defmodule InkfishWeb.Staff.CourseController do
   def gradesheet(conn, %{"id" => id}) do
     course = Courses.get_course_for_gradesheet!(id)
     sheet = Gradesheet.from_course(course)
-    render(conn, "gradesheet.html", fluid_grid: true,
-      course: course, sheet: sheet)
+
+    students = course.regs
+    |> Enum.filter(&(&1.is_student))
+    |> Enum.map(&(%{id: &1.id, name: ViewHelpers.user_display_name(&1.user)}))
+
+    buckets = course.buckets
+    |> Enum.map(fn bucket ->
+      as = Enum.map bucket.assignments, fn aa ->
+        %{ id: aa.id, name: aa.name, weight: aa.weight }
+      end
+      %{id: bucket.id, name: bucket.name, assignments: as, weight: bucket.weight }
+    end)
+
+    grades = Gradesheet.list_grades(sheet)
+
+    render(conn, "gradesheet.html", fluid_grid: true, course: course, sheet: sheet,
+      students: students, buckets: buckets, grades: grades)
   end
 end
