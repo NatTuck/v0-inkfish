@@ -2,5 +2,5 @@
 export MIX_ENV=prod
 export PORT=4081
 
-mix run $1 $2
+mix run $1 $2 $3 $4
 

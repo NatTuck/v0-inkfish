@@ -16,7 +16,10 @@ alias Inkfish.Courses
 alias Inkfish.Grades.Gradesheet
 import InkfishWeb.ViewHelpers
 
-[course_id, output_path] = System.argv()
+argv = System.argv()
+IO.inspect({:argv, argv})
+
+[course_id, output_path] = argv
 {id, _} = Integer.parse(course_id)
 
 course = Courses.get_course_for_gradesheet!(id)
