@@ -1,0 +1,62 @@
+<h1>Grading Tasks</h1>
+
+<p>Grading Tasks for <%= @assignment.name %></p>
+
+<h2>Your Tasks</h2>
+
+<p># of subs: <%= length(@user_tasks) %></p>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Student</th>
+      <th>Column</th>
+      <th>Points</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    <%= for grade <- @user_tasks do %>
+      <tr>
+        <td><%= user_display_name(grade.sub.reg.user) %></td>
+        <td><%= grade.grade_column.name %></td>
+        <td><%= show_score(@conn, grade) %> / <%= grade.grade_column.points %></td>
+        <td><%= link("Grade", to: Routes.staff_grade_path(@conn, :edit, grade),
+            target: "_blank") %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+
+<h2>All Manual Grading</h2>
+
+
+<% action = Routes.staff_assignment_grading_task_path(@conn, :create, @assignment) %>
+<%= form_for @conn, action, fn f -> %>
+  <p><%= submit "Assign All Grading Tasks", class: "btn btn-primary" %></p>
+<% end %>
+
+<p># of subs: <%= length(@tasks) %></p>
+
+<p>Active graders: <%= Enum.map(@graders, &(user_display_name(&1))) |> Enum.join(", ") %>
+</p>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Points</th>
+      <th>Grader</th>
+    </tr>
+  </thead>
+  <tbody>
+    <%= for grade <- @tasks do %>
+      <tr>
+        <td><%= user_display_name(grade.sub.reg.user) %></td>
+        <td><%= show_score(@conn, grade) %> / <%= grade.grade_column.points %></td>
+        <td><%= user_display_name(grade.grader) %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

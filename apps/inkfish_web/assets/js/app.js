@@ -9,7 +9,6 @@ import css from "../css/app.scss";
 // in "webpack.config.js".
 //
 // Import dependencies
-
 import "regenerator-runtime/runtime";
 import "phoenix_html";
 import jQuery from 'jquery';

@@ -1,6 +1,7 @@
 defmodule InkfishWeb.RequestRegTest do
   use InkfishWeb.IntegrationCase, async: true
 
+  @tag :skip
   test "Request registration flow", %{conn: conn} do
     get(conn, "/")
     |> follow_form(
