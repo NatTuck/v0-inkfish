@@ -9,7 +9,8 @@
 <table class="table table-striped">
   <thead>
     <tr>
-      <th>Name</th>
+      <th>Student</th>
+      <th>Column</th>
       <th>Points</th>
       <th>Action</th>
     </tr>
@@ -18,8 +19,10 @@
     <%= for grade <- @user_tasks do %>
       <tr>
         <td><%= user_display_name(grade.sub.reg.user) %></td>
+        <td><%= grade.grade_column.name %></td>
         <td><%= show_score(@conn, grade) %> / <%= grade.grade_column.points %></td>
-        <td><%= user_display_name(grade.grader) %></td>
+        <td><%= link("Grade", to: Routes.staff_grade_path(@conn, :edit, grade),
+            target: "_blank") %></td>
       </tr>
     <% end %>
   </tbody>

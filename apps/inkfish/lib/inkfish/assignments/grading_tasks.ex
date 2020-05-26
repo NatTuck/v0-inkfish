@@ -58,8 +58,8 @@ defmodule Inkfish.Assignments.GradingTasks do
     |> Enum.into(%{})
 
     counts = Enum.reduce grades, zeros, fn (gr, acc) ->
-      if gr.grader_id && Map.has_key?(gr.grader_id) do
-        Map.update(acc, gr.grader_id, &(&1 + 1))
+      if gr.grader_id && Map.has_key?(acc, gr.grader_id) do
+        Map.update(acc, gr.grader_id, 0, &(&1 + 1))
       else
         acc
       end

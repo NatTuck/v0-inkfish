@@ -33,6 +33,7 @@
 
       <td>
         <%= link "Edit", to: Routes.admin_course_path(@conn, :edit, course) %>
+        &nbsp;
         <%= link "Delete", to: Routes.admin_course_path(@conn, :delete, course), method: :delete, data: [confirm: "Are you sure?"] %>
       </td>
     </tr>
