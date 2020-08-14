@@ -39,3 +39,26 @@ That means some more packages:
 This can be started by running "test/setup.sh" from the project root.
 
 
+# Refactoring Plan
+
+ - Split into two separate apps: inkfish and steno
+   - Inkfish is course management, submission, grades, etc.
+   - Steno is autograding.
+ - Get rid of umbrella structure
+
+## Inkfish
+
+ - Single DB and uploads directory.
+ - No execution of user code.
+ - Optimization for my workflows, including git submissions.
+ - Fix existing bugs.
+ - More React, with tests.
+
+## Steno
+
+ - Cluster of VMs.
+ - No persistent state.
+ - Web service for running autograding.
+ - REST POST to create grading job.
+ - Postback on grading complete.
+ 
